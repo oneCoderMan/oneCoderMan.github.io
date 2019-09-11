@@ -17,7 +17,7 @@
 <meta property="og:description" content="shell脚本实现Linux系统监控 代码见 https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/assets/shell/p1.png">
-<meta property="og:updated_time" content="2019-09-11T09:00:44.823Z">
+<meta property="og:updated_time" content="2019-09-11T09:08:00.096Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell-auto">
 <meta name="twitter:description" content="shell脚本实现Linux系统监控 代码见 https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh">
@@ -236,7 +236,7 @@
 <p>例子1-3   <a href="http://c.biancheng.net/linux/echo.html" target="_blank" rel="noopener">参考资料</a>  <br></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\033[颜色1;颜色2m 要展示的文字 \033[0m&quot;</span><br><span class="line">\033[0m：表示将颜色恢复回原来的颜色</span><br></pre></td></tr></table></figure>
 
-<p>###1.4 各种括号<br><a href="https://blog.csdn.net/x1269778817/article/details/46535729" target="_blank" rel="noopener">参考文献</a></p>
+<h3 id="1-4-各种括号"><a href="#1-4-各种括号" class="headerlink" title="1.4 各种括号"></a>1.4 各种括号</h3><p><a href="https://blog.csdn.net/x1269778817/article/details/46535729" target="_blank" rel="noopener">参考文献</a></p>
 <ul>
 <li>$()与``<blockquote>
 <p>用来做命令替换的，简化shell脚本的编写</p>
@@ -294,8 +294,7 @@
 <li>可以查看 <a href="http://coolshell.cn/articles/9104.html" target="_blank" rel="noopener">http://coolshell.cn/articles/9104.html</a> 获取sed帮助</li>
 </ol>
 </blockquote>
-<p>###2.5 监控系统的各种信息</p>
-<ul>
+<h3 id="2-5-监控系统的各种信息"><a href="#2-5-监控系统的各种信息" class="headerlink" title="2.5 监控系统的各种信息"></a>2.5 监控系统的各种信息</h3><ul>
 <li>查看DNS<br><br><code>cat /etc/resolv.conf | sed &#39;1d&#39; | awk &#39;{print $2}&#39;</code><blockquote>
 <p><strong>解释说明</strong> <br><br>读取配置文件，删除第一行， 打印第二个字段</p>
 </blockquote>
