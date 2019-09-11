@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>shell-auto | CoderSim的日志</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="shell�ű�ʵ��Linuxϵͳ��� ����� https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh  һ. Ԥ��֪ʶ1.1 getopts ����: �����������ӵ�������ѡ��Ͳ�����ʽ��getopts option_string args˵���� option_string���ǲ">
+  <meta name="description" content="shell脚本实现Linux系统监控 代码见 https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh">
 <meta name="keywords" content="shell">
 <meta property="og:type" content="article">
 <meta property="og:title" content="shell-auto">
 <meta property="og:url" content="http://yoursite.com/2019/09/11/shell-auto/index.html">
 <meta property="og:site_name" content="CoderSim的日志">
-<meta property="og:description" content="shell�ű�ʵ��Linuxϵͳ��� ����� https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh  һ. Ԥ��֪ʶ1.1 getopts ����: �����������ӵ�������ѡ��Ͳ�����ʽ��getopts option_string args˵���� option_string���ǲ">
+<meta property="og:description" content="shell脚本实现Linux系统监控 代码见 https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2019/09/11/shell-auto/assets/shell/p1.png">
-<meta property="og:updated_time" content="2019-09-11T08:36:26.493Z">
+<meta property="og:image" content="http://yoursite.com/assets/shell/p1.png">
+<meta property="og:updated_time" content="2019-09-11T09:00:44.823Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="shell-auto">
-<meta name="twitter:description" content="shell�ű�ʵ��Linuxϵͳ��� ����� https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh  һ. Ԥ��֪ʶ1.1 getopts ����: �����������ӵ�������ѡ��Ͳ�����ʽ��getopts option_string args˵���� option_string���ǲ">
-<meta name="twitter:image" content="http://yoursite.com/2019/09/11/shell-auto/assets/shell/p1.png">
+<meta name="twitter:description" content="shell脚本实现Linux系统监控 代码见 https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh">
+<meta name="twitter:image" content="http://yoursite.com/assets/shell/p1.png">
   
     <link rel="alternative" href="/atom.xml" title="CoderSim的日志" type="application/atom+xml">
   
@@ -181,142 +181,142 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="shell�u�ʵ��Linuxϵͳ���"><a href="#shell�u�ʵ��Linuxϵͳ���" class="headerlink" title="shell�ű�ʵ��Linuxϵͳ���"></a>shell�ű�ʵ��Linuxϵͳ���</h1><hr>
-<p>����� <a href="https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh" target="_blank" rel="noopener">https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh</a></p>
+        <h1 id="shell脚本实现Linux系统监控"><a href="#shell脚本实现Linux系统监控" class="headerlink" title="shell脚本实现Linux系统监控"></a>shell脚本实现Linux系统监控</h1><hr>
+<p>代码见 <a href="https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh" target="_blank" rel="noopener">https://github.com/oneCoderMan/myCodes/blob/master/shell/auto.sh</a></p>
 <hr>
-<h2 id="һ-Ԥ��֪ʶ"><a href="#һ-Ԥ��֪ʶ" class="headerlink" title="һ. Ԥ��֪ʶ"></a>һ. Ԥ��֪ʶ</h2><h3 id="1-1-getopts"><a href="#1-1-getopts" class="headerlink" title="1.1 getopts"></a>1.1 getopts</h3><blockquote>
-<p>����: �����������ӵ�������ѡ��Ͳ���<br><br>��ʽ��getopts option_string args<br><br>˵���� option_string���ǲ����б��� args���������н��ܵ�ֵ</p>
+<a id="more"></a>
+
+<h2 id="一-预备知识"><a href="#一-预备知识" class="headerlink" title="一. 预备知识"></a>一. 预备知识</h2><h3 id="1-1-getopts"><a href="#1-1-getopts" class="headerlink" title="1.1 getopts"></a>1.1 getopts</h3><blockquote>
+<p>作用: 处理参数复杂的命令行选项和参数<br><br>格式：getopts option_string args<br><br>说明： option_string中是参数列表， args从命令行中接受的值</p>
 </blockquote>
-<p>ʾ�����룺option.sh<br></p>
+<p>示例代码：option.sh<br></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line">while getopts f:e:p: option</span><br><span class="line">do</span><br><span class="line">   case &quot;$&#123;option&#125;&quot; in</span><br><span class="line">       f) file_name=$&#123;OPTARG&#125;;;</span><br><span class="line">       e) editor=$&#123;OPTARG&#125;;;</span><br><span class="line">       p) page=$&#123;OPTARG&#125;;;</span><br><span class="line">       *) echo &quot;invalid&quot;;;</span><br><span class="line">   esac</span><br><span class="line">done</span><br><span class="line">echo &quot;$&#123;file_name&#125;&quot;</span><br><span class="line">echo &quot;$&#123;editor&#125;&quot;</span><br><span class="line">echo $&#123;page&#125;</span><br></pre></td></tr></table></figure>
 
-<p>�������<code>./option.sh -f bool.pdf -e YiJun -p HUANAN</code> <br><br>option_string��ƥ��Ĳ���,�ַ������У���ʾ�������б�����ϲ�������-e yijun���������ִ��󡣲�����ֵ�ᱣ����<strong>OPTARG</strong>�����С�<br></p>
+<p>运行命令：<code>./option.sh -f bool.pdf -e YiJun -p HUANAN</code> <br><br>option_string是匹配的参数,字符后面有：表示该命令中必须加上参数，如-e yijun。否则会出现错误。参数的值会保存在<strong>OPTARG</strong>变量中。<br></p>
 <blockquote>
-<p>��⵽�Ƿ������ͻ�ֹͣ</p>
+<p>检测到非法参数就会停止</p>
 </blockquote>
-<h3 id="1-2-sign������"><a href="#1-2-sign������" class="headerlink" title="1.2 $+sign������"></a>1.2 $+sign������</h3><blockquote>
+<h3 id="1-2-sign各含义"><a href="#1-2-sign各含义" class="headerlink" title="1.2 $+sign各含义"></a>1.2 $+sign各含义</h3><blockquote>
 <ol>
 <li><strong>$#</strong>   :Stores the number of command-line arguments that<br>   were passed to the shell program.<br></li>
 <li><strong>$?</strong>    :Stores the exit value of the last command that was<br>   executed.<br></li>
 <li><strong>$0</strong>   :Stores the first word of the entered command (the<br>   name of the shell program).<br></li>
 <li><strong>$*</strong>   :Stores all the arguments that were entered on the<br>   command line ($1 $2 …).<br></li>
 <li><strong>$@</strong>  :Stores all the arguments that were entered<br>   on the command line, individually quoted (“$1” “$2” …). <br></li>
-<li><strong>$&gt;</strong> : 1&gt;�Ǳ�׼����ض��� ����ʡȥ1(��Ϊ &gt; )�� 2&gt;�����ض���$&gt;�����ֵĽ�ϣ���׼������ض���<br></li>
-<li><strong>&gt;$1</strong> : ���ض���1�ܵ��� �����򵽱�׼���</li>
+<li><strong>$&gt;</strong> : 1&gt;是标准输出重定向， 可以省去1(变为 &gt; )； 2&gt;错误重定向。$&gt;是两种的结合，标准与错误重定向<br></li>
+<li><strong>&gt;$1</strong> : 将重定向到1管道， 即定向到标准输出</li>
 </ol>
 </blockquote>
-<p>�������ӣ�<br><br><code>./command -yes -no /home/username</code></p>
+<p>如下例子：<br><br><code>./command -yes -no /home/username</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$# = 3</span><br><span class="line">$* = -yes -no /home/username</span><br><span class="line">$@ = array: &#123;&quot;-yes&quot;, &quot;-no&quot;, &quot;/home/username&quot;&#125;</span><br><span class="line">$0 = ./command, $1 = -yes etc.</span><br></pre></td></tr></table></figure>
 
-<h3 id="1-3-tput����lת��"><a href="#1-3-tput����lת��" class="headerlink" title="1.3 tput����ɫת��"></a>1.3 tput����ɫת��</h3><p><a href="https://www.cnblogs.com/technologylife/p/8275044.html" target="_blank" rel="noopener">�ο�����</a></p>
+<h3 id="1-3-tput与颜色转义"><a href="#1-3-tput与颜色转义" class="headerlink" title="1.3 tput与颜色转义"></a>1.3 tput与颜色转义</h3><p><a href="https://www.cnblogs.com/technologylife/p/8275044.html" target="_blank" rel="noopener">参考链接</a></p>
 <blockquote>
-<p><strong>tput����</strong>�������ն˹���<br></p>
+<p><strong>tput作用</strong>：更改终端功能<br></p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tput sgr0       # �ָ�Ĭ���ն�</span><br><span class="line">tput blink      # �ı���˸</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tput sgr0       # 恢复默认终端</span><br><span class="line">tput blink      # 文本闪烁</span><br></pre></td></tr></table></figure>
 
-<p>һ������1-3��<br></p>
+<p>一个例子1-3：<br></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tecreset=$(tput sgr0)</span><br><span class="line">echo -e &apos;\E[32m&apos;&quot;Operating System Type :&quot; $tecreset $os</span><br></pre></td></tr></table></figure>
 
-<p>�����<br><br><img src="./assets/shell/p1.png" alt="���"></p>
+<p>结果：<br><br><img src="/assets/shell/p1.png" alt="结果"></p>
 <blockquote>
-<p><strong>˵��:</strong> <br></p>
+<p><strong>说明:</strong> <br></p>
 <ol>
-<li>�����1-3�е�$tecresetȥ������������ɫ��<br></li>
-<li>�������������ÿ�ζ�ʹ�������滻$(), ``�� �����һ������tecreset�洢���</li>
+<li>如果把1-3中的$tecreset去掉，都会是绿色。<br></li>
+<li>方便操作，不用每次都使用命令替换$(), ``， 因此用一个变量tecreset存储命令。</li>
 </ol>
 </blockquote>
-<p><strong>linux�ն˵���ɫ��ת�����п���<br></strong></p>
+<p><strong>linux终端的颜色由转义序列控制<br></strong></p>
 <blockquote>
-<p>ת�������ɿ��Ʒ� <code>esc</code>��ͷ����������������Ϊ��<code>\033</code>����<code>\e[</code>��mΪת�������<br></p>
+<p>转义序列由控制符 <code>esc</code>开头，控制序列引导符为：<code>\033</code>或者<code>\e[</code>，m为转义结束。<br></p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">��ʽ1��\033[ Param &#123;;Param;...&#125; m</span><br><span class="line"></span><br><span class="line">��ʽ2��\e[ Param &#123;;Param;...&#125;m</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">格式1：\033[ Param &#123;;Param;...&#125; m</span><br><span class="line"></span><br><span class="line">格式2：\e[ Param &#123;;Param;...&#125;m</span><br></pre></td></tr></table></figure>
 
-<p>����1-3   <a href="http://c.biancheng.net/linux/echo.html" target="_blank" rel="noopener">�ο�����</a>  <br></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\033[��ɫ1;��ɫ2m Ҫչʾ������ \033[0m&quot;</span><br><span class="line">\033[0m����ʾ����ɫ�ָ���ԭ������ɫ</span><br></pre></td></tr></table></figure>
+<p>例子1-3   <a href="http://c.biancheng.net/linux/echo.html" target="_blank" rel="noopener">参考资料</a>  <br></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo -e &quot;\033[颜色1;颜色2m 要展示的文字 \033[0m&quot;</span><br><span class="line">\033[0m：表示将颜色恢复回原来的颜色</span><br></pre></td></tr></table></figure>
 
-<p>###1.4 ��������<br><a href="https://blog.csdn.net/x1269778817/article/details/46535729" target="_blank" rel="noopener">�ο�����</a></p>
+<p>###1.4 各种括号<br><a href="https://blog.csdn.net/x1269778817/article/details/46535729" target="_blank" rel="noopener">参考文献</a></p>
 <ul>
-<li>$()��``<blockquote>
-<p>�����������滻�ģ���shell�ű��ı�д</p>
+<li>$()与``<blockquote>
+<p>用来做命令替换的，简化shell脚本的编写</p>
 </blockquote>
 </li>
 <li>${}<blockquote>
-<p>�����滻�ģ�����������</p>
+<p>变量替换的，即变量引用</p>
 </blockquote>
 </li>
-<li>$[]�� $(())<blockquote>
-<p>������������ѧ�����<br><br><strong>ע��</strong> : $(())�еı���ǰ����Լ�$,Ҳ�ɲ���</p>
+<li>$[]与 $(())<blockquote>
+<p>都是用来做数学运算的<br><br><strong>注意</strong> : $(())中的变量前面可以加$,也可不用</p>
 </blockquote>
 </li>
 <li>[]<blockquote>
-<p>test�����һ����ʽ ���������ո񣬼��ж�true����false</p>
+<p>test命令的一种形式 左右需留空格，即判断true或者false</p>
 </blockquote>
 </li>
-<li>(())��[[]]<blockquote>
-<p>�ֱ�����ѧ����ʽ���ַ�����ʽ[]�ļ�ǿ��</p>
+<li>(())与[[]]<blockquote>
+<p>分别是数学表达式和字符表达式[]的加强版</p>
 </blockquote>
-<h2 id="��-���ϵͳ�u���g��"><a href="#��-���ϵͳ�u���g��" class="headerlink" title="��.���ϵͳ�ű���ģ��"></a>��.���ϵͳ�ű���ģ��</h2><h3 id="2-1-�u���װ-i"><a href="#2-1-�u���װ-i" class="headerlink" title="2.1 �ű���װ -i"></a>2.1 �ű���װ -i</h3>�������£�<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">if [[ $iopt -eq 1 ]]; then   #�Ա���������Ҫ����$  then�����ͬһ�еĻ�Ҫ����;</span><br><span class="line">  &#123;</span><br><span class="line">    #�������·��</span><br><span class="line">    wd=`pwd`</span><br><span class="line">    #��������ļ���</span><br><span class="line">    basename `echo $0` &gt; /tmp/script</span><br><span class="line">    #ƴ��</span><br><span class="line">    scriptname=`echo -e -n $wd/ &amp;&amp; cat /tmp/script`</span><br><span class="line">    # ���ص�����������ȥ</span><br><span class="line">    su -c &quot;cp $scriptname /usr/bin/monitor&quot; root &amp;&amp; echo &quot;congratulations! install successful!&quot; || echo &quot;install failed!&quot;</span><br><span class="line">  &#125;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h2 id="二-监控系统脚本各模块"><a href="#二-监控系统脚本各模块" class="headerlink" title="二.监控系统脚本各模块"></a>二.监控系统脚本各模块</h2><h3 id="2-1-脚本安装-i"><a href="#2-1-脚本安装-i" class="headerlink" title="2.1 脚本安装 -i"></a>2.1 脚本安装 -i</h3>代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">if [[ $iopt -eq 1 ]]; then   #对变量的引用要加上$  then如果是同一行的话要加上;</span><br><span class="line">  &#123;</span><br><span class="line">    #获得它的路径</span><br><span class="line">    wd=`pwd`</span><br><span class="line">    #获得它的文件名</span><br><span class="line">    basename `echo $0` &gt; /tmp/script</span><br><span class="line">    #拼接</span><br><span class="line">    scriptname=`echo -e -n $wd/ &amp;&amp; cat /tmp/script`</span><br><span class="line">    # 加载到环境变量中去</span><br><span class="line">    su -c &quot;cp $scriptname /usr/bin/monitor&quot; root &amp;&amp; echo &quot;congratulations! install successful!&quot; || echo &quot;install failed!&quot;</span><br><span class="line">  &#125;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
 <blockquote>
-<p><strong>����˵��</strong><br></p>
+<p><strong>代码说明</strong><br></p>
 <ol>
-<li>``(������)��ִ��shell����ɽ���������ڱ����С�ͬ$(),�����Щshell��֧�֡�<br></li>
-<li>basename �����ǽ�ǰ׺������/ɾ�����������һ���ַ�����ʾ����<br></li>
-<li>$0 ��ָshell�������ļ�����<code>sh test.sh</code>�õ� test.sh��<code>./test.sh</code> �õ�����./test.sh <br></li>
-<li>echo�е�-e ������ӡת����� -n�����д�ӡ<br></li>
-<li>su -c command USER �л��û�USERִ������command��ִ����֮�󷵻�ԭ�û�<br></li>
-<li>||  &amp;&amp; ����������о��ж�·���ң����Կ���if else�ṹ<br></li>
-<li>[[ ]] (())����ǽ�����ѧ����ʽ���ַ�����ʽ����ļ�ǿ�档�Ƽ�ʹ�� ,<strong>���������ո�</strong><br></li>
-<li>-eq �����ֵ����жϣ� �����ַ�������ʹ��=</li>
+<li>``(反引号)是执行shell命令，可将结果保存在变量中。同$(),这个有些shell不支持。<br></li>
+<li>basename 命令是将前缀和最后的/删除，保留最后一个字符串显示出来<br></li>
+<li>$0 是指shell本生的文件名，<code>sh test.sh</code>得到 test.sh。<code>./test.sh</code> 得到的是./test.sh <br></li>
+<li>echo中的-e 用来打印转义符， -n不换行打印<br></li>
+<li>su -c command USER 切换用户USER执行命令command，执行完之后返回原用户<br></li>
+<li>||  &amp;&amp; 在命令组合中具有短路左右，可以看成if else结构<br></li>
+<li>[[ ]] (())这个是进行数学表达式和字符表达式运算的加强版。推荐使用 ,<strong>左右需留空格</strong><br></li>
+<li>-eq 是数字等于判断， 对于字符串等于使用=</li>
 </ol>
 </blockquote>
-<h3 id="2-2-����g��-v"><a href="#2-2-����g��-v" class="headerlink" title="2.2 ����ģ�� -v"></a>2.2 ����ģ�� -v</h3><p>��������:<br></p>
+<h3 id="2-2-关于模块-v"><a href="#2-2-关于模块-v" class="headerlink" title="2.2 关于模块 -v"></a>2.2 关于模块 -v</h3><p>代码如下:<br></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if [[ $vopt -eq 1]]</span><br><span class="line">then</span><br><span class="line">  &#123;</span><br><span class="line">    echo -e &quot;monitor version 1\nreleased Under ....&quot;</span><br><span class="line">  &#125;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-3-����g��-h"><a href="#2-3-����g��-h" class="headerlink" title="2.3 ����ģ�� -h"></a>2.3 ����ģ�� -h</h3><p>�������£� <br></p>
+<h3 id="2-3-帮助模块-h"><a href="#2-3-帮助模块-h" class="headerlink" title="2.3 帮助模块 -h"></a>2.3 帮助模块 -h</h3><p>代码如下： <br></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if [[ $hopt -eq 1 ]]</span><br><span class="line">then</span><br><span class="line">  &#123;</span><br><span class="line">    echo -e &quot;  -i\tinstall the scripts &quot;</span><br><span class="line">    echo -e &quot;  -v\tprint version &quot;</span><br><span class="line">    echo -e &quot; -h\t print help info&quot;</span><br><span class="line">  &#125;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-4-�鿴����ϵͳ����"><a href="#2-4-�鿴����ϵͳ����" class="headerlink" title="2.4 �鿴����ϵͳ����"></a>2.4 �鿴����ϵͳ����</h3><blockquote>
-<p><strong>ע��</strong> ����ͬ����ϵͳ��Ӧ�Ĵ��벻һ������ ������ֻ����centOSϵͳ.��ͬ�汾�Ĵ������¼1</p>
+<h3 id="2-4-查看操作系统类型"><a href="#2-4-查看操作系统类型" class="headerlink" title="2.4 查看操作系统类型"></a>2.4 查看操作系统类型</h3><blockquote>
+<p><strong>注意</strong> ：不同操作系统对应的代码不一样啊， 本文中只讨论centOS系统.不同版本的代码见附录1</p>
 </blockquote>
-<p>�������£�</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#�鿴ϵͳ�汾������</span><br><span class="line">OS=`uname -s`</span><br><span class="line">REV=`uname -r`</span><br><span class="line">MACH=`uname -m`</span><br><span class="line"></span><br><span class="line">#�鿴����ϵͳ���ͣ�����������redHat</span><br><span class="line">if [[ $&#123;OS&#125; = &quot;Linux&quot; ]]; then</span><br><span class="line">&#123;</span><br><span class="line">  KERNEL=`uname -r`  #�ں˷����汾</span><br><span class="line">  if [ -f /etc/redhat-release ]; then  # test -f filename, �����Ƿ�Ϊ��ͨ�ļ�</span><br><span class="line">  &#123;</span><br><span class="line">    DIST=&quot;RedHat&quot;</span><br><span class="line">    Psuedoname=`cat /etc/redhat-release | sed s/.*\(// | sed s/\)//`</span><br><span class="line">    REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`</span><br><span class="line">  &#125;</span><br><span class="line">  fi</span><br><span class="line">  OSSTR=&quot;$&#123;OS&#125; $&#123;DIST&#125; $&#123;REV&#125;($&#123;Psuedoname&#125; $&#123;KERNEL&#125; $&#123;MACH&#125;)&quot;</span><br><span class="line">&#125;</span><br><span class="line">fi</span><br><span class="line">echo $&#123;OSSTR&#125;</span><br></pre></td></tr></table></figure>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#查看系统版本和名称</span><br><span class="line">OS=`uname -s`</span><br><span class="line">REV=`uname -r`</span><br><span class="line">MACH=`uname -m`</span><br><span class="line"></span><br><span class="line">#查看操作系统类型，这里适用于redHat</span><br><span class="line">if [[ $&#123;OS&#125; = &quot;Linux&quot; ]]; then</span><br><span class="line">&#123;</span><br><span class="line">  KERNEL=`uname -r`  #内核发布版本</span><br><span class="line">  if [ -f /etc/redhat-release ]; then  # test -f filename, 测试是否为普通文件</span><br><span class="line">  &#123;</span><br><span class="line">    DIST=&quot;RedHat&quot;</span><br><span class="line">    Psuedoname=`cat /etc/redhat-release | sed s/.*\(// | sed s/\)//`</span><br><span class="line">    REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`</span><br><span class="line">  &#125;</span><br><span class="line">  fi</span><br><span class="line">  OSSTR=&quot;$&#123;OS&#125; $&#123;DIST&#125; $&#123;REV&#125;($&#123;Psuedoname&#125; $&#123;KERNEL&#125; $&#123;MACH&#125;)&quot;</span><br><span class="line">&#125;</span><br><span class="line">fi</span><br><span class="line">echo $&#123;OSSTR&#125;</span><br></pre></td></tr></table></figure>
 
-<p>����˵����</p>
+<p>代码说明：</p>
 <blockquote>
 <ol>
-<li>uname�ǲ鿴ϵͳ�汾������ <br></li>
-<li><code>[ -f /etc/redhat-release ]</code> �ļ�����ָ��<br></li>
-<li>���Բ鿴 <a href="http://coolshell.cn/articles/9104.html" target="_blank" rel="noopener">http://coolshell.cn/articles/9104.html</a> ��ȡsed����</li>
+<li>uname是查看系统版本的命令 <br></li>
+<li><code>[ -f /etc/redhat-release ]</code> 文件测试指令<br></li>
+<li>可以查看 <a href="http://coolshell.cn/articles/9104.html" target="_blank" rel="noopener">http://coolshell.cn/articles/9104.html</a> 获取sed帮助</li>
 </ol>
 </blockquote>
-<p>###2.5 ���ϵͳ�ĸ�����Ϣ</p>
+<p>###2.5 监控系统的各种信息</p>
 <ul>
-<li>�鿴DNS<br><br><code>cat /etc/resolv.conf | sed &#39;1d&#39; | awk &#39;{print $2}&#39;</code><blockquote>
-<p><strong>����˵��</strong> <br><br>��ȡ�����ļ���ɾ����һ�У� ��ӡ�ڶ����ֶ�</p>
+<li>查看DNS<br><br><code>cat /etc/resolv.conf | sed &#39;1d&#39; | awk &#39;{print $2}&#39;</code><blockquote>
+<p><strong>解释说明</strong> <br><br>读取配置文件，删除第一行， 打印第二个字段</p>
 </blockquote>
 </li>
-<li>�鿴ϵͳ����<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loadverage=$(top -n 1 -b | grep &quot;load average:&quot; | awk &apos;&#123;print $10 $11 $12&#125;&apos;)</span><br><span class="line">echo -e &quot;\E[32m load average: \E[0m &quot;$&#123;loadverage&#125;</span><br></pre></td></tr></table></figure>
+<li>查看系统负载<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loadverage=$(top -n 1 -b | grep &quot;load average:&quot; | awk &apos;&#123;print $10 $11 $12&#125;&apos;)</span><br><span class="line">echo -e &quot;\E[32m load average: \E[0m &quot;$&#123;loadverage&#125;</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
 <blockquote>
-<p><strong>˵��</strong> <br><br>top -n 1 ֻ����һ�Σ����ᶯ̬ˢ�£� top -n 1 -b ʾ�Ƕ�̬��ӡϵͳ��Դʹ�����</p>
+<p><strong>说明</strong> <br><br>top -n 1 只迭代一次，不会动态刷新， top -n 1 -b 示非动态打印系统资源使用情况</p>
 <ul>
-<li>�鿴ϵͳ����ʱ��</li>
+<li>查看系统运行时间</li>
 </ul>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tecuptime=$(uptime | awk &apos;&#123;print $3,$4&#125;&apos; | cut -f1 -d&apos;,&apos;)</span><br><span class="line">echo -e &quot;\E[32m System Uptime Days: \E[0m &quot;$&#123;loadverage&#125;</span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p><strong>˵��</strong> <br><br>cut -f1 -d’,’:   -f1ѡ����һ�У� -d&#39;* &#39; ��ʾ��*�ָ�</p>
+<p><strong>说明</strong> <br><br>cut -f1 -d’,’:   -f1选定第一列， -d&#39;* &#39; 表示用*分割</p>
 </blockquote>
-<p>��Դ��<a href="https://superuser.com/questions/247127/what-is-and-in-linux" target="_blank" rel="noopener">https://superuser.com/questions/247127/what-is-and-in-linux</a></p>
-<p>##��¼</p>
-<p>###��¼1�� ��ͬ����ϵͳ�鿴����ϵͳ����</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">if [ &quot;$&#123;OS&#125;&quot; = &quot;SunOS&quot; ] ; then</span><br><span class="line">    OS=Solaris</span><br><span class="line">    ARCH=`uname -p`</span><br><span class="line">    OSSTR=&quot;$&#123;OS&#125; $&#123;REV&#125;($&#123;ARCH&#125; `uname -v`)&quot;</span><br><span class="line"># uname�������ڴ�ӡ��ǰϵͳ�����Ϣ���ں˰汾�š�Ӳ���ܹ����������ƺͲ���ϵͳ���͵ȣ���</span><br><span class="line">elif [ &quot;$&#123;OS&#125;&quot; = &quot;AIX&quot; ] ; then</span><br><span class="line">    OSSTR=&quot;$&#123;OS&#125; `oslevel` (`oslevel -r`)&quot;</span><br><span class="line">#AIX��IBM������һ����UNIX����ϵͳ�������������ָ����Բ鿴http://www.cnblogs.com/sbaicl/articles/2947795.html</span><br><span class="line">elif [ &quot;$&#123;OS&#125;&quot; = &quot;Linux&quot; ] ; then</span><br><span class="line">    KERNEL=`uname -r`</span><br><span class="line">    if [ -f /etc/redhat-release ] ; then</span><br><span class="line">        DIST=&apos;RedHat&apos;</span><br><span class="line">        PSUEDONAME=`cat /etc/redhat-release | sed s/.*\(// | sed s/\)//`</span><br><span class="line">        REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`</span><br><span class="line">#sedͨ������ƥ��һ�������������ʽ���ı����д���,���Բ鿴http://coolshell.cn/articles/9104.html</span><br><span class="line">    elif [ -f /etc/SuSE-release ] ; then</span><br><span class="line">        DIST=`cat /etc/SuSE-release | tr &quot;\n&quot; &apos; &apos;| sed s/VERSION.*//`</span><br><span class="line">        REV=`cat /etc/SuSE-release | tr &quot;\n&quot; &apos; &apos; | sed s/.*=\ //`</span><br><span class="line">    elif [ -f /etc/mandrake-release ] ; then</span><br><span class="line">        DIST=&apos;Mandrake&apos;</span><br><span class="line">        PSUEDONAME=`cat /etc/mandrake-release | sed s/.*\(// | sed s/\)//`</span><br><span class="line">        REV=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`</span><br><span class="line">    elif [ -f /etc/debian_version ] ; then</span><br><span class="line">        DIST=&quot;Debian `cat /etc/debian_version`&quot;</span><br><span class="line">        REV=&quot;&quot;</span><br><span class="line"></span><br><span class="line">    fi</span><br><span class="line">    if $&#123;OSSTR&#125; [ -f /etc/UnitedLinux-release ] ; then</span><br><span class="line">        DIST=&quot;$&#123;DIST&#125;[`cat /etc/UnitedLinux-release | tr &quot;\n&quot; &apos; &apos; | sed s/VERSION.*//`]&quot;</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    OSSTR=&quot;$&#123;OS&#125; $&#123;DIST&#125; $&#123;REV&#125;($&#123;PSUEDONAME&#125; $&#123;KERNEL&#125; $&#123;MACH&#125;)&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>来源：<a href="https://superuser.com/questions/247127/what-is-and-in-linux" target="_blank" rel="noopener">https://superuser.com/questions/247127/what-is-and-in-linux</a></p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="附录1：-不同操作系统查看操作系统类型"><a href="#附录1：-不同操作系统查看操作系统类型" class="headerlink" title="附录1： 不同操作系统查看操作系统类型"></a>附录1： 不同操作系统查看操作系统类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">if [ &quot;$&#123;OS&#125;&quot; = &quot;SunOS&quot; ] ; then</span><br><span class="line">    OS=Solaris</span><br><span class="line">    ARCH=`uname -p`</span><br><span class="line">    OSSTR=&quot;$&#123;OS&#125; $&#123;REV&#125;($&#123;ARCH&#125; `uname -v`)&quot;</span><br><span class="line"># uname命令用于打印当前系统相关信息（内核版本号、硬件架构、主机名称和操作系统类型等）。</span><br><span class="line">elif [ &quot;$&#123;OS&#125;&quot; = &quot;AIX&quot; ] ; then</span><br><span class="line">    OSSTR=&quot;$&#123;OS&#125; `oslevel` (`oslevel -r`)&quot;</span><br><span class="line">#AIX是IBM开发的一套类UNIX操作系统，关于它更多的指令可以查看http://www.cnblogs.com/sbaicl/articles/2947795.html</span><br><span class="line">elif [ &quot;$&#123;OS&#125;&quot; = &quot;Linux&quot; ] ; then</span><br><span class="line">    KERNEL=`uname -r`</span><br><span class="line">    if [ -f /etc/redhat-release ] ; then</span><br><span class="line">        DIST=&apos;RedHat&apos;</span><br><span class="line">        PSUEDONAME=`cat /etc/redhat-release | sed s/.*\(// | sed s/\)//`</span><br><span class="line">        REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`</span><br><span class="line">#sed通常用来匹配一个或多个正则表达式的文本进行处理,可以查看http://coolshell.cn/articles/9104.html</span><br><span class="line">    elif [ -f /etc/SuSE-release ] ; then</span><br><span class="line">        DIST=`cat /etc/SuSE-release | tr &quot;\n&quot; &apos; &apos;| sed s/VERSION.*//`</span><br><span class="line">        REV=`cat /etc/SuSE-release | tr &quot;\n&quot; &apos; &apos; | sed s/.*=\ //`</span><br><span class="line">    elif [ -f /etc/mandrake-release ] ; then</span><br><span class="line">        DIST=&apos;Mandrake&apos;</span><br><span class="line">        PSUEDONAME=`cat /etc/mandrake-release | sed s/.*\(// | sed s/\)//`</span><br><span class="line">        REV=`cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//`</span><br><span class="line">    elif [ -f /etc/debian_version ] ; then</span><br><span class="line">        DIST=&quot;Debian `cat /etc/debian_version`&quot;</span><br><span class="line">        REV=&quot;&quot;</span><br><span class="line"></span><br><span class="line">    fi</span><br><span class="line">    if $&#123;OSSTR&#125; [ -f /etc/UnitedLinux-release ] ; then</span><br><span class="line">        DIST=&quot;$&#123;DIST&#125;[`cat /etc/UnitedLinux-release | tr &quot;\n&quot; &apos; &apos; | sed s/VERSION.*//`]&quot;</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    OSSTR=&quot;$&#123;OS&#125; $&#123;DIST&#125; $&#123;REV&#125;($&#123;PSUEDONAME&#125; $&#123;KERNEL&#125; $&#123;MACH&#125;)&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
 
       
