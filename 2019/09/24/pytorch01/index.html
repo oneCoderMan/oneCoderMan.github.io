@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="PyTorch入门之线性回归torch参考链接">
+<meta name="keywords" content="PyTorch,线性回归">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorch01">
+<meta property="og:url" content="http://yoursite.com/2019/09/24/pytorch01/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="PyTorch入门之线性回归torch参考链接">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2019/09/24/pytorch01/images/t1.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/24/pytorch01/images/t2.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/24/pytorch01/images/t3.png">
+<meta property="og:updated_time" content="2019-09-24T08:02:32.071Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pytorch01">
+<meta name="twitter:description" content="PyTorch入门之线性回归torch参考链接">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/24/pytorch01/images/t1.png">
+  <link rel="canonical" href="http://yoursite.com/2019/09/24/pytorch01/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>pytorch01 | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">extoll the world's best C and Java</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/24/pytorch01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">pytorch01
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-09-24 15:57:24 / Modified: 16:02:32" itemprop="dateCreated datePublished" datetime="2019-09-24T15:57:24+08:00">2019-09-24</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/deepLearing/" itemprop="url" rel="index"><span itemprop="name">deepLearing</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="PyTorch入门之线性回归"><a href="#PyTorch入门之线性回归" class="headerlink" title="PyTorch入门之线性回归"></a>PyTorch入门之线性回归</h1><p><a href="http://pytorch.org/docs/0.3.0/tensors.html" target="_blank" rel="noopener">torch参考链接</a></p>
+<a id="more"></a>
+<h2 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h2><blockquote>
+<ul>
+<li>python 3.7</li>
+<li>Torch 1.2.0 用于计算</li>
+<li>matplotlib 用于画图</li>
+</ul>
+</blockquote>
+<p><strong>踩坑点</strong> <br><br>Torch安装需要用到pip命令，直接在pycharm中会失败 <br><br><strong>去官网获得pip的安装的命令</strong> <a href="https://pytorch.org/get-started/locally/" target="_blank" rel="noopener">Torch官网</a></p>
+<h2 id="2-PyTorch基础知识"><a href="#2-PyTorch基础知识" class="headerlink" title="2. PyTorch基础知识"></a>2. PyTorch基础知识</h2><ul>
+<li>Tensor是PyTorch的基础数据结构</li>
+<li>另一个重要的变量是Variable变量，该变量进行自动微分运算<blockquote>
+<p>反向传播算法随时进行<br><br>该变量三个重要的值： 数据（data），父节点（creator），以及梯度（grad）</p>
+</blockquote>
+</li>
+<li>使用之前需要导入两个包</li>
+</ul>
+<p>创建变量方法如下<br></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">#导入自动梯度的运算包，主要用Variable这个类</span><br><span class="line">from torch.autograd import Variable</span><br><span class="line"></span><br><span class="line">#创建一个Variable，包裹了一个2*2张量，将需要计算梯度属性置为True</span><br><span class="line">x = Variable(torch.ones(2, 2), requires_grad=True)</span><br></pre></td></tr></table></figure>
+
+<p>x变量如下所示 &emsp;&emsp;<strong>注意</strong> <code>.data</code> 可以返回一个 Variable 所包裹的 Tensor<br><br><img src="./images/t1.png" alt="x变量"></p>
+<ul>
+<li><code>torch.rand(5, 3)</code>产生[0,1]的均匀分布的随机数值，参数指定形状(一维时第二个参数可不要)</li>
+<li><code>torch.randn(100)</code>产生均值为0，方差为1，正态分布随机数值(同样可以指定形状)</li>
+<li><code>torch.linspace(start, end, steps=100, out=None) → Tensor</code>线性间隔的数值，返回一个一维张量</li>
+<li><code>y.t()</code>完成张量的转置</li>
+<li>Tensor可以与numpy.ndarray进行转换<blockquote>
+<p>ndarray转换为Tensor<br></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = np.ones([5, 3]) #建立一个5*3全是1的二维数组（矩阵）</span><br><span class="line">b = torch.from_numpy(a) #利用from_numpy将其转换为tensor</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<p>Tensor转换为ndarry<br></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c = b.numpy() #b为Tensor</span><br></pre></td></tr></table></figure>
+
+<p> <strong>区别</strong> ：Tesnsor可以在GPU上运算</p>
+<ul>
+<li>使用backward进行反向传播，计算一些导数信息，可通过<code>.grad</code>获得梯度</li>
+</ul>
+<h2 id="3-单变量线性回归"><a href="#3-单变量线性回归" class="headerlink" title="3. 单变量线性回归"></a>3. 单变量线性回归</h2><blockquote>
+<p>y = ax + b</p>
+</blockquote>
+<h3 id="3-1-产生数据"><a href="#3-1-产生数据" class="headerlink" title="3.1 产生数据"></a>3.1 产生数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># linspace可以生成0-100之间的均匀的100个数字</span><br><span class="line">x = Variable(torch.linspace(0, 100).type(torch.FloatTensor))</span><br><span class="line"></span><br><span class="line"># 随机生成100个满足标准正态分布的随机数，均值为0，方差为1.</span><br><span class="line"># 将这个数字乘以10，标准方差变为10</span><br><span class="line">rand = Variable(torch.randn(100)) * 10</span><br><span class="line"></span><br><span class="line"># 将x和rand相加，得到伪造的标签数据y。</span><br><span class="line"># 所以(x,y)应能近似地落在y=x这条直线上</span><br><span class="line">y = x + rand</span><br></pre></td></tr></table></figure>
+
+<p>使用画图工具画图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(10,8)) #设定绘制窗口大小为10*8 inch</span><br><span class="line"># 绘制数据，考虑到x和y都是Variable，</span><br><span class="line"># 需要用data获取它们包裹的Tensor，并专成numpy</span><br><span class="line">plt.plot(x.data.numpy(), y.data.numpy(), &apos;o&apos;)</span><br><span class="line">plt.xlabel(&apos;X&apos;) #添加X轴的标注</span><br><span class="line">plt.ylabel(&apos;Y&apos;) #添加Y轴的标注</span><br><span class="line">plt.show() #将图形画在下面</span><br></pre></td></tr></table></figure>
+
+<p>结果如下所示<br><br><img src="./images/t2.png" alt="pic"></p>
+<h3 id="3-2-递归下降"><a href="#3-2-递归下降" class="headerlink" title="3.2 递归下降"></a>3.2 递归下降</h3><p>step 1: 初始化参数（随机初始）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#创建a变量，并随机赋值初始化</span><br><span class="line">a = Variable(torch.rand(1), requires_grad = True)</span><br><span class="line">#创建b变量，并随机赋值初始化</span><br><span class="line">b = Variable(torch.rand(1), requires_grad = True)</span><br></pre></td></tr></table></figure>
+
+<p>step 2: 训练1000次</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">learning_rate = 0.0001 #设置学习率</span><br><span class="line">for i in range(1000):</span><br><span class="line">    ### 下面这三行代码非常重要，这部分代码，清空存储在变量a，b中的梯度信息，</span><br><span class="line">    ### 以免在backward的过程中会反复不停地累加</span><br><span class="line">    #如果a和b的梯度都不是空</span><br><span class="line">    if (a.grad is not None) and (b.grad is not None):</span><br><span class="line">        a.grad.data.zero_() #清空a的数值</span><br><span class="line">        b.grad.data.zero_() #清空b的数值</span><br><span class="line">    #计算在当前a、b条件下的模型预测数值</span><br><span class="line">    predictions = a.expand_as(x) * x + b.expand_as(x)</span><br><span class="line">    #通过与标签数据y比较，计算误差</span><br><span class="line">    loss = torch.mean((predictions - y) ** 2)</span><br><span class="line">    print(&apos;loss:&apos;, loss.data.numpy())</span><br><span class="line">    loss.backward() #对损失函数进行梯度反传</span><br><span class="line">    #利用上一步计算中得到的a的梯度信息更新a中的data数值</span><br><span class="line">    a.data.add_(- learning_rate * a.grad.data)</span><br><span class="line">    #利用上一步计算中得到的b的梯度信息更新b中的data数值</span><br><span class="line">    b.data.add_(- learning_rate * b.grad.data)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>a.expand_as(x) : 将a升级为同x一样维度的张量</p>
+</blockquote>
+<p>step 3: 将训练后的结果展示出来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">x_data = x.data.numpy() # 获得x包裹的数据</span><br><span class="line">plt.figure(figsize = (10, 7)) #设定绘图窗口大小</span><br><span class="line">xplot, = plt.plot(x_data, y.data.numpy(), &apos;o&apos;) # 绘制原始数据</span><br><span class="line">yplot, = plt.plot(x_data, a.data.numpy() * x_data + b.data.numpy())  #绘制拟合数据</span><br><span class="line">plt.xlabel(&apos;X&apos;) #更改坐标轴标注</span><br><span class="line">plt.ylabel(&apos;Y&apos;) #更改坐标轴标注</span><br><span class="line">str1 = str(a.data.numpy()[0]) + &apos;x +&apos; + str(b.data.numpy()[0]) #图例信息</span><br><span class="line">plt.legend([xplot, yplot],[&apos;Data&apos;, str1]) #绘制图例</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>以下是拟合结果<br><br><img src="./images/t3.png" alt="pic"></p>
+<h2 id="3-3-测试"><a href="#3-3-测试" class="headerlink" title="3.3 测试"></a>3.3 测试</h2><pre><code>x_test = Variable(torch.FloatTensor([1, 2, 10, 100, 1000])) #随便选择一些点1，2，……，1000
+predictions = a.expand_as(x_test) * x_test + b.expand_as(x_test) #计算模型的预测结果
+print(predictions) #输出</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p><a href="https://github.com/oneCoderMan/myCodes/blob/master/PyTorch/linearRegression.py" target="_blank" rel="noopener">完整代码</a></p>
+<p>source: <a href="https://www.shiyanlou.com/courses/1073/learning/?id=5821" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/1073/learning/?id=5821</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/PyTorch/" rel="tag"># PyTorch</a>
+            
+              <a href="/tags/线性回归/" rel="tag"># 线性回归</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/11/shell-auto/" rel="next" title="shell-auto">
+                  <i class="fa fa-chevron-left"></i> shell-auto
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PyTorch入门之线性回归"><span class="nav-number">1.</span> <span class="nav-text">PyTorch入门之线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1. 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-PyTorch基础知识"><span class="nav-number">1.2.</span> <span class="nav-text">2. PyTorch基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-单变量线性回归"><span class="nav-number">1.3.</span> <span class="nav-text">3. 单变量线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-产生数据"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 产生数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-递归下降"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 递归下降</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-测试"><span class="nav-number">1.4.</span> <span class="nav-text">3.3 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">1.5.</span> <span class="nav-text">附录</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
