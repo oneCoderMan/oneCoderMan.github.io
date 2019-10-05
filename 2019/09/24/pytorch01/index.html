@@ -63,14 +63,14 @@
 <meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
 <meta property="og:description" content="PyTorch入门之线性回归torch参考链接">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/images/t1.png">
-<meta property="og:image" content="http://yoursite.com/images/t2.png">
-<meta property="og:image" content="http://yoursite.com/images/t3.png">
-<meta property="og:updated_time" content="2019-09-24T08:10:42.335Z">
+<meta property="og:image" content="http://yoursite.com/images/pytorch01/t1.png">
+<meta property="og:image" content="http://yoursite.com/images/pytorch01/t2.png">
+<meta property="og:image" content="http://yoursite.com/images/pytorch01/t3.png">
+<meta property="og:updated_time" content="2019-10-05T11:56:12.853Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="pytorch01">
 <meta name="twitter:description" content="PyTorch入门之线性回归torch参考链接">
-<meta name="twitter:image" content="http://yoursite.com/images/t1.png">
+<meta name="twitter:image" content="http://yoursite.com/images/pytorch01/t1.png">
   <link rel="canonical" href="http://yoursite.com/2019/09/24/pytorch01/">
 
 
@@ -263,11 +263,19 @@
                 
               
 
-              <time title="Created: 2019-09-24 15:57:24 / Modified: 16:10:42" itemprop="dateCreated datePublished" datetime="2019-09-24T15:57:24+08:00">2019-09-24</time>
+              <time title="Created: 2019-09-24 15:57:24" itemprop="dateCreated datePublished" datetime="2019-09-24T15:57:24+08:00">2019-09-24</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-05 19:56:12" itemprop="dateModified" datetime="2019-10-05T19:56:12+08:00">2019-10-05</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -316,7 +324,7 @@
 <p>创建变量方法如下<br></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">#导入自动梯度的运算包，主要用Variable这个类</span><br><span class="line">from torch.autograd import Variable</span><br><span class="line"></span><br><span class="line">#创建一个Variable，包裹了一个2*2张量，将需要计算梯度属性置为True</span><br><span class="line">x = Variable(torch.ones(2, 2), requires_grad=True)</span><br></pre></td></tr></table></figure>
 
-<p>x变量如下所示 &emsp;&emsp;<strong>注意</strong> <code>.data</code> 可以返回一个 Variable 所包裹的 Tensor<br><br><img src="/images/t1.png" alt="x变量"></p>
+<p>x变量如下所示 &emsp;&emsp;<strong>注意</strong> <code>.data</code> 可以返回一个 Variable 所包裹的 Tensor<br><br><img src="/images/pytorch01/t1.png" alt="x变量"></p>
 <ul>
 <li><code>torch.rand(5, 3)</code>产生[0,1]的均匀分布的随机数值，参数指定形状(一维时第二个参数可不要)</li>
 <li><code>torch.randn(100)</code>产生均值为0，方差为1，正态分布随机数值(同样可以指定形状)</li>
@@ -343,7 +351,7 @@
 <p>使用画图工具画图</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(10,8)) #设定绘制窗口大小为10*8 inch</span><br><span class="line"># 绘制数据，考虑到x和y都是Variable，</span><br><span class="line"># 需要用data获取它们包裹的Tensor，并专成numpy</span><br><span class="line">plt.plot(x.data.numpy(), y.data.numpy(), &apos;o&apos;)</span><br><span class="line">plt.xlabel(&apos;X&apos;) #添加X轴的标注</span><br><span class="line">plt.ylabel(&apos;Y&apos;) #添加Y轴的标注</span><br><span class="line">plt.show() #将图形画在下面</span><br></pre></td></tr></table></figure>
 
-<p>结果如下所示<br><br><img src="/images/t2.png" alt="pic"></p>
+<p>结果如下所示<br><br><img src="/images/pytorch01/t2.png" alt="pic"></p>
 <h3 id="3-2-递归下降"><a href="#3-2-递归下降" class="headerlink" title="3.2 递归下降"></a>3.2 递归下降</h3><p>step 1: 初始化参数（随机初始）</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#创建a变量，并随机赋值初始化</span><br><span class="line">a = Variable(torch.rand(1), requires_grad = True)</span><br><span class="line">#创建b变量，并随机赋值初始化</span><br><span class="line">b = Variable(torch.rand(1), requires_grad = True)</span><br></pre></td></tr></table></figure>
 
@@ -356,7 +364,7 @@
 <p>step 3: 将训练后的结果展示出来</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">x_data = x.data.numpy() # 获得x包裹的数据</span><br><span class="line">plt.figure(figsize = (10, 7)) #设定绘图窗口大小</span><br><span class="line">xplot, = plt.plot(x_data, y.data.numpy(), &apos;o&apos;) # 绘制原始数据</span><br><span class="line">yplot, = plt.plot(x_data, a.data.numpy() * x_data + b.data.numpy())  #绘制拟合数据</span><br><span class="line">plt.xlabel(&apos;X&apos;) #更改坐标轴标注</span><br><span class="line">plt.ylabel(&apos;Y&apos;) #更改坐标轴标注</span><br><span class="line">str1 = str(a.data.numpy()[0]) + &apos;x +&apos; + str(b.data.numpy()[0]) #图例信息</span><br><span class="line">plt.legend([xplot, yplot],[&apos;Data&apos;, str1]) #绘制图例</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
 
-<p>以下是拟合结果<br><br><img src="/images/t3.png" alt="pic"></p>
+<p>以下是拟合结果<br><br><img src="/images/pytorch01/t3.png" alt="pic"></p>
 <h2 id="3-3-测试"><a href="#3-3-测试" class="headerlink" title="3.3 测试"></a>3.3 测试</h2><pre><code>x_test = Variable(torch.FloatTensor([1, 2, 10, 100, 1000])) #随便选择一些点1，2，……，1000
 predictions = a.expand_as(x_test) * x_test + b.expand_as(x_test) #计算模型的预测结果
 print(predictions) #输出</code></pre><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p><a href="https://github.com/oneCoderMan/myCodes/blob/master/PyTorch/linearRegression.py" target="_blank" rel="noopener">完整代码</a></p>
@@ -397,6 +405,10 @@ print(predictions) #输出</code></pre><h2 id="附录"><a href="#附录" class="
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/05/ubuntu1604vnc/" rel="prev" title="ubuntu1604vnc">
+                  ubuntu1604vnc <i class="fa fa-chevron-right"></i>
+                </a>
               
             </div>
           </div>
@@ -463,7 +475,7 @@ print(predictions) #输出</code></pre><h2 id="附录"><a href="#附录" class="
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -489,7 +501,7 @@ print(predictions) #输出</code></pre><h2 id="附录"><a href="#附录" class="
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
