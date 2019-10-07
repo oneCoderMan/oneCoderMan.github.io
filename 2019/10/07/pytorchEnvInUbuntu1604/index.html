@@ -55,14 +55,19 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="CoderSim&#39;s Growth Diary">
-<meta property="og:url" content="http://yoursite.com/categories/tool/index.html">
+  <meta name="description" content="ubuntu16.04中搭建PyTorch环境官网链接">
+<meta name="keywords" content="PyTorch,linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorchEnvInUbuntu1604">
+<meta property="og:url" content="http://yoursite.com/2019/10/07/pytorchEnvInUbuntu1604/index.html">
 <meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="ubuntu16.04中搭建PyTorch环境官网链接">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-10-07T03:13:08.472Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CoderSim&#39;s Growth Diary">
-  <link rel="canonical" href="http://yoursite.com/categories/tool/">
+<meta name="twitter:title" content="pytorchEnvInUbuntu1604">
+<meta name="twitter:description" content="ubuntu16.04中搭建PyTorch环境官网链接">
+  <link rel="canonical" href="http://yoursite.com/2019/10/07/pytorchEnvInUbuntu1604/">
 
 
 <script id="page-configurations">
@@ -70,13 +75,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Category: tool | CoderSim's Growth Diary</title>
+  <title>pytorchEnvInUbuntu1604 | CoderSim's Growth Diary</title>
   
 
 
@@ -217,110 +222,154 @@
         <div class="content-wrap">
             
 
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-  
-
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-  <div class="post-block category">
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">tool<small>Category</small>
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/07/pytorchEnvInUbuntu1604/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">pytorchEnvInUbuntu1604
+
+          
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-10-07 10:53:23 / Modified: 11:13:08" itemprop="dateCreated datePublished" datetime="2019-10-07T10:53:23+08:00">2019-10-07</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/tool/" itemprop="url" rel="index"><span itemprop="name">tool</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+        <h1 id="ubuntu16-04中搭建PyTorch环境"><a href="#ubuntu16-04中搭建PyTorch环境" class="headerlink" title="ubuntu16.04中搭建PyTorch环境"></a>ubuntu16.04中搭建PyTorch环境</h1><p><a href="https://pytorch.org/get-started/locally/" target="_blank" rel="noopener">官网链接</a></p>
+<a id="more"></a>
+<h2 id="1-选择的环境"><a href="#1-选择的环境" class="headerlink" title="1.选择的环境"></a>1.选择的环境</h2><ul>
+<li><p>Anaconda<br>原因：python搭建torch，numpy等模块太费劲，需要下载源代码编译安装等。直接选择anaconda比较简单。不需要处理复杂的包依赖关系</p>
+<h2 id="2-安装过程"><a href="#2-安装过程" class="headerlink" title="2.安装过程"></a>2.安装过程</h2></li>
+<li><p>step1: 安装Anaconda</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># The version of Anaconda may be different depending on when you are installing`</span><br><span class="line">curl -O https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh</span><br><span class="line">sh Anaconda3-5.2.0-Linux-x86_64.sh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: 使配置文件生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
 
-  
-  
+</li>
+</ul>
+<blockquote>
+<p>还可以通过重启来使之生效reboot</p>
+<ul>
+<li>step3: 安装pyTorch</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install pytorch torchvision cpuonly -c pytorch</span><br></pre></td></tr></table></figure>
 
-  
+<h2 id="3-安装过程的一些麻烦事"><a href="#3-安装过程的一些麻烦事" class="headerlink" title="3.安装过程的一些麻烦事"></a>3.安装过程的一些麻烦事</h2><p>Anaconda安装后默认使用它带的python环境，为了不影响其他python程序的运行，如（VNCServer），会出现<strong>终端调不出来</strong>的情况。<br>需要重新配置环境变量。<br><br>找到~/.bashrc文件中的如下语句（路径可能随系统不同而变化）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=&quot;/root/anaconda2/bin:$PATH&quot;</span><br></pre></td></tr></table></figure>
+
+<p>修改为下面的语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=&quot;$PATH:/root/anaconda2/bin&quot;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这个时候在终端运行<code>python --version</code>是系统配置的python环境了，需要anaconda的python环境，只需要找到anaconda安装目录下的bin文件即可。</p>
+</blockquote>
+
+    </div>
+
     
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
-    </div>
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
+    
+    
         
-          <a class="post-title-link" href="/2019/10/07/pytorchEnvInUbuntu1604/" itemprop="url">
-            <span itemprop="name">pytorchEnvInUbuntu1604</span>
-          </a>
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/PyTorch/" rel="tag"># PyTorch</a>
+            
+              <a href="/tags/linux/" rel="tag"># linux</a>
+            
+          </div>
         
-      </h2>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-10-07T10:53:23+08:00"
-              content="2019-10-07">
-          10-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-  
-  
-
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
         
-          <a class="post-title-link" href="/2019/10/05/ubuntu1604vnc/" itemprop="url">
-            <span itemprop="name">ubuntu1604vnc</span>
-          </a>
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/05/numpyPractice/" rel="next" title="numpyPractice">
+                  <i class="fa fa-chevron-left"></i> numpyPractice
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
         
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-10-05T19:40:54+08:00"
-              content="2019-10-05">
-          10-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    </div>
+      </footer>
+    
   </div>
   
   
   
+  </article>
 
-  
-
+  </div>
 
 
           </div>
@@ -339,6 +388,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
@@ -351,6 +405,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ubuntu16-04中搭建PyTorch环境"><span class="nav-number">1.</span> <span class="nav-text">ubuntu16.04中搭建PyTorch环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-选择的环境"><span class="nav-number">1.1.</span> <span class="nav-text">1.选择的环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-安装过程"><span class="nav-number">1.2.</span> <span class="nav-text">2.安装过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-安装过程的一些麻烦事"><span class="nav-number">1.3.</span> <span class="nav-text">3.安装过程的一些麻烦事</span></a></li></ol></li></ol></div>
+        
       </div>
       <!--/noindex-->
 
