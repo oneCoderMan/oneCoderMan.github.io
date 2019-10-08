@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="负载均衡之lvs官方文档">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="balanceLvs">
+<meta property="og:url" content="http://yoursite.com/2019/10/08/balanceLvs/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="负载均衡之lvs官方文档">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/balanceLvs/route.png">
+<meta property="og:image" content="http://yoursite.com/images/balanceLvs/netstat.png">
+<meta property="og:image" content="http://yoursite.com/images/balanceLvs/topuGraph1.png">
+<meta property="og:image" content="http://yoursite.com/images/balanceLvs/drModel1.png">
+<meta property="og:image" content="http://yoursite.com/images/balanceLvs/nodes.png">
+<meta property="og:updated_time" content="2019-10-08T13:40:13.634Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="balanceLvs">
+<meta name="twitter:description" content="负载均衡之lvs官方文档">
+<meta name="twitter:image" content="http://yoursite.com/images/balanceLvs/route.png">
+  <link rel="canonical" href="http://yoursite.com/2019/10/08/balanceLvs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>balanceLvs | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">extoll the world's best C and Java</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/08/balanceLvs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">balanceLvs
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-10-08 08:52:44 / Modified: 21:40:13" itemprop="dateCreated datePublished" datetime="2019-10-08T08:52:44+08:00">2019-10-08</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/tool/" itemprop="url" rel="index"><span itemprop="name">tool</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="负载均衡之lvs"><a href="#负载均衡之lvs" class="headerlink" title="负载均衡之lvs"></a>负载均衡之lvs</h1><p><a href="http://www.linuxvirtualserver.org/zh/index.html" target="_blank" rel="noopener">官方文档</a></p>
+<a id="more"></a>
+<h2 id="1-基础知识"><a href="#1-基础知识" class="headerlink" title="1.基础知识"></a>1.基础知识</h2><h3 id="1-1-linux命令"><a href="#1-1-linux命令" class="headerlink" title="1.1 linux命令"></a>1.1 linux命令</h3><ul>
+<li><p><code>route</code> 查看本机的路由表<br><img src="/images/balanceLvs/route.png" alt="route"></p>
+<blockquote>
+<p>-n 不带地址转换，IP显示<code>route -n</code></p>
+</blockquote>
+</li>
+<li><p><code>netstat -natp</code> 查看本机的TCP链接程序<br><img src="/images/balanceLvs/netstat.png" alt="netstat"></p>
+<blockquote>
+<p>-n 不进行转换，全以IP地址显示<br>-a 是所有的链接<br>-t tcp链接</p>
+</blockquote>
+</li>
+<li><p><code>arp -a</code>查看MAC地址表</p>
+<h3 id="1-2-一些名称"><a href="#1-2-一些名称" class="headerlink" title="1.2 一些名称"></a>1.2 一些名称</h3><table>
+<thead>
+<tr>
+<th align="center">全称</th>
+<th align="center">缩写</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">虚拟IP地址Virtual IP address</td>
+<td align="center">VIP</td>
+<td align="center">提供服务的IP地址,如<a href="http://www.baidu.com通过DNS得到的地址" target="_blank" rel="noopener">www.baidu.com通过DNS得到的地址</a></td>
+</tr>
+<tr>
+<td align="center">转发的网络地址Director IP address</td>
+<td align="center">DIP</td>
+<td align="center">负载均衡器上面的IP</td>
+</tr>
+<tr>
+<td align="center">真实IP地址Real IP address</td>
+<td align="center">RIP</td>
+<td align="center">后端集群主机</td>
+</tr>
+<tr>
+<td align="center">客户端地址IP Client IP address</td>
+<td align="center">CIP</td>
+<td align="center">源IP地址</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>lvs负载均衡的拓扑结构<br><img src="/images/balanceLvs/topuGraph1.png" alt="tupu"></p>
+<blockquote>
+<p>说明</p>
+<ol>
+<li>负载均衡器工作在网络层，只转发数据包，不进行握手连接</li>
+<li>要保证同一个客户端三次握手，四次分手不可分割，即转发到同一个服务器镜像</li>
+<li>后端的真实服务器都是镜像，一模一样的。</li>
+</ol>
+</blockquote>
+<h3 id="1-3-模型概述"><a href="#1-3-模型概述" class="headerlink" title="1.3 模型概述"></a>1.3 模型概述</h3><h4 id="1-3-1-D-NAT与S-NAT"><a href="#1-3-1-D-NAT与S-NAT" class="headerlink" title="1.3.1 D_NAT与S_NAT"></a>1.3.1 D_NAT与S_NAT</h4><p>客户端请求的数据包源地址和目的地址<code>CIP-VIP</code><br>当其到达负载均衡器入口时，如果不对该数据包做处理就转发，那么RealServer看到的目的IP地址就是VIP，不属于RealServer的IP,不会做出回应。<br><strong>因此在负载均衡器中需要对数据包中的目的地址进行转换</strong><br>修改目的地址(<strong>D_NAT技术</strong>)，数据包变为<code>CIP-RIP</code>,这个时候RealServer可处理该数据包</p>
+<blockquote>
+<p><strong>问题</strong> 此时RealServer建立的Sockt连接是：<code>RIP:Port---CIP:Port</code>,所以响应包的源地址和目的地址是：<code>RIP-CIP</code>。当这个数据包达到客户端的时候，与客户端发的请求包中的地址不对应了？</p>
+</blockquote>
+<p>因此，负载均衡器还需要负责将响应包的源地址修改为VIP(<strong>S_NAT技术</strong>)。<br>为了实现这个，RealServer的默认网关(default/0.0.0.0)需要指向LVS负载均衡器。</p>
+<blockquote>
+<p>缺点：所有数据(上行，下行)都要经过LVS，I/O瓶颈在这里会产生。<br>可行方案： 每一个RealServer不要将响应数据发给LVS,直接将响应包发给客户端。</p>
+</blockquote>
+<h4 id="1-3-2-DR模型"><a href="#1-3-2-DR模型" class="headerlink" title="1.3.2 DR模型"></a>1.3.2 DR模型</h4><blockquote>
+<p>让RealServer拥有一个VIP这样的IP地址，但是不暴露在公网，自己有一个隐藏的VIP地址</p>
+</blockquote>
+<p>客户端发送<code>CIP-VIP</code>数据包，经过LVS到达RealServer,因为RealServre有一个隐藏的VIP地址，所以会接收该数据包，然后将响应包<code>VIP-CIP</code>直接发送给客户端，不用通过lvs负载均衡器。</p>
+<ul>
+<li>问题： 客户端的数据包是<code>CIP-VIP</code>，RealServer暴露的IP是RIP，lvs如何将客户端数据包发给RealServer。<blockquote>
+<p>解答： 通过arp欺骗。lvs与RealServer必须在同一个局域网内</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>缺点</strong> :要求lvs与RealServer在同一个局域网内，对分布在地理位置不同的数据中心无法做负载均衡。</p>
+<h4 id="1-3-3-Tunnel与VPN模型"><a href="#1-3-3-Tunnel与VPN模型" class="headerlink" title="1.3.3 Tunnel与VPN模型"></a>1.3.3 Tunnel与VPN模型</h4><p>客户端发出数据包<code>CIP-VIP</code>。数据包到达lvs的时候，建立一个新的请求，发送数据包<code>DIP-RIP</code>,这个数据包会将客户端的所有数据都封装起来。然后通过公网到RealServer。<br>RealServer会拆包，得到里面的<code>CIP-VIP</code>请求。自己有隐藏的VIP地址。</p>
+<h3 id="1-4-linux隐藏IP的方法"><a href="#1-4-linux隐藏IP的方法" class="headerlink" title="1.4 linux隐藏IP的方法"></a>1.4 linux隐藏IP的方法</h3><p>对内可见，对外隐藏。<br><strong>需要隐藏的IP配置到外部无法访问的网卡上</strong>就是lo网卡，环回接口<br>注意：一个网卡可以添加多个IP地址，所以环回地址127.0.0.1不受影响。</p>
+<blockquote>
+<p>基础知识：在一个局域网内，如果主机A的arp表中无主机B的mac地址且要发送数据包到主机B，就会进行arp请求。这个时候主机B会发送响应请求，告诉主机A它的IP和对应的MAC地址。</p>
+</blockquote>
+<p>配置文件：<code>/proc/sys/net/ipv4/conf/</code></p>
+<ul>
+<li>对于<code>arp_ignore</code>控制系统在收到外部的arp请求时，是否要返回arp响应,<strong>配置为1</strong><blockquote>
+<p>arp_ignore为0：回应任何网络接口（网卡）上对任何本机IP地址的arp查询请求<br>为1：只回答目标IP地址是本机上来访网络接口（网卡）IP地址的ARP查询请求 。比如eth0=192.168.0.1/24,eth1=10.1.1.1/24,那么即使eth0收到来自10.1.1.2这样地址发起的对192.168.0.1的查询会回应，而对10.1.1.1 的arp查询不会回应。</p>
+</blockquote>
+</li>
+<li><code>arp_announce</code>定义将自己地址向外通告时的通告级别，<strong>配置为2</strong><blockquote>
+<p>0：将本地任何接口上的任何地址向外通告；<br>1：试图仅向目标网络通告与其网络匹配的地址；<br>2：仅向与本地接口上地址匹配的网络进行通告</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="2-DR实验"><a href="#2-DR实验" class="headerlink" title="2. DR实验"></a>2. DR实验</h2><h3 id="2-1-lvs简介"><a href="#2-1-lvs简介" class="headerlink" title="2.1 lvs简介"></a>2.1 lvs简介</h3><p>lvs： Linux Virtual Server，linux虚拟服务器。<br>核心程序：ipvs（嵌入到了Linux内核中）<br>管理程序：ipvsadm<br>调度算法：</p>
+<table>
+<tr><td colspan="2">调度方式</td><td>英文</td><td>描述</td></tr>
+<tr><td rowspan="4">静态调度</td><td>轮询调度</td><td>Round Robin 简称'RR'</td><td>依次循环的方式将请求调度到不同的服务器上</td></tr>
+<tr><td>加权轮询调度</td><td>Weight Round Robin 简称'WRR'</td><td>权值越高的服务器，处理的请求越多</td></tr>
+<tr><td>目标地址散列调度</td><td>Destination Hashing 简称'DH'</td><td>算法先根据请求的目标IP地址，作为散列键（Hash Key）从静态分配的散列表找出对应的服务器，若该服务器是可用的且并未超载，将请求发送到该服务器，否则返回空</td></tr>
+<tr><td>源地址散列调度</td><td>Source Hashing  简称'SH'</td><td>先根据请求的源IP地址，作为散列键（Hash Key）从静态分配的散列表找出对应的服务器，若该服务器是可用的且并未超载，将请求发送到该服务器，否则返回空。</td></tr>
+<tr><td rowspan="6">动态调度</td><td>最小连接调度</td><td>Least Connections 简称'LC'</td><td>新的连接请求分配到当前连接数最小的服务器</td></tr>
+<tr><td>加权最小连接调度</td><td>Weight Least Connections 简称'WLC'</td><td>加权最小连接调度在调度新连接时尽可能使服务器的已建立连接数和其权值成比例。调度器可以自动问询真实服务器的负载情况，并动态地调整其权值</td></tr>
+<tr><td>最短的期望的延迟</td><td>Shortest Expected Delay 简称'SED'</td><td>请求交给得出运算结果最小的服务器</td></tr>
+<tr><td>最少队列调度</td><td>Never Queue 简称'NQ'</td><td>无需队列。如果有realserver的连接数等于0就直接分配过去，不需要在进行SED运算。</td></tr>
+<tr><td>带复制的基于局部性的最少连接</td><td>Locality-Based Least Connections with Replication  简称'LBLCR'</td><td>按'最小连接'原则从该服务器组中选出一一台服务器，若服务器没有超载，将请求发送到该服务器；若服务器超载，则按'最小连接'原则从整个集群中选出一台服务器，将该服务器加入到这个服务器组中，将请求发送到该服务器。同时，当该服务器组有一段时间没有被修改，将最忙的服务器从服务器组中删除，以降低复制的程度。</td></tr>
+<tr><td>基于局部的最少连接</td><td>Locality-Based Least Connections 简称'LBLC'</td><td>LBLC调度算法先根据请求的目标IP地址找出该目标IP地址最近使用的服务器，若该服务器是可用的且没有超载，将请求发送到该服务器；若服务器不存在，或者该服务器超载且有服务器处于一半的工作负载，则使用'最少连接'的原则选出一个可用的服务器，将请求发送到服务器。</td></tr>
+</table>
+
+<h3 id="2-2-ipvsadm的使用"><a href="#2-2-ipvsadm的使用" class="headerlink" title="2.2 ipvsadm的使用"></a>2.2 ipvsadm的使用</h3><p>配置主要分为两个阶段，第一配置哪些数据包需要进行转发，第二配置数据包转发到哪里去。</p>
+<ul>
+<li><p>安装管理模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">centOS: yum install ipvsadm -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置哪些数据包需要lvs转发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">格式： ipvsadm -A -t|u|f ServerAddress [-s schduler]</span><br><span class="line">-t: tcp协议的集群 地址为IP:PORT</span><br><span class="line">-u: udp协议的集群 地址为IP:PORT</span><br><span class="line">-f: 防火墙标记 地址为MarkNumber</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>eg：<code>ipvsadm -A -t 192.168.10.10:80 -s rr</code> 目的地址为192.168.10.10:80的tcp协议的数据包需要进行lvs，使用rr调度算法进行负载均衡。</p>
+<ul>
+<li>配置数据包转发到RealServer<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">格式：ipvsadm -a -t|u|f service-address -r server-address [-g|i|m] [-w weight]</span><br><span class="line">前部分是配置的哪些数据包需要lvs转发，即配置的集群服务</span><br><span class="line">-r 该参数后面是RealServer的地址，可以是IP:PORT</span><br><span class="line">-g DR模式</span><br><span class="line">-i Tunnel模式</span><br><span class="line">-m NAT模式</span><br><span class="line">-w 该参数和值定义服务器权重</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>eg: <code>ipvsadm -a -t 192.168.10.10:80 -r 192.168.10.8 –g</code></p>
+<h3 id="2-3-实验拓扑"><a href="#2-3-实验拓扑" class="headerlink" title="2.3 实验拓扑"></a>2.3 实验拓扑</h3><p><img src="/images/balanceLvs/drModel1.png" alt="topu"><br>蓝色的路径是请求数据包的路线，绿色的是响应数据包的路线。忽略了网关。</p>
+<h3 id="2-4-实验过程"><a href="#2-4-实验过程" class="headerlink" title="2.4 实验过程"></a>2.4 实验过程</h3><ul>
+<li>step1: 三台虚拟机，eth0在同一个网络192.168.10.0</li>
+<li>step2: 配置node1(lvs)的VIP<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0:0 192.168.10.10/24</span><br><span class="line">echo “1” &gt; /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>注意：当计算机收到一个目的地址不属于自己IP的数据包时候默认会丢弃，因此lvs这个需要设置ip_forward的值为1，充当路由器的功能，将数据包转发出去。</p>
+<ul>
+<li>step3: 修改RealServer的arp响应和通告级别</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo “1” &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line">echo 1  &gt; /proc/sys/net/ipv4/conf/eth0/arp_ignore</span><br><span class="line">echo 2  &gt; /proc/sys/net/ipv4/conf/eth0/arp_announce</span><br><span class="line">echo 1  &gt; /proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">echo 2  &gt; /proc/sys/net/ipv4/conf/all/arp_announce</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>step4: 配置每一台RealSerer的VIP(隐藏IP)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig lo:8 192.168.10.10 netmask 255.255.255.255</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>注意: 响应和通告级别一定要先配置，不然VIP后被通告出去。</p>
+</blockquote>
+<p>至此，三个节点的信息如下<br><img src="/images/balanceLvs/nodes.png" alt="nods"></p>
+<ul>
+<li>step5: 启动RrealServer上的httpd<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install httpd -y</span><br><span class="line">#启动命令</span><br><span class="line">service httpd start</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>静态网页的路径<code>/var/www/html</code></p>
+<p>#参考文献<br>[1] <a href="http://www.linuxvirtualserver.org/zh/index.html" target="_blank" rel="noopener">http://www.linuxvirtualserver.org/zh/index.html</a><br>[2] <a href="https://www.cnblogs.com/gaoxu387/p/7941381.html" target="_blank" rel="noopener">https://www.cnblogs.com/gaoxu387/p/7941381.html</a><br>[3] <a href="https://blog.csdn.net/weixin_40470303/article/details/80541639" target="_blank" rel="noopener">https://blog.csdn.net/weixin_40470303/article/details/80541639</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/07/configurationARGS/" rel="next" title="configurationARGS">
+                  <i class="fa fa-chevron-left"></i> configurationARGS
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#负载均衡之lvs"><span class="nav-number">1.</span> <span class="nav-text">负载均衡之lvs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基础知识"><span class="nav-number">1.1.</span> <span class="nav-text">1.基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-linux命令"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 linux命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-一些名称"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 一些名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-模型概述"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 模型概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-D-NAT与S-NAT"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">1.3.1 D_NAT与S_NAT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-DR模型"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">1.3.2 DR模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-3-Tunnel与VPN模型"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">1.3.3 Tunnel与VPN模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-linux隐藏IP的方法"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 linux隐藏IP的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-DR实验"><span class="nav-number">1.2.</span> <span class="nav-text">2. DR实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-lvs简介"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 lvs简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-ipvsadm的使用"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 ipvsadm的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-实验拓扑"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 实验拓扑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-实验过程"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 实验过程</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
