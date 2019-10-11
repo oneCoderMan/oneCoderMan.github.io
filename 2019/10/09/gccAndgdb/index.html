@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="linux下的c编程工具的使用">
+<meta name="keywords" content="linux,gcc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gccAndgdb">
+<meta property="og:url" content="http://yoursite.com/2019/10/09/gccAndgdb/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="linux下的c编程工具的使用">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/objdump.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/gdbInfo.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/noipPoc.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/findIPString.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/bAddress.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/againRun1.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/callMsg.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/xsStr.png">
+<meta property="og:image" content="http://yoursite.com/images/gccAndgdb/findError.png">
+<meta property="og:updated_time" content="2019-10-11T09:09:39.073Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gccAndgdb">
+<meta name="twitter:description" content="linux下的c编程工具的使用">
+<meta name="twitter:image" content="http://yoursite.com/images/gccAndgdb/objdump.png">
+  <link rel="canonical" href="http://yoursite.com/2019/10/09/gccAndgdb/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>gccAndgdb | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">extoll the world's best C and Java</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/09/gccAndgdb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">gccAndgdb
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-10-09 14:12:03" itemprop="dateCreated datePublished" datetime="2019-10-09T14:12:03+08:00">2019-10-09</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-11 17:09:39" itemprop="dateModified" datetime="2019-10-11T17:09:39+08:00">2019-10-11</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/tool/" itemprop="url" rel="index"><span itemprop="name">tool</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="linux下的c编程工具的使用"><a href="#linux下的c编程工具的使用" class="headerlink" title="linux下的c编程工具的使用"></a>linux下的c编程工具的使用</h1><a id="more"></a>
+<p>test.c的代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    printf(&quot;Hello, World\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-gcc工具的使用"><a href="#1-gcc工具的使用" class="headerlink" title="1.gcc工具的使用"></a>1.gcc工具的使用</h2><ul>
+<li>不带任何参数<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc test.c</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>会在同一个目录下面生成一个<code>a.out</code>文件，输入命令<code>./a.out</code>就可直接运行。</p>
+<blockquote>
+<p>直接经历了四个步骤：预处理Preprocessing，编译Compilation，汇编Assembly，链接Linking。</p>
+<ul>
+<li>指定生成的文件名</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc test.c -o test</span><br></pre></td></tr></table></figure>
+
+<p>不会使用默认的a.out。</p>
+<ul>
+<li><p>gcc保留中间文件<br>gcc编译过程中，会删除中间的文件，可通过下面命令参数来保留各个阶段的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -save_temps test.c</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>gcc生成调试信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -g test.c -o test</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="2-gcc的各个阶段分析"><a href="#2-gcc的各个阶段分析" class="headerlink" title="2.gcc的各个阶段分析"></a>2.gcc的各个阶段分析</h2><h3 id="2-1-预处理"><a href="#2-1-预处理" class="headerlink" title="2.1 预处理"></a>2.1 预处理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -E test.c -o test.i</span><br></pre></td></tr></table></figure>
+
+<p>功能：主要处理源代码中以 “#” 开始的预编译指令<br>生成文件：<code>test.i</code><br>指定参数: <code>-E</code></p>
+<h3 id="2-2-编译"><a href="#2-2-编译" class="headerlink" title="2.2 编译"></a>2.2 编译</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc -S test.c -o test.s</span><br><span class="line">#或者</span><br><span class="line">gcc -S test.i -o test.s</span><br></pre></td></tr></table></figure>
+
+<p>输入的文件可以是源文件，也可以是预处理后的文件<br>功能：对预处理完的文件进行一系列<strong>词法分析、语法分析、语义分析</strong>及优化后生成相应的<strong>汇编代码</strong>文件<br>生成文件：<code>test.s</code><br>指定参数：<code>-S</code></p>
+<h3 id="2-3-汇编"><a href="#2-3-汇编" class="headerlink" title="2.3 汇编"></a>2.3 汇编</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc -c test.c -o test.o</span><br><span class="line">#或者</span><br><span class="line">gcc -c test.s -o test.o</span><br></pre></td></tr></table></figure>
+
+<p>输入的文件可以是源文件，也可以是编译后的文件<br>功能：汇编器将汇编代码转变成机器可以执行的指令<br>生成文件：<code>test.o</code>(<strong>不能直接执行</strong>)<br>指定参数：<code>-c</code></p>
+<blockquote>
+<p>objdump：一种可阅读的格式让你更多地了解二进制文件（反汇编）</p>
+</blockquote>
+<p><code>objdump -sd hello.o</code>可查看test.o的信息<br><img src="/images/gccAndgdb/objdump.png" alt="objdump"></p>
+<h3 id="2-4-链接"><a href="#2-4-链接" class="headerlink" title="2.4 链接"></a>2.4 链接</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc test.o -o test</span><br></pre></td></tr></table></figure>
+
+<p>输入文件可以是源文件也可以是汇编后的文件<br>指定参数：无<br>生成文件：<code>test</code>(<strong>可以执行</strong>)<br>目标文件需要链接一大堆文件才能得到最终的可执行文件<br>通过以下命令可查看反汇编代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -j .text text</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-gdb的使用"><a href="#3-gdb的使用" class="headerlink" title="3.gdb的使用"></a>3.gdb的使用</h2><p>测试程序如下<code>test.c</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int main()&#123;</span><br><span class="line">   int a = 1;</span><br><span class="line">   int b = a;</span><br><span class="line">   printf(&quot;a = %d, b =%d\n&quot;, a, b);</span><br><span class="line">   return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>GDB主要帮助你完成下面四个方面的功能：</p>
+<ol>
+<li>启动你的程序，可以按照你的自定义的要求随心所欲的运行程序。</li>
+<li>可让被调试的程序在你所指定的调置的断点处停住。</li>
+<li>当程序被停住时，可以检查此时你的程序中所发生的事。</li>
+<li>你可以改变你的程序，将一个BUG产生的影响修正从而测试其他BUG。<h3 id="3-1-gbd调试程序的简易入门操作"><a href="#3-1-gbd调试程序的简易入门操作" class="headerlink" title="3.1 gbd调试程序的简易入门操作"></a>3.1 gbd调试程序的简易入门操作</h3></li>
+</ol>
+<ul>
+<li><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gdb</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动调试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#编译文件，加上调试信息。不加参数-g可能无法调试</span><br><span class="line">gcc -g test.c -o test</span><br><span class="line">#开始启动调试</span><br><span class="line">gdb test</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>拓展: 启动调试的时候输入<code>gdb -tui test</code>会有一个漂亮的交互窗口</p>
+<ul>
+<li>调试的操作</li>
+<li><em>注意*</em> :括号内的东西不用输入</li>
+</ul>
+<ol>
+<li>显示当前的代码，一次10行，继续输入<code>l</code>继续显示。</li>
+</ol>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) l</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>单步<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>这个时候会进入程序运行状态，单步运行需要输入<code>n</code>，输入一次执行一条语句。<code>s</code>单步会进入子程序中去。</p>
+<ol start="3">
+<li>断点+单步<br>启动的时候<code>start</code>程序会在第一行停止。<br>这个时候可以设置断点，如下所示：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b 5</span><br><span class="line">(gdb) c #运行程序到断点处，一般在设置完断点后使用</span><br><span class="line">(gdb) r #重新运行程序 run</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<blockquote>
+<p>表示在第5行设置断点，输入命令<code>c</code>会直接运行到第5行；其中b后面的参数也可以是一个函数名。可以按照单步的方法继续运行。<br>可以同时设置多个断点</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) display b</span><br></pre></td></tr></table></figure>
+
+<p>这个display 可以查看变量的值</p>
+<ol start="4">
+<li>查看所有断点和删除<br>查看已经设置的断点<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) info breakpoints</span><br><span class="line">#可以简写成</span><br><span class="line">(gdb) i b</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><img src="/images/gccAndgdb/gdbInfo.png" alt="gdbInfo"><br>注意到每一个断点有编号，使用编号可删除断点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) delete 2</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p>设置条件断点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b 5 if a == 2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>观察变量改变的地方</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(gdb) watch b</span><br><span class="line">(gdb) c</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>变量内存值被修改的时候会展示出来</p>
+<ol start="7">
+<li>反汇编命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disassemble main</span><br><span class="line">#可简写成</span><br><span class="line">(gdb) disas main</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>其中的main是一个函数名称。</p>
+<h3 id="3-2-gdb插件—gdb-peda"><a href="#3-2-gdb插件—gdb-peda" class="headerlink" title="3.2 gdb插件—gdb-peda"></a>3.2 gdb插件—gdb-peda</h3><p>PEDA(<strong>Python Exploit Development Assistance for GDB</strong>)是一个强大的 gdb 插件。它提供了高亮显示反汇编代码、寄存器、内存信息等人性化的功能。同时，PEDA 还有一些实用的新命令，比如checksec 可以查看程序开启了哪些安全机制等等。</p>
+<ul>
+<li>安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/longld/peda.git ~/peda</span><br><span class="line">$ echo &quot;source ~/peda/peda.py&quot; &gt;&gt; ~/.gdbinit</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="4-Linux代码执行漏洞分析实战"><a href="#4-Linux代码执行漏洞分析实战" class="headerlink" title="4. Linux代码执行漏洞分析实战"></a>4. Linux代码执行漏洞分析实战</h2><p>主要工作：出发一个NoIP本地运行的栈溢出漏洞，用gdb调试工具找出漏洞发生的地点。</p>
+<h3 id="4-1-准备"><a href="#4-1-准备" class="headerlink" title="4.1 准备"></a>4.1 准备</h3><p>NoIP本地栈溢出漏洞</p>
+<ul>
+<li><p>step1 注册NO-IP账号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://my.noip.com/#!/account</span><br><span class="line">https://www.noip.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2 在Linux下安装No-ip<br><a href="https://www.noip.com/support/knowledgebase/installing-the-linux-dynamic-update-client/" target="_blank" rel="noopener">官网</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/src</span><br><span class="line">wget http://www.no-ip.com/client/linux/noip-duc-linux.tar.gz</span><br><span class="line">tar xzf noip-duc-linux.tar.gz</span><br><span class="line">cd no-ip-2.1.9</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由PoC出发漏洞</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gdb noip2</span><br><span class="line">run -i $(python -c &apos;print (&quot;\x41&quot;*500)&apos;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>如果没有触发漏洞，将数值可以加大为1000，直到有漏洞触发</p>
+</blockquote>
+<p><img src="/images/gccAndgdb/noipPoc.png" alt="图片"><br>图1</p>
+<ul>
+<li>使用静态反汇编工具idaPro<br>win系统下远程连接linux编译文件调试参考文献<a href="#r01">1</a></li>
+</ul>
+<h3 id="4-2实验过程"><a href="#4-2实验过程" class="headerlink" title="4.2实验过程"></a>4.2实验过程</h3><p>由图1可知，漏洞发生之前，打印输出了字符串<code>IP address detected on command line.</code>我们先定位到这个字符串输出的位置。</p>
+<ul>
+<li>step1: IDAPro远程连接到Noip程序<br>打开搜索框，输入上面的那个字符串进行搜索。<br><img src="/images/gccAndgdb/findIPString.png" alt="pic"><blockquote>
+<p>可以看到这里有一个mov操作，之后调用了<code>call Msg</code>。</p>
+</blockquote>
+</li>
+</ul>
+<p>因此我们在这个地点下一个断点，红色框框对应的地址()。</p>
+<ul>
+<li>step2: 切换回linux，设置断点<br>退出之前的gdb, <code>quit</code><br>重新进入<code>gdb noip2</code><br>通过第一步得到的地址设置断点<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b *0x00000000004021AB</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><img src="/images/gccAndgdb/bAddress.png" alt="pic"><br>可观察到在源码中对应的行数为line 607</p>
+<ul>
+<li>step3: 执行得到漏洞的命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run -i $(python -c &apos;print (&quot;\x41&quot;*1000)&apos;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><img src="/images/gccAndgdb/againRun1.png" alt="pic"><br>可以看到在<code>0x4021ab</code>处发生了中断，即我们设置的断点的地方。</p>
+<ul>
+<li>step4: 单步执行<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ni</span><br><span class="line">#或者</span><br><span class="line">n</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>在这个过程中，可以看到运行到了<code>call Msg</code>，并且打印出了字符串<br><img src="/images/gccAndgdb/callMsg.png" alt="pic"><br>继续单步执行，可以看到输出另一串<code>Running in single use mode.</code><br>如果之前进行了<code>push</code>操作，可以使用命令这可以查看栈顶的的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x/10x $esp</span><br><span class="line"># 查看内存的值</span><br><span class="line">(gdb) x/10x 0x4083b5(视情况)</span><br><span class="line">(gdb) x/100x 0x4083b5</span><br><span class="line"># 也可以以字符串形式输出内存的值</span><br><span class="line">(gdb) x/10s 0x4083b5</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/gccAndgdb/xsStr.png" alt="pic"></p>
+<ul>
+<li>step5 继续单步，一直到出现漏洞<br><img src="/images/gccAndgdb/findError.png" alt="pic"></li>
+</ul>
+<p>可以发现，当程序调用<code>dynamic_update</code>的前中后出现了问题。<strong>有可能是在这个函数里面出现问题，也有可能是该函数嵌套的函数出现了问题。</strong><br>得到调用<code>dynamic_update</code>函数的地址为：<code>0x40233c</code></p>
+<ul>
+<li><p>step6: 重新设置断点<br>切换回IDAPro，以此选择<code>jump</code>-&gt;<code>jump address</code>输入上面得到的函数地址。切换到<code>graph view</code>按住<strong>F5</strong>可查看c伪代码。<br>找到调用<code>dynamic_update</code>函数之前的一个地址<code>0x402337</code>，重新设置断点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b *0x0x402337</span><br><span class="line">(gdb) run -i $(python -c &apos;print (&quot;\x41&quot;*1000)&apos;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step7 进入到函数内部<br>这里使用<code>si</code>或者<code>s</code>进行单步。<br>进入到<code>dynamic_update</code>函数后，使用<code>n</code>来单步，确定程序崩溃的地方。</p>
+</li>
+</ul>
+<p>[1] <span id="r01"><a href="https://blog.csdn.net/lacoucou/article/details/71079552" target="_blank" rel="noopener">https://blog.csdn.net/lacoucou/article/details/71079552</a></span> windows下使用IDA远程调试linux(ubuntu)下编译的程序</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/linux/" rel="tag"># linux</a>
+            
+              <a href="/tags/gcc/" rel="tag"># gcc</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/08/balanceLvs/" rel="next" title="balanceLvs">
+                  <i class="fa fa-chevron-left"></i> balanceLvs
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux下的c编程工具的使用"><span class="nav-number">1.</span> <span class="nav-text">linux下的c编程工具的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-gcc工具的使用"><span class="nav-number">1.1.</span> <span class="nav-text">1.gcc工具的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-gcc的各个阶段分析"><span class="nav-number">1.2.</span> <span class="nav-text">2.gcc的各个阶段分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-预处理"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-编译"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-汇编"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-链接"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-gdb的使用"><span class="nav-number">1.3.</span> <span class="nav-text">3.gdb的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-gbd调试程序的简易入门操作"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 gbd调试程序的简易入门操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-gdb插件—gdb-peda"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 gdb插件—gdb-peda</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Linux代码执行漏洞分析实战"><span class="nav-number">1.4.</span> <span class="nav-text">4. Linux代码执行漏洞分析实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-准备"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2实验过程"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2实验过程</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
