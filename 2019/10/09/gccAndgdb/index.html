@@ -72,7 +72,7 @@
 <meta property="og:image" content="http://yoursite.com/images/gccAndgdb/callMsg.png">
 <meta property="og:image" content="http://yoursite.com/images/gccAndgdb/xsStr.png">
 <meta property="og:image" content="http://yoursite.com/images/gccAndgdb/findError.png">
-<meta property="og:updated_time" content="2019-10-11T09:09:39.073Z">
+<meta property="og:updated_time" content="2019-10-22T03:35:01.543Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gccAndgdb">
 <meta name="twitter:description" content="linux下的c编程工具的使用">
@@ -280,7 +280,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-10-11 17:09:39" itemprop="dateModified" datetime="2019-10-11T17:09:39+08:00">2019-10-11</time>
+                <time title="Modified: 2019-10-22 11:35:01" itemprop="dateModified" datetime="2019-10-22T11:35:01+08:00">2019-10-22</time>
               </span>
             
           
@@ -321,12 +321,12 @@
 <p>会在同一个目录下面生成一个<code>a.out</code>文件，输入命令<code>./a.out</code>就可直接运行。</p>
 <blockquote>
 <p>直接经历了四个步骤：预处理Preprocessing，编译Compilation，汇编Assembly，链接Linking。</p>
-<ul>
-<li>指定生成的文件名</li>
-</ul>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc test.c -o test</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指定生成的文件名<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc test.c -o test</span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
 <p>不会使用默认的a.out。</p>
 <ul>
 <li><p>gcc保留中间文件<br>gcc编译过程中，会删除中间的文件，可通过下面命令参数来保留各个阶段的文件</p>
@@ -334,6 +334,17 @@
 </li>
 <li><p>gcc生成调试信息</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -g test.c -o test</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>gcc编译生成32bit代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 hello.c -o hello</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>如果<code>-m32</code>无法运行，请安装下载相关包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential module-assistant  </span><br><span class="line">sudo apt-get install gcc-multilib g++-multilib</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>gcc版本信息查看<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -v</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
@@ -376,18 +387,17 @@
 </ul>
 <blockquote>
 <p>拓展: 启动调试的时候输入<code>gdb -tui test</code>会有一个漂亮的交互窗口</p>
+</blockquote>
 <ul>
 <li>调试的操作</li>
-<li><em>注意*</em> :括号内的东西不用输入</li>
+<li><em>注意*</em>  :括号内的东西不用输入</li>
 </ul>
 <ol>
-<li>显示当前的代码，一次10行，继续输入<code>l</code>继续显示。</li>
-</ol>
-</blockquote>
+<li><p>显示当前的代码，一次10行，继续输入<code>l</code>继续显示。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) l</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>单步<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>单步</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
