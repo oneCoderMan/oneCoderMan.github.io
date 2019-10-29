@@ -55,19 +55,19 @@
   };
 </script>
 
-  <meta name="description" content="常用配置参数1. vim的配置参数">
-<meta name="keywords" content="linux,conf">
+  <meta name="description" content="语言环境的安装和配置">
+<meta name="keywords" content="语言环境安装配置">
 <meta property="og:type" content="article">
-<meta property="og:title" content="configurationARGS">
-<meta property="og:url" content="http://yoursite.com/2019/10/07/configurationARGS/index.html">
+<meta property="og:title" content="languageEnvConf">
+<meta property="og:url" content="http://yoursite.com/2019/10/28/languageEnvConf/index.html">
 <meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
-<meta property="og:description" content="常用配置参数1. vim的配置参数">
+<meta property="og:description" content="语言环境的安装和配置">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-09T03:49:12.388Z">
+<meta property="og:updated_time" content="2019-10-29T02:49:28.345Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="configurationARGS">
-<meta name="twitter:description" content="常用配置参数1. vim的配置参数">
-  <link rel="canonical" href="http://yoursite.com/2019/10/07/configurationARGS/">
+<meta name="twitter:title" content="languageEnvConf">
+<meta name="twitter:description" content="语言环境的安装和配置">
+  <link rel="canonical" href="http://yoursite.com/2019/10/28/languageEnvConf/">
 
 
 <script id="page-configurations">
@@ -81,7 +81,7 @@
   };
 </script>
 
-  <title>configurationARGS | CoderSim's Growth Diary</title>
+  <title>languageEnvConf | CoderSim's Growth Diary</title>
   
 
 
@@ -231,7 +231,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/07/configurationARGS/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/28/languageEnvConf/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="CoderSim">
@@ -243,7 +243,7 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">configurationARGS
+        <h1 class="post-title" itemprop="name headline">languageEnvConf
 
           
         </h1>
@@ -259,7 +259,7 @@
                 
               
 
-              <time title="Created: 2019-10-07 15:24:00" itemprop="dateCreated datePublished" datetime="2019-10-07T15:24:00+08:00">2019-10-07</time>
+              <time title="Created: 2019-10-28 21:51:16" itemprop="dateCreated datePublished" datetime="2019-10-28T21:51:16+08:00">2019-10-28</time>
             </span>
           
             
@@ -270,7 +270,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-10-09 11:49:12" itemprop="dateModified" datetime="2019-10-09T11:49:12+08:00">2019-10-09</time>
+                <time title="Modified: 2019-10-29 10:49:28" itemprop="dateModified" datetime="2019-10-29T10:49:28+08:00">2019-10-29</time>
               </span>
             
           
@@ -299,16 +299,48 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="常用配置参数"><a href="#常用配置参数" class="headerlink" title="常用配置参数"></a>常用配置参数</h1><h2 id="1-vim的配置参数"><a href="#1-vim的配置参数" class="headerlink" title="1. vim的配置参数"></a>1. vim的配置参数</h2><a id="more"></a>
-<p>针对每一个用户修改，在/etc/vimrc中是所有用户生效</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.vimrc</span><br></pre></td></tr></table></figure>
+        <h1 id="语言环境的安装和配置"><a href="#语言环境的安装和配置" class="headerlink" title="语言环境的安装和配置"></a>语言环境的安装和配置</h1><a id="more"></a>
+<h2 id="ubuntu16-04下的python3-7安装"><a href="#ubuntu16-04下的python3-7安装" class="headerlink" title="ubuntu16.04下的python3.7安装"></a>ubuntu16.04下的python3.7安装</h2><blockquote>
+<p>ubuntu16.04默认安装有python3.5和python2.7<br>安装路径在<code>/usr/local/lib</code>下</p>
+</blockquote>
+<p>可以通过如下命令查看python的指向</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ll /usr/bin | grep python</span><br></pre></td></tr></table></figure>
 
-<p>输入如下配置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&quot;关闭vim一致性原则</span><br><span class="line">set nocompatible</span><br><span class="line">&quot;显示行号</span><br><span class="line">set number</span><br><span class="line">&quot;设置在编辑过程中右下角显示光标的行列信息</span><br><span class="line">set ruler</span><br><span class="line">&quot;在状态栏显示正在输入的命令</span><br><span class="line">set showcmd</span><br><span class="line">&quot;设置历史记录条数</span><br><span class="line">set history=1000</span><br><span class="line">&quot;设置取消备份 禁止临时文件的生成</span><br><span class="line">set nobackup</span><br><span class="line">set noswapfile</span><br><span class="line">&quot;设置匹配模式</span><br><span class="line">set showmatch</span><br><span class="line">&quot;设置C/C++方式自动对齐</span><br><span class="line">set autoindent</span><br><span class="line">set cindent</span><br><span class="line">&quot;开启语法高亮功能</span><br><span class="line">syntax on</span><br><span class="line">&quot;指定配色方案为256色</span><br><span class="line">set t_Co=256</span><br><span class="line">&quot;设置搜索时忽略大小写</span><br><span class="line">set ignorecase</span><br><span class="line">&quot;配置backspace的工作方式</span><br><span class="line">set backspace=indent,eol,start</span><br><span class="line">&quot;设置在vim中可以使用鼠标</span><br><span class="line">set mouse=a</span><br><span class="line">&quot;设置tab宽度</span><br><span class="line">set tabstop=4</span><br><span class="line">&quot;设置自动对齐空格数</span><br><span class="line">set shiftwidth=4</span><br><span class="line">&quot;设置退格键时可以删除4个空格</span><br><span class="line">set smarttab</span><br><span class="line">set softtabstop=4</span><br><span class="line">&quot;将tab键自动转换为空格</span><br><span class="line">set expandtab</span><br></pre></td></tr></table></figure>
+<p>可以知道python的默认指向时python2.7</p>
+<ul>
+<li><p>step1： 下载python3.7</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: 解压安装包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf Pyhon-3.7.1.tgz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step3: 编译安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd Python-3.7.1</span><br><span class="line">./configure --prefix=/usr/local/python3.7.1</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
 
-<p>最后使配置生效</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.vimrc</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>经过上面步骤有<br>文件|路径<br>—:|:–<br>可执行文件|/usr/local/python3.7.1/bin<br>库文件|/usr/local/python3.7/lib<br>配置文件|/usr/local/python3.7/share</p>
+<ul>
+<li><p>step4：配置环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#查看环境变量</span><br><span class="line">echo $PATH</span><br><span class="line">vim ~/bashrc</span><br><span class="line">#添加如下的语句</span><br><span class="line">PATH=$PATH:$HOME/bin:/usr/local/python3.7.1/bin</span><br><span class="line">source ~/bashrc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step5: 测试：<br>输入<code>python3.7</code>可进入python解释器即可<br><code>python -V</code>查看版本。<br>或者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">print(sys.version)</span><br><span class="line">print(sys.version_info)</span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
+<blockquote>
+<p><strong>zlib模块缺失的解决方法</strong>：<br>官网下载zlib<code>wget http://zlib.net/zlib-1.2.11.tar.gz</code>，可以查看最新版本<br>然后解压，配置，安装<br>tar -xvf zlib-1.2.11.tar.gz<br>cd zlib-1.2.11<br>./configure<br>make<br>make install<br>最后重新编译安装python3.7</p>
+</blockquote>
+<blockquote>
+<p><strong>No module named ‘_ctypes’解决方案</strong><br><code>sudo apt-get install libffi-dev</code><br>最后重新编译安装python3.7</p>
+</blockquote>
+<ul>
+<li>step6: 修改系统默认指向<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">删除原有链接备份</span><br><span class="line">mv /usr/bin/python /usr/bin/python.bak</span><br><span class="line">建立新的链接</span><br><span class="line">ln -s /usr/local/python3.7.1/bin/python3.7 /usr/bin/python</span><br><span class="line">修改pip</span><br><span class="line">mv /usr/bin/pip /usr/bin/pip.bak</span><br><span class="line">建立新的pip</span><br><span class="line">ln -s /usr/local/python3.7.1/bin/pip3 /usr/bin/pip</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/u014775723/article/details/85213793" target="_blank" rel="noopener">https://blog.csdn.net/u014775723/article/details/85213793</a></p>
 
     </div>
 
@@ -324,9 +356,7 @@
           
           <div class="post-tags">
             
-              <a href="/tags/linux/" rel="tag"># linux</a>
-            
-              <a href="/tags/conf/" rel="tag"># conf</a>
+              <a href="/tags/语言环境安装配置/" rel="tag"># 语言环境安装配置</a>
             
           </div>
         
@@ -336,8 +366,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/10/07/pytorchEnvInUbuntu1604/" rel="next" title="pytorchEnvInUbuntu1604">
-                  <i class="fa fa-chevron-left"></i> pytorchEnvInUbuntu1604
+                <a href="/2019/10/09/gccAndgdb/" rel="next" title="gccAndgdb">
+                  <i class="fa fa-chevron-left"></i> gccAndgdb
                 </a>
               
             </div>
@@ -345,10 +375,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/10/08/balanceLvs/" rel="prev" title="balanceLvs">
-                  balanceLvs <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -397,7 +423,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常用配置参数"><span class="nav-number">1.</span> <span class="nav-text">常用配置参数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-vim的配置参数"><span class="nav-number">1.1.</span> <span class="nav-text">1. vim的配置参数</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#语言环境的安装和配置"><span class="nav-number">1.</span> <span class="nav-text">语言环境的安装和配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu16-04下的python3-7安装"><span class="nav-number">1.1.</span> <span class="nav-text">ubuntu16.04下的python3.7安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">2.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
