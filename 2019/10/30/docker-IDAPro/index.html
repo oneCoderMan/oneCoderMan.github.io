@@ -55,19 +55,23 @@
   };
 </script>
 
-  <meta name="description" content="常用配置参数1. vim的配置参数">
-<meta name="keywords" content="linux,conf">
+  <meta name="description" content="docker与IDAPRO搭建二进制漏洞环境">
+<meta name="keywords" content="docker,IDAPro">
 <meta property="og:type" content="article">
-<meta property="og:title" content="configurationARGS">
-<meta property="og:url" content="http://yoursite.com/2019/10/07/configurationARGS/index.html">
+<meta property="og:title" content="docker-IDAPro">
+<meta property="og:url" content="http://yoursite.com/2019/10/30/docker-IDAPro/index.html">
 <meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
-<meta property="og:description" content="常用配置参数1. vim的配置参数">
+<meta property="og:description" content="docker与IDAPRO搭建二进制漏洞环境">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-10-09T03:49:12.388Z">
+<meta property="og:image" content="http://yoursite.com/images/docker-idapro/doker01.png">
+<meta property="og:image" content="http://yoursite.com/images/docker-idapro/d02.png">
+<meta property="og:image" content="http://yoursite.com/images/docker-idapro/d03.png">
+<meta property="og:updated_time" content="2019-10-30T03:10:26.072Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="configurationARGS">
-<meta name="twitter:description" content="常用配置参数1. vim的配置参数">
-  <link rel="canonical" href="http://yoursite.com/2019/10/07/configurationARGS/">
+<meta name="twitter:title" content="docker-IDAPro">
+<meta name="twitter:description" content="docker与IDAPRO搭建二进制漏洞环境">
+<meta name="twitter:image" content="http://yoursite.com/images/docker-idapro/doker01.png">
+  <link rel="canonical" href="http://yoursite.com/2019/10/30/docker-IDAPro/">
 
 
 <script id="page-configurations">
@@ -81,7 +85,7 @@
   };
 </script>
 
-  <title>configurationARGS | CoderSim's Growth Diary</title>
+  <title>docker-IDAPro | CoderSim's Growth Diary</title>
   
 
 
@@ -231,7 +235,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/07/configurationARGS/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/30/docker-IDAPro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="CoderSim">
@@ -243,7 +247,7 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">configurationARGS
+        <h1 class="post-title" itemprop="name headline">docker-IDAPro
 
           
         </h1>
@@ -259,19 +263,11 @@
                 
               
 
-              <time title="Created: 2019-10-07 15:24:00" itemprop="dateCreated datePublished" datetime="2019-10-07T15:24:00+08:00">2019-10-07</time>
+              <time title="Created: 2019-10-30 09:43:57 / Modified: 11:10:26" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-10-09 11:49:12" itemprop="dateModified" datetime="2019-10-09T11:49:12+08:00">2019-10-09</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -299,16 +295,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="常用配置参数"><a href="#常用配置参数" class="headerlink" title="常用配置参数"></a>常用配置参数</h1><h2 id="1-vim的配置参数"><a href="#1-vim的配置参数" class="headerlink" title="1. vim的配置参数"></a>1. vim的配置参数</h2><a id="more"></a>
-<p>针对每一个用户修改，在/etc/vimrc中是所有用户生效</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.vimrc</span><br></pre></td></tr></table></figure>
+        <p>docker与IDAPRO搭建二进制漏洞环境</p>
+<a id="more"></a>
+<h2 id="1-docker安装与基本操作"><a href="#1-docker安装与基本操作" class="headerlink" title="1. docker安装与基本操作"></a>1. docker安装与基本操作</h2><h3 id="1-1-安装"><a href="#1-1-安装" class="headerlink" title="1.1 安装"></a>1.1 安装</h3><p><a href="https://www.docker.com/" target="_blank" rel="noopener">官网</a><br><a href="https://www.runoob.com/docker/ubuntu-docker-install.html" target="_blank" rel="noopener">runoob安装教程</a></p>
+<h3 id="1-2-基本操作"><a href="#1-2-基本操作" class="headerlink" title="1.2 基本操作"></a>1.2 基本操作</h3><h4 id="导入镜像-别人已经准备好的"><a href="#导入镜像-别人已经准备好的" class="headerlink" title="导入镜像(别人已经准备好的)"></a>导入镜像(别人已经准备好的)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ubuntu.17.04.amd64 | docker import - ubuntu/17.04.amd64(可自己命名)</span><br></pre></td></tr></table></figure>
 
-<p>输入如下配置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&quot;关闭vim一致性原则</span><br><span class="line">set nocompatible</span><br><span class="line">&quot;显示行号</span><br><span class="line">set number</span><br><span class="line">&quot;设置在编辑过程中右下角显示光标的行列信息</span><br><span class="line">set ruler</span><br><span class="line">&quot;在状态栏显示正在输入的命令</span><br><span class="line">set showcmd</span><br><span class="line">&quot;设置历史记录条数</span><br><span class="line">set history=1000</span><br><span class="line">&quot;设置取消备份 禁止临时文件的生成</span><br><span class="line">set nobackup</span><br><span class="line">set noswapfile</span><br><span class="line">&quot;设置匹配模式</span><br><span class="line">set showmatch</span><br><span class="line">&quot;设置C/C++方式自动对齐</span><br><span class="line">set autoindent</span><br><span class="line">set cindent</span><br><span class="line">&quot;开启语法高亮功能</span><br><span class="line">syntax on</span><br><span class="line">&quot;指定配色方案为256色</span><br><span class="line">set t_Co=256</span><br><span class="line">&quot;设置搜索时忽略大小写</span><br><span class="line">set ignorecase</span><br><span class="line">&quot;配置backspace的工作方式</span><br><span class="line">set backspace=indent,eol,start</span><br><span class="line">&quot;设置在vim中可以使用鼠标</span><br><span class="line">set mouse=a</span><br><span class="line">&quot;设置tab宽度</span><br><span class="line">set tabstop=4</span><br><span class="line">&quot;设置自动对齐空格数</span><br><span class="line">set shiftwidth=4</span><br><span class="line">&quot;设置退格键时可以删除4个空格</span><br><span class="line">set smarttab</span><br><span class="line">set softtabstop=4</span><br><span class="line">&quot;将tab键自动转换为空格</span><br><span class="line">set expandtab</span><br></pre></td></tr></table></figure>
+<p>ubuntu.17.04.amd64是一个本地的镜像文件，后面一个名字可以自己定义</p>
+<h4 id="查看镜像"><a href="#查看镜像" class="headerlink" title="查看镜像"></a>查看镜像</h4><p>导入成功后，可以使用命令查看docker所有的已经导入的镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
 
-<p>最后使配置生效</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.vimrc</span><br></pre></td></tr></table></figure>
+<p><img src="/images/docker-idapro/doker01.png" alt="pic1"></p>
+<h4 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h4><p>可以看作是启动一个任务<br><code>docker run</code>命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -p 23946:23946 ubuntu/17.04.amd64 /bin/bash</span><br><span class="line">#或者</span><br><span class="line">docker run -i -t -p 23946:23946 ubuntu/17.04.amd64 /bin/bash</span><br></pre></td></tr></table></figure>
 
+<blockquote>
+<p><code>-i</code> 允许对容器内的标准输入<br><code>-t</code> 在新的容器内指定一个伪终端或者终端<br><code>-p</code> 容器内部使用的网络端口映射到使用的主机上面，<strong>后面一个是本地主机端口</strong><br><code>ubuntu/17.04.amd64</code> 这是镜像名字<br><code>/bin/bash</code> 运行的命令</p>
+</blockquote>
+<h4 id="查看docker运行的所有容器"><a href="#查看docker运行的所有容器" class="headerlink" title="查看docker运行的所有容器"></a>查看docker运行的所有容器</h4><p>在运行的主机上打开一个新的shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps #查看所有正在运行的容器</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/docker-idapro/d02.png" alt="pic1"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container ls -a #查看所有的容器情况</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/docker-idapro/d03.png" alt="pic1"></p>
+<blockquote>
+<p>拓展：可以修改容器的名字<br><code>docker container rename  [autoname] [yourname]</code><br><code>docker start id/name</code> 启动容器</p>
+</blockquote>
+<h4 id="在已经运行的镜像或者容器内打开一个新的bash-shell"><a href="#在已经运行的镜像或者容器内打开一个新的bash-shell" class="headerlink" title="在已经运行的镜像或者容器内打开一个新的bash shell"></a>在已经运行的镜像或者容器内打开一个新的bash shell</h4><p>有时候一个容器的shell阻塞了，我们需要新的bash shell，可以使用如下的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it ubuntu17.04 /bin/bash</span><br><span class="line">#或者  containerID是一个id号</span><br><span class="line">docker exec -it containerID /bin/bash</span><br></pre></td></tr></table></figure>
+
+<h4 id="容器和主机之间的文件传送"><a href="#容器和主机之间的文件传送" class="headerlink" title="容器和主机之间的文件传送"></a>容器和主机之间的文件传送</h4><p><strong>可以使用如下命令在容器和主机之间双向传送文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container cp [localhostFilePath] [imageName]:[filePath]</span><br></pre></td></tr></table></figure>
+
+<p>eg: <code>docker container cp linux_server ubuntu.17.04.i386:/root/linux_server</code></p>
+<h4 id="退出容器"><a href="#退出容器" class="headerlink" title="退出容器"></a>退出容器</h4><p>此时拥有shell，使用命令<code>exit</code>或者键盘<code>ctrl+D</code><br>如果没有shell，先<code>docker ps</code>得到容器id或者name，然后使用<code>docker stop id/name</code>结束容器</p>
+<h2 id="2-IDAPro简单使用"><a href="#2-IDAPro简单使用" class="headerlink" title="2. IDAPro简单使用"></a>2. IDAPro简单使用</h2><p>在远程连接时候，需要<strong>关闭docke远程执行命令保护</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --security-opt seccomp:unconfined -it -p 23945:23946 ubuntu.17.04.i386 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>将IDA所在文件夹下的dbgsrv的linux_server或则linux_server64复制到主机上，并使用<code>docker container cp</code>命令传送到容器的某一个路径下。<br>加权限然后运行，可以看到侦听端口，新打开一个bash shell。</p>
+<table>
+ <tr><th>快捷键</th><th>功能</th></tr>
+ <tr><td>F2</td><td>设置断点/取消断点</td></tr>
+ <tr><td>F7</td><td>单步进入函数</td></tr>
+ <tr><td>F8</td><td>单步跨过函数</td></tr>
+ <tr><td>F9</td><td>运行程序</td></tr>
+</table>
 
     </div>
 
@@ -324,9 +355,9 @@
           
           <div class="post-tags">
             
-              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
             
-              <a href="/tags/conf/" rel="tag"># conf</a>
+              <a href="/tags/IDAPro/" rel="tag"># IDAPro</a>
             
           </div>
         
@@ -336,8 +367,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/10/07/pytorchEnvInUbuntu1604/" rel="next" title="pytorchEnvInUbuntu1604">
-                  <i class="fa fa-chevron-left"></i> pytorchEnvInUbuntu1604
+                <a href="/2019/10/28/languageEnvConf/" rel="next" title="languageEnvConf">
+                  <i class="fa fa-chevron-left"></i> languageEnvConf
                 </a>
               
             </div>
@@ -345,10 +376,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/10/08/balanceLvs/" rel="prev" title="balanceLvs">
-                  balanceLvs <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -397,7 +424,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常用配置参数"><span class="nav-number">1.</span> <span class="nav-text">常用配置参数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-vim的配置参数"><span class="nav-number">1.1.</span> <span class="nav-text">1. vim的配置参数</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-docker安装与基本操作"><span class="nav-number">1.</span> <span class="nav-text">1. docker安装与基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-基本操作"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入镜像-别人已经准备好的"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入镜像(别人已经准备好的)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看镜像"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行容器"><span class="nav-number">1.2.3.</span> <span class="nav-text">运行容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看docker运行的所有容器"><span class="nav-number">1.2.4.</span> <span class="nav-text">查看docker运行的所有容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在已经运行的镜像或者容器内打开一个新的bash-shell"><span class="nav-number">1.2.5.</span> <span class="nav-text">在已经运行的镜像或者容器内打开一个新的bash shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器和主机之间的文件传送"><span class="nav-number">1.2.6.</span> <span class="nav-text">容器和主机之间的文件传送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#退出容器"><span class="nav-number">1.2.7.</span> <span class="nav-text">退出容器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IDAPro简单使用"><span class="nav-number">2.</span> <span class="nav-text">2. IDAPro简单使用</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
