@@ -66,7 +66,7 @@
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/doker01.png">
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/d02.png">
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/d03.png">
-<meta property="og:updated_time" content="2019-10-30T03:31:14.026Z">
+<meta property="og:updated_time" content="2019-10-30T03:42:22.098Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker-IDAPro">
 <meta name="twitter:description" content="docker与IDAPRO搭建二进制漏洞环境">
@@ -263,7 +263,7 @@
                 
               
 
-              <time title="Created: 2019-10-30 09:43:57 / Modified: 11:31:14" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
+              <time title="Created: 2019-10-30 09:43:57 / Modified: 11:42:22" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
             </span>
           
             
@@ -325,9 +325,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it ubuntu17.04 /bin/bash</span><br><span class="line">#或者  containerID是一个id号</span><br><span class="line">docker exec -it containerID /bin/bash</span><br></pre></td></tr></table></figure>
 
 <h4 id="容器和主机之间的文件传送"><a href="#容器和主机之间的文件传送" class="headerlink" title="容器和主机之间的文件传送"></a>容器和主机之间的文件传送</h4><p><strong>可以使用如下命令在容器和主机之间双向传送文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container cp [localhostFilePath] [imageName]:[filePath]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container cp [localhostFilePath] [imageName]|[containerID]:[filePath]</span><br></pre></td></tr></table></figure>
 
 <p>eg: <code>docker container cp linux_server ubuntu.17.04.i386:/root/linux_server</code></p>
+<blockquote>
+<p><strong>注意</strong>这个imageName指的是某一个容器的名字，而非镜像名字，id也是容器的id。</p>
+</blockquote>
 <h4 id="退出容器"><a href="#退出容器" class="headerlink" title="退出容器"></a>退出容器</h4><p>此时拥有shell，使用命令<code>exit</code>或者键盘<code>ctrl+D</code><br>如果没有shell，先<code>docker ps</code>得到容器id或者name，然后使用<code>docker stop id/name</code>结束容器</p>
 <h4 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm id/name</span><br></pre></td></tr></table></figure>
 
