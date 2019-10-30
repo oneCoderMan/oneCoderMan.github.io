@@ -66,7 +66,7 @@
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/doker01.png">
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/d02.png">
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/d03.png">
-<meta property="og:updated_time" content="2019-10-30T06:48:40.143Z">
+<meta property="og:updated_time" content="2019-10-30T09:48:25.090Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker-IDAPro">
 <meta name="twitter:description" content="docker与IDAPRO搭建二进制漏洞环境">
@@ -263,7 +263,7 @@
                 
               
 
-              <time title="Created: 2019-10-30 09:43:57 / Modified: 14:48:40" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
+              <time title="Created: 2019-10-30 09:43:57 / Modified: 17:48:25" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
             </span>
           
             
@@ -345,6 +345,20 @@
  <tr><td>F8</td><td>单步跨过函数</td></tr>
  <tr><td>F9</td><td>运行程序</td></tr>
 </table>
+
+<h2 id="3-ubuntu16-04安装pwntools模块"><a href="#3-ubuntu16-04安装pwntools模块" class="headerlink" title="3.ubuntu16.04安装pwntools模块"></a>3.ubuntu16.04安装pwntools模块</h2><p><a href="https://docs.pwntools.com/en/stable/install.html" target="_blank" rel="noopener">官网链接</a><br>先升级setuptools</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -U setuptools</span><br></pre></td></tr></table></figure>
+
+<p>然后安装pwntools模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install python2.7 python-pip python-dev git libssl-dev libffi-dev build-essential</span><br><span class="line">pip install --upgrade pip</span><br><span class="line">pip install --upgrade pwntools</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可能出现错误<br><code>ERROR: Package &#39;more-itertools&#39; requires a different Python: 2.7.15 not in &#39;&gt;=3.4&#39;</code><br>解决办法：单独安装more-itertools模块<br><code>pip install more-itertools==5.0.0</code><br>然后再次安装<code>pip install pwntools</code></p>
+</blockquote>
+<p>测试安装成功，没有报错误就可以了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python</span><br><span class="line">import pwn</span><br><span class="line">pwn.asm(&quot;xor eax,eax&quot;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/asd413850393/article/details/101349924" target="_blank" rel="noopener">https://blog.csdn.net/asd413850393/article/details/101349924</a><br>[2] <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md" target="_blank" rel="noopener">https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md</a></p>
 
     </div>
 
@@ -429,7 +443,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-docker安装与基本操作"><span class="nav-number">1.</span> <span class="nav-text">1. docker安装与基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-基本操作"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入镜像-别人已经准备好的"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入镜像(别人已经准备好的)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看镜像"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行容器"><span class="nav-number">1.2.3.</span> <span class="nav-text">运行容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看docker运行的所有容器"><span class="nav-number">1.2.4.</span> <span class="nav-text">查看docker运行的所有容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在已经运行的镜像或者容器内打开一个新的bash-shell"><span class="nav-number">1.2.5.</span> <span class="nav-text">在已经运行的镜像或者容器内打开一个新的bash shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器和主机之间的文件传送"><span class="nav-number">1.2.6.</span> <span class="nav-text">容器和主机之间的文件传送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#退出容器"><span class="nav-number">1.2.7.</span> <span class="nav-text">退出容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除容器"><span class="nav-number">1.2.8.</span> <span class="nav-text">删除容器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IDAPro简单使用"><span class="nav-number">2.</span> <span class="nav-text">2. IDAPro简单使用</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-docker安装与基本操作"><span class="nav-number">1.</span> <span class="nav-text">1. docker安装与基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-基本操作"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入镜像-别人已经准备好的"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入镜像(别人已经准备好的)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看镜像"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行容器"><span class="nav-number">1.2.3.</span> <span class="nav-text">运行容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看docker运行的所有容器"><span class="nav-number">1.2.4.</span> <span class="nav-text">查看docker运行的所有容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在已经运行的镜像或者容器内打开一个新的bash-shell"><span class="nav-number">1.2.5.</span> <span class="nav-text">在已经运行的镜像或者容器内打开一个新的bash shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器和主机之间的文件传送"><span class="nav-number">1.2.6.</span> <span class="nav-text">容器和主机之间的文件传送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#退出容器"><span class="nav-number">1.2.7.</span> <span class="nav-text">退出容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除容器"><span class="nav-number">1.2.8.</span> <span class="nav-text">删除容器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IDAPro简单使用"><span class="nav-number">2.</span> <span class="nav-text">2. IDAPro简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ubuntu16-04安装pwntools模块"><span class="nav-number">3.</span> <span class="nav-text">3.ubuntu16.04安装pwntools模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
