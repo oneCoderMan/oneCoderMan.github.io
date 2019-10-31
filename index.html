@@ -14,6 +14,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
   <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
@@ -43,8 +45,8 @@
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
-    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: '',
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     translation: {
       copy_button: 'Copy',
@@ -76,7 +78,7 @@
   };
 </script>
 
-  <title>CoderSim's Growth Diary</title>
+  <title>CoderSim's Growth Diary - extoll the world's best C and Java</title>
   
 
 
@@ -127,7 +129,7 @@
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <p class="site-subtitle">extoll the world's best C and Java</p>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
       
   </div>
 
@@ -199,9 +201,36 @@
     <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
   </ul>
 
 </nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
 </div>
     </header>
 
@@ -237,11 +266,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/30/docker-IDAPro/" class="post-title-link" itemprop="url">docker-IDAPro</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -339,11 +368,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/28/languageEnvConf/" class="post-title-link" itemprop="url">languageEnvConf</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -441,11 +470,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/24/IISFTP/" class="post-title-link" itemprop="url">IISFTP</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -535,11 +564,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/09/gccAndgdb/" class="post-title-link" itemprop="url">gccAndgdb</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -637,11 +666,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/08/balanceLvs/" class="post-title-link" itemprop="url">balanceLvs</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -731,11 +760,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/07/configurationARGS/" class="post-title-link" itemprop="url">configurationARGS</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -833,11 +862,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/07/pytorchEnvInUbuntu1604/" class="post-title-link" itemprop="url">pytorchEnvInUbuntu1604</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -927,11 +956,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/05/numpyPractice/" class="post-title-link" itemprop="url">numpyPractice</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -1021,11 +1050,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/10/05/ubuntu1604vnc/" class="post-title-link" itemprop="url">ubuntu1604vnc</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -1115,11 +1144,11 @@
       <meta itemprop="name" content="CoderSim's Growth Diary">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
+        <h2 class="post-title" itemprop="name headline">
             
             <a href="/2019/09/24/pytorch01/" class="post-title-link" itemprop="url">pytorch01</a>
           
-        </h1>
+        </h2>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -1330,6 +1359,9 @@
   
 
 
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
   <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
@@ -1341,6 +1373,15 @@
 
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
 
 
 
@@ -1348,6 +1389,8 @@
 
 
 
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
 
 
 
