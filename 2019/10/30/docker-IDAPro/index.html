@@ -66,7 +66,7 @@
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/doker01.png">
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/d02.png">
 <meta property="og:image" content="http://yoursite.com/images/docker-idapro/d03.png">
-<meta property="og:updated_time" content="2019-10-30T09:48:25.090Z">
+<meta property="og:updated_time" content="2019-10-31T03:48:11.684Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker-IDAPro">
 <meta name="twitter:description" content="docker与IDAPRO搭建二进制漏洞环境">
@@ -263,11 +263,19 @@
                 
               
 
-              <time title="Created: 2019-10-30 09:43:57 / Modified: 17:48:25" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
+              <time title="Created: 2019-10-30 09:43:57" itemprop="dateCreated datePublished" datetime="2019-10-30T09:43:57+08:00">2019-10-30</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-10-31 11:48:11" itemprop="dateModified" datetime="2019-10-31T11:48:11+08:00">2019-10-31</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -358,7 +366,25 @@
 <p>测试安装成功，没有报错误就可以了</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python</span><br><span class="line">import pwn</span><br><span class="line">pwn.asm(&quot;xor eax,eax&quot;)</span><br></pre></td></tr></table></figure>
 
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/asd413850393/article/details/101349924" target="_blank" rel="noopener">https://blog.csdn.net/asd413850393/article/details/101349924</a><br>[2] <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md" target="_blank" rel="noopener">https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md</a></p>
+<h2 id="4-pwntools和IDA调试程序"><a href="#4-pwntools和IDA调试程序" class="headerlink" title="4.pwntools和IDA调试程序"></a>4.pwntools和IDA调试程序</h2><p>期间使用IDAPro远程attach的时候报了一个错<br><code>This can perhaps indicate the process was just terminated, or that you don&#39;t have the necessary privileges.</code></p>
+<blockquote>
+<p>解决办法<br>重新启动容器，使用如下命令运行<br><code>docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -it -p 23900:23946 ubuntu:18.04 /bin/bash</code></p>
+</blockquote>
+<h3 id="设置程序的IO转发"><a href="#设置程序的IO转发" class="headerlink" title="设置程序的IO转发"></a>设置程序的IO转发</h3><ul>
+<li><p>打开一个新的bash，切换到容器的运行程序目录下。</p>
+</li>
+<li><p><code>ifconfig</code>查看ip地址</p>
+</li>
+<li><p>执行命令，设置IO转发到10001<br><code>socat tcp-listen:10001,reuseaddr,fork EXEC:./heapTest_x86,pty,raw,echo=0</code><br><code>socat</code>命令介绍查看<a href="#ref3">参考文献3</a></p>
+</li>
+<li><p>主机python使用pwntools</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">io = remote(&quot;172.17.0.2&quot;, 10001)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="IDA中的操作"><a href="#IDA中的操作" class="headerlink" title="IDA中的操作"></a>IDA中的操作</h3><p><code>call ___isoc99_scanf</code>处设置断点<br><code>Debugger-&gt;Attach to process...</code>附加到<code>./heapTest_x86</code>的进程上<br>回到python程序<br><code>io.recv( )</code>用于接收显示的数据<br><code>io.send( )</code>发送数据<br><code>io.sendline( )</code>用于回车</p>
+<h3 id="结束调试"><a href="#结束调试" class="headerlink" title="结束调试"></a>结束调试</h3><p>python程序中<code>io.close( )</code><br>ida软件中<code>CTRL+F2</code></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/asd413850393/article/details/101349924" target="_blank" rel="noopener">https://blog.csdn.net/asd413850393/article/details/101349924</a><br>[2] <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md" target="_blank" rel="noopener">https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md</a><br>[3] <span id="ref3"><a href="http://brieflyx.me/2015/linux-tools/socat-introduction/" target="_blank" rel="noopener">http://brieflyx.me/2015/linux-tools/socat-introduction/</a></span><br>[4] <a href="https://zhuanlan.zhihu.com/p/71914632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/71914632</a></p>
 
     </div>
 
@@ -443,7 +469,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-docker安装与基本操作"><span class="nav-number">1.</span> <span class="nav-text">1. docker安装与基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-基本操作"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入镜像-别人已经准备好的"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入镜像(别人已经准备好的)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看镜像"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行容器"><span class="nav-number">1.2.3.</span> <span class="nav-text">运行容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看docker运行的所有容器"><span class="nav-number">1.2.4.</span> <span class="nav-text">查看docker运行的所有容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在已经运行的镜像或者容器内打开一个新的bash-shell"><span class="nav-number">1.2.5.</span> <span class="nav-text">在已经运行的镜像或者容器内打开一个新的bash shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器和主机之间的文件传送"><span class="nav-number">1.2.6.</span> <span class="nav-text">容器和主机之间的文件传送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#退出容器"><span class="nav-number">1.2.7.</span> <span class="nav-text">退出容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除容器"><span class="nav-number">1.2.8.</span> <span class="nav-text">删除容器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IDAPro简单使用"><span class="nav-number">2.</span> <span class="nav-text">2. IDAPro简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ubuntu16-04安装pwntools模块"><span class="nav-number">3.</span> <span class="nav-text">3.ubuntu16.04安装pwntools模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-docker安装与基本操作"><span class="nav-number">1.</span> <span class="nav-text">1. docker安装与基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-安装"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-基本操作"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入镜像-别人已经准备好的"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入镜像(别人已经准备好的)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看镜像"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行容器"><span class="nav-number">1.2.3.</span> <span class="nav-text">运行容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看docker运行的所有容器"><span class="nav-number">1.2.4.</span> <span class="nav-text">查看docker运行的所有容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在已经运行的镜像或者容器内打开一个新的bash-shell"><span class="nav-number">1.2.5.</span> <span class="nav-text">在已经运行的镜像或者容器内打开一个新的bash shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#容器和主机之间的文件传送"><span class="nav-number">1.2.6.</span> <span class="nav-text">容器和主机之间的文件传送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#退出容器"><span class="nav-number">1.2.7.</span> <span class="nav-text">退出容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除容器"><span class="nav-number">1.2.8.</span> <span class="nav-text">删除容器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IDAPro简单使用"><span class="nav-number">2.</span> <span class="nav-text">2. IDAPro简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ubuntu16-04安装pwntools模块"><span class="nav-number">3.</span> <span class="nav-text">3.ubuntu16.04安装pwntools模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-pwntools和IDA调试程序"><span class="nav-number">4.</span> <span class="nav-text">4.pwntools和IDA调试程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设置程序的IO转发"><span class="nav-number">4.1.</span> <span class="nav-text">设置程序的IO转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDA中的操作"><span class="nav-number">4.2.</span> <span class="nav-text">IDA中的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结束调试"><span class="nav-number">4.3.</span> <span class="nav-text">结束调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
