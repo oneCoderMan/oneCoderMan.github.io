@@ -1,6 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>matplotlib-basic</title>
+    <url>/2019/11/02/matplotlib-basic/</url>
+    <content><![CDATA[<p>Matplotlib 图像绘制<br>Matplotlib 是Python语言的开源绘图库<br><a href="https://matplotlib.org/api/index.html" target="_blank" rel="noopener">官方文档</a></p>
+<a id="more"></a>
+<blockquote>
+<p>说明:桌面环境下全部绘图代码之后追加<code>plt.show()</code>可以看到图形<br>使用前需要导入包<code>from matplotlib import pyplot as plt</code></p>
+</blockquote>
+<h1 id="0x00-二维图形绘制"><a href="#0x00-二维图形绘制" class="headerlink" title="0x00 二维图形绘制"></a>0x00 二维图形绘制</h1><h2 id="0x00-00-简单绘图"><a href="#0x00-00-简单绘图" class="headerlink" title="0x00_00 简单绘图"></a>0x00_00 简单绘图</h2><h3 id="折线图"><a href="#折线图" class="headerlink" title="折线图"></a>折线图</h3><p><code>plt.plot()</code>用来绘制折线图<br><a href="https://matplotlib.org/3.1.0/api/_as_gen/matplotlib.pyplot.plot.html" target="_blank" rel="noopener">官方文档</a></p>
+<h4 id="默认横坐标"><a href="#默认横坐标" class="headerlink" title="默认横坐标"></a>默认横坐标</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">y=[1, 2, 3, 2, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]</span><br><span class="line">plt.plot(y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>列表中的值作为<code>y</code>值，横坐标从0自动递增<br><img src="/images/matplotlib-basic/01.png" alt="pic"></p>
+<h4 id="自定义横坐标"><a href="#自定义横坐标" class="headerlink" title="自定义横坐标"></a>自定义横坐标</h4><p>传入两个列表参数就可以</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]</span><br><span class="line">y=[1, 2, 3, 2, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]</span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/02.png" alt="pic"></p>
+<p>小例子，描点法生成一个正弦曲线</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line"># 在 -2PI 和 2PI 之间等间距生成 1000 个值，也就是 X 坐标</span><br><span class="line">X = np.linspace(-2*np.pi, 2*np.pi, 1000)</span><br><span class="line"># 计算 y 坐标</span><br><span class="line">y = np.sin(X)</span><br><span class="line">plt.plot(X, y) # 向方法中 `*args` 输入 X，y 坐标</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/03.png" alt="pic"></p>
+<h3 id="柱状图"><a href="#柱状图" class="headerlink" title="柱状图"></a>柱状图</h3><p>主要使用<code>plt.bar()</code>绘制</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x=[1,2,3]</span><br><span class="line">y=[3,4,5]</span><br><span class="line">plt.bar(x,y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/04.png" alt="pic"></p>
+<h3 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h3><p>主要使用<code>scatter()</code>绘制</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># X,y 的坐标均有 numpy 在 0 到 1 中随机生成 1000 个值</span><br><span class="line">X = np.random.ranf(100)</span><br><span class="line">y = np.random.ranf(100)</span><br><span class="line"># 向方法中 `*args` 输入 X，y 坐标</span><br><span class="line">plt.scatter(X, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/05.png" alt="pic"></p>
+<h3 id="饼状图"><a href="#饼状图" class="headerlink" title="饼状图"></a>饼状图</h3><p>主要使用<code>pie()</code>绘制</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">data=[32,45,56]</span><br><span class="line">plt.pie(data)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/06.png" alt="pic"></p>
+<h2 id="0x00-01定义图形样式"><a href="#0x00-01定义图形样式" class="headerlink" title="0x00_01定义图形样式"></a>0x00_01定义图形样式</h2><h3 id="折线图样式"><a href="#折线图样式" class="headerlink" title="折线图样式"></a>折线图样式</h3><p><a href="https://matplotlib.org/3.1.0/api/_as_gen/matplotlib.pyplot.plot.html" target="_blank" rel="noopener">官方文档</a><br>一些常见的参数样式</p>
+<table>
+<tr><th>参数</th><th>功能</th></tr>
+<tr><td>alpha=</td><td>设置线的透明度[0,1]</td></tr>
+<tr><td>color=</td><td>设置线型的颜色</td></tr>
+<tr><td>fillstyle=</td><td>设置线型的填充样式</td></tr>
+<tr><td>linestyle=</td><td>设置线型的样式</td></tr>
+<tr><td>linewidth=</td><td>设置线型的宽度</td></tr>
+<tr><td>marker=</td><td>设置标记点的样式</td></tr>
+</table>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 在 -2PI 和 2PI 之间等间距生成 1000 个值，也就是 X 坐标</span><br><span class="line">X = np.linspace(-2 * np.pi, 2 * np.pi, 1000)</span><br><span class="line"># 计算 sin() 对应的纵坐标</span><br><span class="line">y1 = np.sin(X)</span><br><span class="line"># 计算 cos() 对应的纵坐标</span><br><span class="line">y2 = np.cos(X)</span><br><span class="line"># 向方法中 `*args` 输入 X，y 坐标</span><br><span class="line">plt.plot(X, y1, color=&apos;r&apos;, linestyle=&apos;--&apos;, linewidth=2, alpha=0.8)</span><br><span class="line">plt.plot(X, y2, color=&apos;b&apos;, linestyle=&apos;-&apos;, linewidth=2)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/07.png" alt="pic"></p>
+<h3 id="散点图样式"><a href="#散点图样式" class="headerlink" title="散点图样式"></a>散点图样式</h3><p><a href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 生成随机数据</span><br><span class="line">x = np.random.rand(100)</span><br><span class="line">y = np.random.rand(100)</span><br><span class="line">colors = np.random.rand(100)</span><br><span class="line">size = np.random.normal(50, 60, 10)</span><br><span class="line">plt.scatter(x, y, s=size, c=colors)  # 绘制散点图</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/08.png" alt="pic"></p>
+<h3 id="饼状图样式"><a href="#饼状图样式" class="headerlink" title="饼状图样式"></a>饼状图样式</h3><p><a href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.pie.html#matplotlib.pyplot.pie" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">label = &apos;Cat&apos;, &apos;Dog&apos;, &apos;Cattle&apos;, &apos;Sheep&apos;, &apos;Horse&apos;  # 各类别标签</span><br><span class="line">color = &apos;r&apos;, &apos;g&apos;, &apos;r&apos;, &apos;g&apos;, &apos;y&apos;  # 各类别颜色</span><br><span class="line">size = [1, 2, 3, 4, 5]  # 各类别占比</span><br><span class="line">explode = (0, 0, 0, 0, 0.2)  # 各类别的偏移半径</span><br><span class="line"># 绘制饼状图</span><br><span class="line">plt.pie(size, colors=color, explode=explode,</span><br><span class="line">        labels=label, shadow=True, autopct=&apos;%1.1f%%&apos;)</span><br><span class="line"># 饼状图呈正圆</span><br><span class="line">plt.axis(&apos;equal&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/09.png" alt="pic"></p>
+<h3 id="组合图样式"><a href="#组合图样式" class="headerlink" title="组合图样式"></a>组合图样式</h3><p>往往有时候把几个图形在一个界面一同画出来<br><strong>两张图的横坐标必须共享</strong>，这样才能够被 Matplotlib 自动判断为组合图</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]</span><br><span class="line">y_bar = [3, 4, 6, 8, 9, 10, 9, 11, 7, 8]</span><br><span class="line">y_line = [2, 3, 5, 7, 8, 9, 8, 10, 6, 7]</span><br><span class="line"></span><br><span class="line">plt.bar(x, y_bar)</span><br><span class="line">plt.plot(x, y_line, &apos;-o&apos;, color=&apos;y&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/10.png" alt="pic"></p>
+<h2 id="0x00-02-定义图形位置"><a href="#0x00-02-定义图形位置" class="headerlink" title="0x00_02 定义图形位置"></a>0x00_02 定义图形位置</h2><p>需要调整图形的位置，或者把几张单独的图形拼接在一起，就需要引入 <code>plt.figure</code>图形对象</p>
+<blockquote>
+<p>把<code>plt.figure()</code>看成画板<br><code>axes</code>看成画布</p>
+</blockquote>
+<h3 id="自定义位置的图形"><a href="#自定义位置的图形" class="headerlink" title="自定义位置的图形"></a>自定义位置的图形</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.linspace(0, 10, 20)  # 生成数据</span><br><span class="line">y = x * x + 2</span><br><span class="line">fig = plt.figure()  # 新建图形对象</span><br><span class="line">#添加一个画布</span><br><span class="line">axes = fig.add_axes([0.1, 0.1, 0.8, 0.8])  # 控制画布的左, 下, 宽度, 高度</span><br><span class="line">axes.plot(x, y, &apos;r&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/11.png" alt="pic"></p>
+<h3 id="大图套小图"><a href="#大图套小图" class="headerlink" title="大图套小图"></a>大图套小图</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.linspace(0, 10, 20)  # 生成数据</span><br><span class="line">y = x * x + 2</span><br><span class="line"></span><br><span class="line">fig = plt.figure()  # 新建画板</span><br><span class="line">axes1 = fig.add_axes([0.1, 0.1, 0.8, 0.8])  # 大画布</span><br><span class="line">axes2 = fig.add_axes([0.2, 0.5, 0.4, 0.3])  # 小画布</span><br><span class="line"></span><br><span class="line">axes1.plot(x, y, &apos;r&apos;)  # 大画布</span><br><span class="line">axes2.plot(y, x, &apos;g&apos;)  # 小画布</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/12.png" alt="pic"></p>
+<h3 id="子图的绘制-多张图拼接在一起"><a href="#子图的绘制-多张图拼接在一起" class="headerlink" title="子图的绘制(多张图拼接在一起)"></a>子图的绘制(多张图拼接在一起)</h3><p>另外一种添加画布的方式<code>plt.subplots()</code>，它也是一个画布，返回一个元组(truple)数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fig, axes = plt.subplots()</span><br><span class="line">axes.plot(x, y, &apos;r&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>一个例子，拼接多张图片</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.linspace(0, 10, 20)  # 生成数据</span><br><span class="line">y = x * x + 2</span><br><span class="line">fig, axes = plt.subplots(nrows=1, ncols=2)  # 子图为 1 行，2 列</span><br><span class="line">for ax in axes:</span><br><span class="line">    ax.plot(x, y, &apos;r&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/13.png" alt="pic"></p>
+<blockquote>
+<p><strong>Tips：</strong><br>任何图形的绘制，都建议通过<code>plt.figure()</code> 或者<code>plt.subplots()</code>管理一个完整的图形对象。而不是简单使用一条语句，例如<code>plt.plot()</code>来绘图。</p>
+</blockquote>
+<h2 id="0x00-03-绘图规范"><a href="#0x00-03-绘图规范" class="headerlink" title="0x00_03 绘图规范"></a>0x00_03 绘图规范</h2><h3 id="添加图标题、图例"><a href="#添加图标题、图例" class="headerlink" title="添加图标题、图例"></a>添加图标题、图例</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.linspace(0, 10, 20)  # 生成数据</span><br><span class="line">fig, axes = plt.subplots()</span><br><span class="line">axes.set_xlabel(&apos;x label&apos;)  # 横轴名称</span><br><span class="line">axes.set_ylabel(&apos;y label&apos;)</span><br><span class="line">axes.set_title(&apos;myTitle&apos;)  # 图形名称</span><br><span class="line">axes.plot(x, x**2)</span><br><span class="line">axes.plot(x, x**3)</span><br><span class="line">axes.legend([&quot;y = x**2&quot;, &quot;y = x**3&quot;], loc=0)  # 图例</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><code>loc</code>参数标记图例位置，1，2，3，4 依次代表：右上角、左上角、左下角，右下角；0 代表自适应<br><img src="/images/matplotlib-basic/14.png" alt="pic"></p>
+<h3 id="线型、颜色、透明度"><a href="#线型、颜色、透明度" class="headerlink" title="线型、颜色、透明度"></a>线型、颜色、透明度</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.linspace(0, 10, 20)  # 生成数据</span><br><span class="line">fig, ax = plt.subplots(figsize=(12, 6))</span><br><span class="line"># 线宽</span><br><span class="line">ax.plot(x, x+1, color=&quot;blue&quot;, linewidth=0.25)</span><br><span class="line">ax.plot(x, x+2, color=&quot;blue&quot;, linewidth=0.50)</span><br><span class="line">ax.plot(x, x+3, color=&quot;blue&quot;, linewidth=1.00)</span><br><span class="line">ax.plot(x, x+4, color=&quot;blue&quot;, linewidth=2.00)</span><br><span class="line"></span><br><span class="line"># 虚线类型</span><br><span class="line">ax.plot(x, x+5, color=&quot;red&quot;, lw=2, linestyle=&apos;-&apos;)</span><br><span class="line">ax.plot(x, x+6, color=&quot;red&quot;, lw=2, ls=&apos;-.&apos;)</span><br><span class="line">ax.plot(x, x+7, color=&quot;red&quot;, lw=2, ls=&apos;:&apos;)</span><br><span class="line"></span><br><span class="line"># 虚线交错宽度</span><br><span class="line">line, = ax.plot(x, x+8, color=&quot;black&quot;, lw=1.50)</span><br><span class="line">line.set_dashes([5, 10, 15, 10])</span><br><span class="line"></span><br><span class="line"># 符号</span><br><span class="line">ax.plot(x, x + 9, color=&quot;green&quot;, lw=2, ls=&apos;--&apos;, marker=&apos;+&apos;)</span><br><span class="line">ax.plot(x, x+10, color=&quot;green&quot;, lw=2, ls=&apos;--&apos;, marker=&apos;o&apos;)</span><br><span class="line">ax.plot(x, x+11, color=&quot;green&quot;, lw=2, ls=&apos;--&apos;, marker=&apos;s&apos;)</span><br><span class="line">ax.plot(x, x+12, color=&quot;green&quot;, lw=2, ls=&apos;--&apos;, marker=&apos;1&apos;)</span><br><span class="line"></span><br><span class="line"># 符号大小和颜色</span><br><span class="line">ax.plot(x, x+13, color=&quot;purple&quot;, lw=1, ls=&apos;-&apos;, marker=&apos;o&apos;, markersize=2)</span><br><span class="line">ax.plot(x, x+14, color=&quot;purple&quot;, lw=1, ls=&apos;-&apos;, marker=&apos;o&apos;, markersize=4)</span><br><span class="line">ax.plot(x, x+15, color=&quot;purple&quot;, lw=1, ls=&apos;-&apos;,</span><br><span class="line">        marker=&apos;o&apos;, markersize=8, markerfacecolor=&quot;red&quot;)</span><br><span class="line">ax.plot(x, x+16, color=&quot;purple&quot;, lw=1, ls=&apos;-&apos;, marker=&apos;s&apos;, markersize=8,</span><br><span class="line">        markerfacecolor=&quot;yellow&quot;, markeredgewidth=2, markeredgecolor=&quot;blue&quot;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/15.png" alt="pic"></p>
+<h3 id="网格和坐标轴范围"><a href="#网格和坐标轴范围" class="headerlink" title="网格和坐标轴范围"></a>网格和坐标轴范围</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.linspace(0, 10, 20)  # 生成数据</span><br><span class="line">fig, axes = plt.subplots(1, 2, figsize=(10, 5))</span><br><span class="line"></span><br><span class="line"># 显示网格</span><br><span class="line">axes[0].plot(x, x**2, x, x**3, lw=2)</span><br><span class="line">axes[0].grid(True)</span><br><span class="line"></span><br><span class="line"># 设置坐标轴范围</span><br><span class="line">axes[1].plot(x, x**2, x, x**3)</span><br><span class="line">axes[1].set_ylim([0, 60])</span><br><span class="line">axes[1].set_xlim([2, 5])</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/16.png" alt="pic"></p>
+<h3 id="图形标注文字"><a href="#图形标注文字" class="headerlink" title="图形标注文字"></a>图形标注文字</h3><p>文字标注通过<code>matplotlib.pyplot.text()</code>实现。最基本的样式为 <code>matplotlib.pyplot.text(x, y, s)</code>，其中 x, y 用于标注位置定位，s 代表标注的字符串。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fig, axes = plt.subplots()</span><br><span class="line">x_bar = [10, 20, 30, 40, 50]  # 柱形图横坐标</span><br><span class="line">y_bar = [0.5, 0.6, 0.3, 0.4, 0.8]  # 柱形图纵坐标</span><br><span class="line">bars = axes.bar(x_bar, y_bar, color=&apos;blue&apos;, label=x_bar, width=2)  # 绘制柱形图</span><br><span class="line">for i, rect in enumerate(bars):</span><br><span class="line">    x_text = rect.get_x()  # 获取柱形图横坐标</span><br><span class="line">    y_text = rect.get_height() + 0.01  # 获取柱子的高度并增加 0.01</span><br><span class="line">    plt.text(x_text, y_text, &apos;%.1f&apos; %y_bar[i])  # 标注文字</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/17.png" alt="pic"></p>
+<h1 id="0x01-三维图形绘制"><a href="#0x01-三维图形绘制" class="headerlink" title="0x01 三维图形绘制"></a>0x01 三维图形绘制</h1><p>绘制三维图像主要通过<code>mplot3d</code>模块实现。但是，使用<code>Matplotlib</code> 绘制三维图像实际上是在二维画布上展示，所以一般绘制三维图像时，同样需要载入 pyplot 模块<br>导入包<code>from mpl_toolkits.mplot3d import Axes3D</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">from mpl_toolkits.mplot3d import Axes3D</span><br><span class="line">import matplotlib.pyplot as plt</span><br></pre></td></tr></table></figure>
+
+<h2 id="三维散点图"><a href="#三维散点图" class="headerlink" title="三维散点图"></a>三维散点图</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># x, y, z 均为 0 到 1 之间的 100 个随机数</span><br><span class="line">x = np.random.normal(0, 1, 100)</span><br><span class="line">y = np.random.normal(0, 1, 100)</span><br><span class="line">z = np.random.normal(0, 1, 100)</span><br><span class="line"></span><br><span class="line">fig = plt.figure()</span><br><span class="line"></span><br><span class="line">ax = Axes3D(fig)</span><br><span class="line">ax.scatter(x, y, z)</span><br><span class="line">plt.show();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/18.png" alt="pic"></p>
+<h2 id="三维线性图"><a href="#三维线性图" class="headerlink" title="三维线性图"></a>三维线性图</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"># 生成数据</span><br><span class="line">x = np.linspace(-6 * np.pi, 6 * np.pi, 1000)</span><br><span class="line">y = np.sin(x)</span><br><span class="line">z = np.cos(x)</span><br><span class="line"># 创建 3D 图形对象</span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = Axes3D(fig)</span><br><span class="line">ax.plot(x, y, z)</span><br><span class="line">plt.show();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/19.png" alt="pic"></p>
+<h2 id="三维曲面图"><a href="#三维曲面图" class="headerlink" title="三维曲面图"></a>三维曲面图</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 生成数据</span><br><span class="line">X = np.arange(-2, 2, 0.1)</span><br><span class="line">Y = np.arange(-2, 2, 0.1)</span><br><span class="line">X, Y = np.meshgrid(X, Y)</span><br><span class="line">Z = np.sqrt(X ** 2 + Y ** 2)</span><br><span class="line"></span><br><span class="line"># 绘制曲面图，并使用 cmap 着色</span><br><span class="line">ax.plot_surface(X, Y, Z, cmap=plt.cm.winter)</span><br><span class="line">plt.show();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/matplotlib-basic/20.png" alt="pic"></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.shiyanlou.com/courses/1093/learning/?id=6141" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/1093/learning/?id=6141</a><br>[2] <a href="https://www.runoob.com/numpy/numpy-matplotlib.html" target="_blank" rel="noopener">https://www.runoob.com/numpy/numpy-matplotlib.html</a></p>
+]]></content>
+      <categories>
+        <category>Numpy</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>matplotlib</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>pandas-basic</title>
     <url>/2019/11/02/pandas-basic/</url>
     <content><![CDATA[<p>pandas数据处理的基本操作</p>
@@ -910,8 +1022,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Numpy</tag>
         <tag>Python</tag>
+        <tag>Numpy</tag>
       </tags>
   </entry>
   <entry>
