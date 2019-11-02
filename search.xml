@@ -1,6 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>pandas-basic</title>
+    <url>/2019/11/02/pandas-basic/</url>
+    <content><![CDATA[<p>pandas数据处理的基本操作</p>
+<a id="more"></a>
+<p>Python进行数据预处理的库，基于Numpy，这里主要涉及到数据类型，读取，选择，删减，填充。<br>使用前导入库<code>import pandas as pd</code></p>
+<h1 id="1-pandas数据类型"><a href="#1-pandas数据类型" class="headerlink" title="1. pandas数据类型"></a>1. pandas数据类型</h1><table>
+<tr><th>dataType</th><th>说明</th><th>备注</th></tr>
+<tr><td>Series</td><td>一维数组</td><td>常见</td></tr>
+<tr><td>DataFrame</td><td>二维数组</td><td>常见</td></tr>
+<tr><td>Panel</td><td>三维数组</td><td>不常见</td></tr>
+</table>
+
+<h2 id="1-1Series简介"><a href="#1-1Series简介" class="headerlink" title="1.1Series简介"></a>1.1Series简介</h2><p><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html" target="_blank" rel="noopener">官网</a><br>Pandas 中的一维数组，其可以储存整数、浮点数、字符串等类型的数据，它的结构如下所示。具有行索引。<br><code>pandas.Series(data=None, index=None)</code></p>
+<h3 id="基于Python字典创建Series"><a href="#基于Python字典创建Series" class="headerlink" title="基于Python字典创建Series"></a>基于Python字典创建Series</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">s = pd.Series(&#123;&apos;c1&apos;: 1, &apos;c2&apos;: 2, &apos;c3&apos;: 3&#125;)</span><br><span class="line">print(s)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/01.png" alt="pic01"></p>
+<h3 id="基于NumPy一维ndarray数组创建"><a href="#基于NumPy一维ndarray数组创建" class="headerlink" title="基于NumPy一维ndarray数组创建"></a>基于NumPy一维ndarray数组创建</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f =np.random.randn(5)</span><br><span class="line">print(f)</span><br><span class="line">s = pd.Series(f)</span><br><span class="line">print(s)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/02.png" alt="pic02"><br><strong>注意：默认索引从0开始</strong></p>
+<h2 id="1-2-DataFrame简介"><a href="#1-2-DataFrame简介" class="headerlink" title="1.2 DataFrame简介"></a>1.2 DataFrame简介</h2><p><a href="https://pandas.pydata.org/pandas-docs/stable/reference/frame.html" target="_blank" rel="noopener">官网</a><br>Pandas 中最为常见、最重要且使用频率最高的数据结构，与excel类似，二维表格，具有行列索引。<br>基本结构是这样的<code>pandas.DataFrame(data=None, index=None, columns=None)</code></p>
+<h3 id="基于列表字典创建"><a href="#基于列表字典创建" class="headerlink" title="基于列表字典创建"></a>基于列表字典创建</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;&apos;c1&apos;: [1, 2, 3],</span><br><span class="line">                   &apos;c2&apos;: [4, 5, 6]&#125;)</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<h3 id="基于Series字典创建"><a href="#基于Series字典创建" class="headerlink" title="基于Series字典创建"></a>基于Series字典创建</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;&apos;c1&apos;: pd.Series([1, 2, 3]),</span><br><span class="line">                   &apos;c2&apos;: pd.Series([4, 5, 6])&#125;)</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<h3 id="基于字典列表"><a href="#基于字典列表" class="headerlink" title="基于字典列表"></a>基于字典列表</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame([&#123;&apos;c1&apos;: 1, &apos;c2&apos;: 4&#125;,</span><br><span class="line">                   &#123;&apos;c1&apos;: 2, &apos;c2&apos;: 5&#125;,</span><br><span class="line">                   &#123;&apos;c1&apos;: 3, &apos;c2&apos;: 6&#125;])</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/03.png" alt="pic02"></p>
+<h3 id="基于NumPy的二维ndarray创建"><a href="#基于NumPy的二维ndarray创建" class="headerlink" title="基于NumPy的二维ndarray创建"></a>基于NumPy的二维ndarray创建</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">c=np.random.randint(5, size=(2, 4))</span><br><span class="line">print(c)</span><br><span class="line">df = pd.DataFrame(c)</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/04.png" alt="pic02"><br>不指定列的时候索引或者名称是数字从0开始<br>指定列索引</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame(np.random.rand(2, 5), columns=list(&apos;ABCDE&apos;))</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/4_1.png" alt="pic02"></p>
+<h1 id="2-数据读取"><a href="#2-数据读取" class="headerlink" title="2.数据读取"></a>2.数据读取</h1><p><a href="https://pandas.pydata.org/pandas-docs/stable/reference/io.html" target="_blank" rel="noopener">官方文档</a><br>一般可以用于读取csv文件，其他文件格式参考官方文档</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(&quot;./data/los_census.csv&quot;)</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<p>数据来源<code>https://labfile.oss.aliyuncs.com/courses/906/los_census.csv</code></p>
+<h2 id="数据省略号解决方案"><a href="#数据省略号解决方案" class="headerlink" title="数据省略号解决方案"></a>数据省略号解决方案</h2><blockquote>
+<p>数据显示的时候，会有省略号，具体见参考文献[2]</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pd.set_option(&apos;display.max_columns&apos;, 1000)</span><br><span class="line">pd.set_option(&apos;display.width&apos;, 1000)</span><br><span class="line">pd.set_option(&apos;display.max_colwidth&apos;, 1000)</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据预览"><a href="#数据预览" class="headerlink" title="数据预览"></a>数据预览</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df.head()  # 默认显示前 5 条</span><br><span class="line">df.tail(10)  # 指定显示后 10 条</span><br><span class="line">df.describe() # 数据集概览，计数，最值，平均值</span><br><span class="line">df.values # DataFrame 转换为 NumPy 数组</span><br><span class="line">df.index  # 查看索引</span><br><span class="line">df.columns  # 查看列名</span><br><span class="line">df.shape  # 查看形状</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-数据选择"><a href="#3-数据选择" class="headerlink" title="3.数据选择"></a>3.数据选择</h1><h2 id="基于索引选择"><a href="#基于索引选择" class="headerlink" title="基于索引选择"></a>基于索引选择</h2><p>主要涉及到<code>.iloc</code>，<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.iloc.html#pandas.DataFrame.iloc" target="_blank" rel="noopener">官方文档</a><br><strong>默认从0开始</strong>，类似与切片<br>主要结构<code>df.iloc[[rows],[coloms]]</code></p>
+<h3 id="选择特定的行"><a href="#选择特定的行" class="headerlink" title="选择特定的行"></a>选择特定的行</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(&quot;./data/los_census.csv&quot;)</span><br><span class="line">selectd=df.iloc[:3]  #选择前三行</span><br><span class="line">print(selectd)</span><br></pre></td></tr></table></figure>
+
+<p>选择第三行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">selectd=df.iloc[3]  #选择前三行</span><br></pre></td></tr></table></figure>
+
+<p>选择1，3，5行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">selectd=df.iloc[[1,3,5]]  #选择前三行</span><br></pre></td></tr></table></figure>
+
+<h3 id="选择特定的列"><a href="#选择特定的列" class="headerlink" title="选择特定的列"></a>选择特定的列</h3><p>选择第2-4列的所有数据，下标从0开始，最后一个不取</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(&quot;./data/los_census.csv&quot;)</span><br><span class="line">selectd=df.iloc[:, 1:4]</span><br><span class="line">print(selectd)</span><br></pre></td></tr></table></figure>
+
+<h2 id="基于标签名选择"><a href="#基于标签名选择" class="headerlink" title="基于标签名选择"></a>基于标签名选择</h2><p>主要是<code>.loc</code>，<a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.loc.html#pandas.DataFrame.loc" target="_blank" rel="noopener">官方文档</a></p>
+<p>选择1，3，5行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df.loc[[0, 2, 4]]</span><br></pre></td></tr></table></figure>
+
+<p>选择2-4列</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(&quot;./data/los_census.csv&quot;)</span><br><span class="line">print(df.columns )</span><br><span class="line">c = df.loc[:, &apos;Total Population&apos;:&apos;Total Males&apos;] #选择2-4列</span><br><span class="line">print(c)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/05.png" alt="pic02"><br>选择1，3行和Median Age及其后面的列</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df.loc[[0, 2], &apos;Median Age&apos;:]</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-数据删减"><a href="#4-数据删减" class="headerlink" title="4.数据删减"></a>4.数据删减</h1><p>与数据选择可以补充使用，可以去掉指定的行或者列，<code>DataFrame.drop</code>等价选择了<br><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.drop.html#pandas.DataFrame.drop" target="_blank" rel="noopener">官方文档</a><br>参数<code>axis=1</code>指定按列删除数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.read_csv(&quot;./data/los_census.csv&quot;)</span><br><span class="line">print(df.columns )</span><br><span class="line">c = df.drop(labels=[&apos;Median Age&apos;, &apos;Total Males&apos;], axis=1)</span><br><span class="line">print(c)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/06.png" alt="pic02"><br>数据去重</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df.drop_duplicates()</span><br></pre></td></tr></table></figure>
+
+<p>删除空缺的行或者列</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df.dropna()</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-数据填充"><a href="#5-数据填充" class="headerlink" title="5.数据填充"></a>5.数据填充</h1><p>对缺少的值进行数据填充</p>
+<h2 id="检测缺失值"><a href="#检测缺失值" class="headerlink" title="检测缺失值"></a>检测缺失值</h2><p>对于不同数据的缺失都采用<code>NaN</code>作为缺失标记，时间戳丢失采用<code>NAT</code>标记。<br>主要有两个函数<code>isna()</code>和<code>notna</code><br>构建一个含缺失数据的数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame(np.random.rand(9, 5), columns=list(&apos;ABCDE&apos;))</span><br><span class="line"># 插入 T 列，并打上时间戳</span><br><span class="line">df.insert(value=pd.Timestamp(&apos;2017-10-1&apos;), loc=0, column=&apos;Time&apos;)</span><br><span class="line"># 将 1, 3, 5 列的 1，3，5 行置为缺失值</span><br><span class="line">df.iloc[[1, 3, 5, 7], [0, 2, 4]] = np.nan</span><br><span class="line"># 将 2, 4, 6 列的 2，4，6 行置为缺失值</span><br><span class="line">df.iloc[[2, 4, 6, 8], [1, 3, 5]] = np.nan</span><br><span class="line">print(df)</span><br></pre></td></tr></table></figure>
+
+<p>数据如下所示<br><img src="/images/pandas-basic/07.png" alt="pic02"><br>此时通过<code>isna()</code>或者<code>notna()</code>查看缺失的情况</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">temp = df.isna()</span><br><span class="line">print(temp)</span><br></pre></td></tr></table></figure>
+
+<p>结果如下所示<br><img src="/images/pandas-basic/08.png" alt="pic02"></p>
+<h2 id="填充缺失值"><a href="#填充缺失值" class="headerlink" title="填充缺失值"></a>填充缺失值</h2><h3 id="填充相同的值"><a href="#填充相同的值" class="headerlink" title="填充相同的值"></a>填充相同的值</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">t2 = df.fillna(0)</span><br><span class="line">print(t2)</span><br></pre></td></tr></table></figure>
+
+<p>填充后数据如下<br><img src="/images/pandas-basic/09.png" alt="pic02"></p>
+<h3 id="使用缺失值前面的值填充"><a href="#使用缺失值前面的值填充" class="headerlink" title="使用缺失值前面的值填充"></a>使用缺失值前面的值填充</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">t2 = df.fillna(method=&apos;pad&apos;)</span><br><span class="line">print(t2)</span><br></pre></td></tr></table></figure>
+
+<p>填充后数据如下<br><img src="/images/pandas-basic/10.png" alt="pic02"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df.fillna(method=&apos;pad&apos;) #使用后面的值填充</span><br><span class="line">df.fillna(method=&apos;pad&apos;, limit=1)  # 连续缺失，限制最多填充一项</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用平均值填充"><a href="#使用平均值填充" class="headerlink" title="使用平均值填充"></a>使用平均值填充</h3><p>对c,e两列使用平均值填充</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">t2 = df.fillna(df.mean()[&apos;C&apos;:&apos;E&apos;])</span><br><span class="line">print(t2)</span><br></pre></td></tr></table></figure>
+
+<p>填充后的数据如下：<br><img src="/images/pandas-basic/11.png" alt="pic02"></p>
+<h3 id="使用插值填充"><a href="#使用插值填充" class="headerlink" title="使用插值填充"></a>使用插值填充</h3><p><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.interpolate.html#pandas.DataFrame.interpolate" target="_blank" rel="noopener">官方文档</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 生成一个 DataFrame</span><br><span class="line">df = pd.DataFrame(&#123;&apos;A&apos;: [1.1, 2.2, np.nan, 4.5, 5.7, 6.9],</span><br><span class="line">                   &apos;B&apos;: [.21, np.nan, np.nan, 3.1, 11.7, 13.2]&#125;)</span><br><span class="line">print(df)</span><br><span class="line">df_interpolate = df.interpolate()</span><br><span class="line">print(df_interpolate)</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-数据可视化"><a href="#6-数据可视化" class="headerlink" title="6.数据可视化"></a>6.数据可视化</h1><p>可以使用 Pandas 提供的 <code>DataFrame.plot</code> 方法调用Matplotlib接口绘图。<br>简单易用，适合于数据的快速呈现和预览<br><a href="https://pandas.pydata.org/pandas-docs/stable/reference/frame.html#plotting" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="准备数据"><a href="#准备数据" class="headerlink" title="准备数据"></a>准备数据</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;&apos;A&apos;: [1.1, 2.2, np.nan, 4.5, 5.7, 6.9],</span><br><span class="line">                   &apos;B&apos;: [.21, np.nan, np.nan, 3.1, 11.7, 13.2]&#125;)</span><br><span class="line">print(df)</span><br><span class="line">df_interpolate = df.interpolate()</span><br><span class="line">print(df_interpolate)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/pandas-basic/12.png" alt="pic02"></p>
+<h2 id="数据展示"><a href="#数据展示" class="headerlink" title="数据展示"></a>数据展示</h2><h3 id="线性图绘制"><a href="#线性图绘制" class="headerlink" title="线性图绘制"></a>线性图绘制</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">#...省略数据准备代码</span><br><span class="line">t=df_interpolate.plot()</span><br><span class="line">plt.show(t)</span><br></pre></td></tr></table></figure>
+
+<p>展示的数据如图所示<br><img src="/images/pandas-basic/13.png" alt="pic02"></p>
+<h3 id="柱状图绘制"><a href="#柱状图绘制" class="headerlink" title="柱状图绘制"></a>柱状图绘制</h3><p>也可以展示位柱状图</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">t=df_interpolate.plot(kind=&apos;bar&apos;)</span><br><span class="line">plt.show(t)</span><br></pre></td></tr></table></figure>
+
+<p>#参考文献<br>[1] <a href="https://www.shiyanlou.com/courses/906/learning/?id=3375" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/906/learning/?id=3375</a><br>[2] <a href="https://blog.csdn.net/Ramer42/article/details/83178653" target="_blank" rel="noopener">https://blog.csdn.net/Ramer42/article/details/83178653</a></p>
+]]></content>
+      <categories>
+        <category>Numpy</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>pandas</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>docker-IDAPro</title>
     <url>/2019/10/30/docker-IDAPro/</url>
     <content><![CDATA[<p>docker与IDAPRO搭建二进制漏洞环境</p>
