@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Seaborn基本知识Seaborn 对Matplotlib核心库封装，可以轻松地画出更美的图形，非常适合数据分析的可视化。官方文档">
+<meta name="keywords" content="Numpy,Python,seaborn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="seaborn-basic">
+<meta property="og:url" content="http://yoursite.com/2019/11/02/seaborn-basic/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="Seaborn基本知识Seaborn 对Matplotlib核心库封装，可以轻松地画出更美的图形，非常适合数据分析的可视化。官方文档">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/01.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/02.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/03.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/04.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/05.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/06.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/07.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/08.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/09.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/10.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/11.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/12.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/13.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/14.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/15.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/16.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/17.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/18.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/19.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/20.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/21.png">
+<meta property="og:image" content="http://yoursite.com/images/seaborn-basic/22.png">
+<meta property="og:updated_time" content="2019-11-02T15:41:03.986Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="seaborn-basic">
+<meta name="twitter:description" content="Seaborn基本知识Seaborn 对Matplotlib核心库封装，可以轻松地画出更美的图形，非常适合数据分析的可视化。官方文档">
+<meta name="twitter:image" content="http://yoursite.com/images/seaborn-basic/01.png">
+  <link rel="canonical" href="http://yoursite.com/2019/11/02/seaborn-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>seaborn-basic | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/02/seaborn-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">seaborn-basic
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-02 21:52:34 / Modified: 23:41:03" itemprop="dateCreated datePublished" datetime="2019-11-02T21:52:34+08:00">2019-11-02</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Numpy/" itemprop="url" rel="index"><span itemprop="name">Numpy</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Seaborn基本知识<br>Seaborn 对Matplotlib核心库封装，可以轻松地画出更美的图形，非常适合数据分析的可视化。<a href="https://seaborn.pydata.org/api.html" target="_blank" rel="noopener">官方文档</a></p>
+<a id="more"></a>
+<p>需要导入包<code>import seaborn as sns</code></p>
+<h1 id="0x00-快速优化"><a href="#0x00-快速优化" class="headerlink" title="0x00 快速优化"></a>0x00 快速优化</h1><p>使用Matplotlib画的图形如下<br><img src="/images/seaborn-basic/01.png" alt="pic"><br>使用Seaborn进行快速优化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sns.set()  # 声明使用 Seaborn 样式</span><br><span class="line">x = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]</span><br><span class="line">y_bar = [3, 4, 6, 8, 9, 10, 9, 11, 7, 8]</span><br><span class="line">y_line = [2, 3, 5, 7, 8, 9, 8, 10, 6, 7]</span><br><span class="line"></span><br><span class="line">plt.bar(x, y_bar)</span><br><span class="line">plt.plot(x, y_line, &apos;-o&apos;, color=&apos;y&apos;)</span><br><span class="line">plt.show();</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/02.png" alt="pic"></p>
+<p><code>sns.set()</code>的格式如下，给出了默认参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sns.set(context=&apos;notebook&apos;, style=&apos;darkgrid&apos;, palette=&apos;deep&apos;, font=&apos;sans-serif&apos;, font_scale=1, color_codes=False, rc=None)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>说明<br>context—-控制画幅大小—–{paper, notebook, talk, poster}<br>style——控制样式———{darkgrid, whitegrid, dark, white, ticks}<br>palette—-调色板———-{deep, muted, bright, pastel, dark, colorblind}</p>
+</blockquote>
+<h1 id="0x01-实验数据准备"><a href="#0x01-实验数据准备" class="headerlink" title="0x01 实验数据准备"></a>0x01 实验数据准备</h1><p><a href="https://archive.ics.uci.edu/ml/datasets/iris" target="_blank" rel="noopener">dataSet</a><br>数据集总共 150 行，由 5 列组成。分别代表：萼片长度、萼片宽度、花瓣长度、花瓣宽度、花的类别。其中，前四列均为数值型数据，最后一列花的分类为三种，分别是：Iris Setosa、Iris Versicolour、Iris Virginica</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 这个是在线的数据集，估计是seaborn内置的数据</span><br><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">print(iris.head())</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/03.png" alt="pic"></p>
+<h1 id="0x02-关联图"><a href="#0x02-关联图" class="headerlink" title="0x02 关联图"></a>0x02 关联图</h1><p>关联图主要是线性图，散点图,涉及三个API</p>
+<table>
+<tr><td>名称</td><td>功能</td><td>备注</td></tr>
+<tr><td>relplot</td><td>绘制关系图</td><td>Figure-level 接口</td></tr>
+<tr><td>scatterplot</td><td>多维度分析散点图</td><td>Axes-level </td></tr>
+<tr><td>scatterplot</td><td>多维度分析线形图</td><td>Axes-level </td></tr>
+</table>
+
+<blockquote>
+<p>Axes-level接口与Matplotlib紧密的更好。Figure-level适合快速上手。Figure-level接口可以实现Axes-level接口的功能，见0x02_01</p>
+</blockquote>
+<h2 id="0x02-00-散点图"><a href="#0x02-00-散点图" class="headerlink" title="0x02_00 散点图"></a>0x02_00 散点图</h2><p>指定x，y为萼片长度和萼片宽度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.relplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/04.png" alt="pic"><br><strong>可以优化，加入类别特征</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.relplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, hue=&quot;species&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/05.png" alt="pic"></p>
+<p><strong>继续优化，不同类别不同形状</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.relplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;,</span><br><span class="line">            hue=&quot;species&quot;, style=&quot;species&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/06.png" alt="pic"></p>
+<h2 id="0x02-01-线性图"><a href="#0x02-01-线性图" class="headerlink" title="0x02_01 线性图"></a>0x02_01 线性图</h2><p>线形态绘制时还会自动给出95%的置信区间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.lineplot(x=&quot;sepal_length&quot;, y=&quot;petal_length&quot;,</span><br><span class="line">             hue=&quot;species&quot;, style=&quot;species&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>这个可以用<code>relplot</code>实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sns.relplot(x=&quot;sepal_length&quot;, y=&quot;petal_length&quot;,</span><br><span class="line">            hue=&quot;species&quot;, style=&quot;species&quot;, kind=&quot;line&quot;, data=iris)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/07.png" alt="pic"></p>
+<h1 id="0x03-类别图"><a href="#0x03-类别图" class="headerlink" title="0x03 类别图"></a>0x03 类别图</h1><p>类别图的<code>Figure-level</code>接口是<code>catplot</code>。是一些<code>Axes-level</code>的集合。<br>下面列出Axes-level接口</p>
+<ul>
+<li>分类散点图<blockquote>
+<p>stripplot() (kind=”strip”)<br>swarmplot() (kind=”swarm”)</p>
+</blockquote>
+</li>
+<li>分类分布图<blockquote>
+<p>boxplot() (kind=”box”)<br>violinplot() (kind=”violin”)<br>boxenplot() (kind=”boxen”)</p>
+</blockquote>
+</li>
+<li>分类估计图<blockquote>
+<p>pointplot() (kind=”point”)<br>barplot() (kind=”bar”)<br>countplot() (kind=”count”)</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="分类散点图"><a href="#分类散点图" class="headerlink" title="分类散点图"></a>分类散点图</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;sepal_length&quot;, y=&quot;species&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/08.png" alt="pic"><br>可以设置防止点重叠</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;sepal_length&quot;, y=&quot;species&quot;, kind=&quot;swarm&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/09.png" alt="pic"></p>
+<h2 id="分类分布图"><a href="#分类分布图" class="headerlink" title="分类分布图"></a>分类分布图</h2><h3 id="箱线图"><a href="#箱线图" class="headerlink" title="箱线图"></a>箱线图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;sepal_length&quot;, y=&quot;species&quot;, kind=&quot;box&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/10.png" alt="pic"></p>
+<h3 id="小提琴图"><a href="#小提琴图" class="headerlink" title="小提琴图"></a>小提琴图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;sepal_length&quot;, y=&quot;species&quot;, kind=&quot;violin&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/11.png" alt="pic"></p>
+<h3 id="增强箱线图"><a href="#增强箱线图" class="headerlink" title="增强箱线图"></a>增强箱线图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;species&quot;, y=&quot;sepal_length&quot;, kind=&quot;boxen&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/12.png" alt="pic"></p>
+<h2 id="分类估计图"><a href="#分类估计图" class="headerlink" title="分类估计图"></a>分类估计图</h2><h3 id="点线图"><a href="#点线图" class="headerlink" title="点线图"></a>点线图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;sepal_length&quot;, y=&quot;species&quot;, kind=&quot;point&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/13.png" alt="pic"></p>
+<h3 id="条形图"><a href="#条形图" class="headerlink" title="条形图"></a>条形图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;sepal_length&quot;, y=&quot;species&quot;, kind=&quot;bar&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/14.png" alt="pic"></p>
+<h3 id="计数条形图"><a href="#计数条形图" class="headerlink" title="计数条形图"></a>计数条形图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.catplot(x=&quot;species&quot;, kind=&quot;count&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/15.png" alt="pic"></p>
+<h1 id="0x04-分布图"><a href="#0x04-分布图" class="headerlink" title="0x04 分布图"></a>0x04 分布图</h1><p>可视化变量的分布情况，一般有单变量分布和多变量分布，这里的多变量多指二元变量。jointplot，pairplot，distplot，kdeplot。</p>
+<h2 id="单变量的直方核密度估计图"><a href="#单变量的直方核密度估计图" class="headerlink" title="单变量的直方核密度估计图"></a>单变量的直方核密度估计图</h2><p><code>distplot</code>提供了参数来调整直方图和核密度估计图，eg设置 <code>kde=False</code>可以只绘制直方图，或者<code>hist=False</code>只绘制核密度估计图。<code>kdeplot</code>可以专门用于绘制核密度估计图，其效果和<code>distplot(hist=False)</code>一致，但<code>kdeplot</code>拥有更多的自定义设置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sns.set()</span><br><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.distplot(iris[&quot;sepal_length&quot;])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sns.kdeplot(iris[&quot;sepal_length&quot;])</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/16.png" alt="pic"></p>
+<h2 id="二元变量分布图"><a href="#二元变量分布图" class="headerlink" title="二元变量分布图"></a>二元变量分布图</h2><p>可以呈现<code>sepal_length</code>和<code>sepal_width</code>二元特征变量之间的关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sns.set()</span><br><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.jointplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/17.png" alt="pic"></p>
+<h2 id="二元变量回归拟合图"><a href="#二元变量回归拟合图" class="headerlink" title="二元变量回归拟合图"></a>二元变量回归拟合图</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sns.jointplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, data=iris, kind=&quot;reg&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/18.png" alt="pic"></p>
+<h2 id="强大的pairplot"><a href="#强大的pairplot" class="headerlink" title="强大的pairplot"></a>强大的pairplot</h2><p>一次性将数据集中的特征变量两两对比绘图。默认情况下，对角线上是单变量分布图，而其他则是二元变量分布图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sns.set()</span><br><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.pairplot(iris, hue=&quot;species&quot;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/19.png" alt="pic"></p>
+<h1 id="0x05-回归图"><a href="#0x05-回归图" class="headerlink" title="0x05 回归图"></a>0x05 回归图</h1><p>绘制函数主要有：<code>lmplot</code>和<code>regplot</code><br><code>regplot</code>绘制回归图时，只需指定自变量和因变量就能自动拟合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sns.set()</span><br><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.regplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/20.png" alt="pic"><br><code>lmplot</code>支持引入第三维度进行对比，eg设置 <code>hue=&quot;species&quot;</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sns.set()</span><br><span class="line">iris = sns.load_dataset(&quot;iris&quot;)</span><br><span class="line">sns.lmplot(x=&quot;sepal_length&quot;, y=&quot;sepal_width&quot;, hue=&quot;species&quot;, data=iris)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/21.png" alt="pic"></p>
+<h1 id="0x06-矩阵图"><a href="#0x06-矩阵图" class="headerlink" title="0x06 矩阵图"></a>0x06 矩阵图</h1><p>矩阵图中最常用的就只有2个，<code>heatmap</code>和<code>clustermap</code><br><code>heatmap</code>主要用来绘制热力图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sns.set()</span><br><span class="line">sns.heatmap(np.random.rand(10, 10))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/seaborn-basic/22.png" alt="pic"></p>
+<h1 id="文献来源"><a href="#文献来源" class="headerlink" title="文献来源"></a>文献来源</h1><p>[1] <a href="https://www.shiyanlou.com/courses/892/learning/?id=3260" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/892/learning/?id=3260</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Numpy/" rel="tag"># Numpy</a>
+            
+              <a href="/tags/Python/" rel="tag"># Python</a>
+            
+              <a href="/tags/seaborn/" rel="tag"># seaborn</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/02/matplotlib-basic/" rel="next" title="matplotlib-basic">
+                  <i class="fa fa-chevron-left"></i> matplotlib-basic
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-快速优化"><span class="nav-number">1.</span> <span class="nav-text">0x00 快速优化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-实验数据准备"><span class="nav-number">2.</span> <span class="nav-text">0x01 实验数据准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-关联图"><span class="nav-number">3.</span> <span class="nav-text">0x02 关联图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-00-散点图"><span class="nav-number">3.1.</span> <span class="nav-text">0x02_00 散点图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-01-线性图"><span class="nav-number">3.2.</span> <span class="nav-text">0x02_01 线性图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-类别图"><span class="nav-number">4.</span> <span class="nav-text">0x03 类别图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分类散点图"><span class="nav-number">4.1.</span> <span class="nav-text">分类散点图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类分布图"><span class="nav-number">4.2.</span> <span class="nav-text">分类分布图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#箱线图"><span class="nav-number">4.2.1.</span> <span class="nav-text">箱线图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小提琴图"><span class="nav-number">4.2.2.</span> <span class="nav-text">小提琴图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增强箱线图"><span class="nav-number">4.2.3.</span> <span class="nav-text">增强箱线图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类估计图"><span class="nav-number">4.3.</span> <span class="nav-text">分类估计图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点线图"><span class="nav-number">4.3.1.</span> <span class="nav-text">点线图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条形图"><span class="nav-number">4.3.2.</span> <span class="nav-text">条形图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计数条形图"><span class="nav-number">4.3.3.</span> <span class="nav-text">计数条形图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-分布图"><span class="nav-number">5.</span> <span class="nav-text">0x04 分布图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#单变量的直方核密度估计图"><span class="nav-number">5.1.</span> <span class="nav-text">单变量的直方核密度估计图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二元变量分布图"><span class="nav-number">5.2.</span> <span class="nav-text">二元变量分布图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二元变量回归拟合图"><span class="nav-number">5.3.</span> <span class="nav-text">二元变量回归拟合图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强大的pairplot"><span class="nav-number">5.4.</span> <span class="nav-text">强大的pairplot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x05-回归图"><span class="nav-number">6.</span> <span class="nav-text">0x05 回归图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x06-矩阵图"><span class="nav-number">7.</span> <span class="nav-text">0x06 矩阵图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文献来源"><span class="nav-number">8.</span> <span class="nav-text">文献来源</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
