@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="SciPy科学计算基础用于数学、科学和工程的开源库，其集成了统计、优化、线性代数、傅立叶变换、信号和图像处理，ODE 求解器等模块官网">
+<meta name="keywords" content="Numpy,SciPy,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SciPy-basic">
+<meta property="og:url" content="http://yoursite.com/2019/11/03/SciPy-basic/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="SciPy科学计算基础用于数学、科学和工程的开源库，其集成了统计、优化、线性代数、傅立叶变换、信号和图像处理，ODE 求解器等模块官网">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/01.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/02.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/03.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/04.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/05.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/06.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/07.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/08.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/09.png">
+<meta property="og:image" content="http://yoursite.com/images/SciPy-basic/10.png">
+<meta property="og:updated_time" content="2019-11-03T05:07:13.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SciPy-basic">
+<meta name="twitter:description" content="SciPy科学计算基础用于数学、科学和工程的开源库，其集成了统计、优化、线性代数、傅立叶变换、信号和图像处理，ODE 求解器等模块官网">
+<meta name="twitter:image" content="http://yoursite.com/images/SciPy-basic/01.png">
+  <link rel="canonical" href="http://yoursite.com/2019/11/03/SciPy-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>SciPy-basic | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/03/SciPy-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">SciPy-basic
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-03 09:31:57 / Modified: 13:07:13" itemprop="dateCreated datePublished" datetime="2019-11-03T09:31:57+08:00">2019-11-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Numpy/" itemprop="url" rel="index"><span itemprop="name">Numpy</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>SciPy科学计算基础<br>用于数学、科学和工程的开源库，其集成了统计、优化、线性代数、傅立叶变换、信号和图像处理，ODE 求解器等模块<br><a href="https://www.scipy.org/docs.html" target="_blank" rel="noopener">官网</a></p>
+<a id="more"></a>
+
+<h1 id="0x00-常量模块"><a href="#0x00-常量模块" class="headerlink" title="0x00 常量模块"></a>0x00 常量模块</h1><p>需要导入包<code>from scipy import constants</code><br><a href="https://docs.scipy.org/doc/scipy/reference/constants.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="pi"><a href="#pi" class="headerlink" title="pi"></a>pi</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p=constants.pi</span><br><span class="line">print(p)</span><br><span class="line"># 结果：3.141592653589793</span><br></pre></td></tr></table></figure>
+
+<h2 id="光速"><a href="#光速" class="headerlink" title="光速"></a>光速</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">constants.c, constants.speed_of_light  # 两种写法</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-线性代数模块"><a href="#0x01-线性代数模块" class="headerlink" title="0x01 线性代数模块"></a>0x01 线性代数模块</h1><p>需要导入包<code>from scipy import linalg</code><br><a href="https://docs.scipy.org/doc/scipy/reference/linalg.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="求矩阵的逆"><a href="#求矩阵的逆" class="headerlink" title="求矩阵的逆"></a>求矩阵的逆</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">m=np.matrix([[1, 2], [3, 4]])</span><br><span class="line">print(m)</span><br><span class="line">rev=linalg.inv(m)</span><br><span class="line">print(rev)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/01.png" alt="pic"></p>
+<h1 id="0x02-差值模块"><a href="#0x02-差值模块" class="headerlink" title="0x02 差值模块"></a>0x02 差值模块</h1><p><a href="https://docs.scipy.org/doc/scipy/reference/interpolate.html" target="_blank" rel="noopener">官方文档</a><br>插值，是数值分析领域中通过已知的、离散的数据点，在范围内推求新数据点的过程或方法。<br>需要导入的模块<code>from scipy import interpolate</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span><br><span class="line">y = np.array([0, 1, 4, 9, 16, 25, 36, 49, 64, 81])</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/02.png" alt="pic"></p>
+<p>进行插值如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span><br><span class="line">y = np.array([0, 1, 4, 9, 16, 25, 36, 49, 64, 81])</span><br><span class="line"></span><br><span class="line">xx = np.array([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5])  # 两点之间的点的 x 坐标</span><br><span class="line">f = interpolate.interp1d(x, y)  # 使用原样本点建立插值函数</span><br><span class="line">yy = f(xx)  # 映射到新样本点</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.scatter(xx, yy, marker=&apos;*&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/03.png" alt="pic"></p>
+<h1 id="0x03-图像处理模块"><a href="#0x03-图像处理模块" class="headerlink" title="0x03 图像处理模块"></a>0x03 图像处理模块</h1><p>SciPy 集成了大量针对图像处理的函数和方法，即对多维数组的处理过程，可以完成卷积、滤波，转换等一系列操作。<br><a href="https://docs.scipy.org/doc/scipy/reference/ndimage.html" target="_blank" rel="noopener">官方文档</a><br>需要导入的包<code>from scipy import ndimage</code></p>
+<p>先导入一张浣熊图片</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from scipy import misc</span><br><span class="line">face = misc.face()</span><br><span class="line">print(type(face))</span><br><span class="line">print(face.shape)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到是一个RGB三维数组<br><img src="/images/SciPy-basic/04.png" alt="pic"><br>可以使用如下命令进行可视化还原</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">face = misc.face()</span><br><span class="line">plt.imshow(face)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/05.png" alt="pic"></p>
+<h2 id="高斯模糊处理"><a href="#高斯模糊处理" class="headerlink" title="高斯模糊处理"></a>高斯模糊处理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from scipy import misc</span><br><span class="line">from scipy import ndimage</span><br><span class="line">face = misc.face()</span><br><span class="line">plt.imshow(ndimage.gaussian_filter(face, sigma=5))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/06.png" alt="pic"></p>
+<h2 id="旋转变换"><a href="#旋转变换" class="headerlink" title="旋转变换"></a>旋转变换</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">face = misc.face()</span><br><span class="line">plt.imshow(ndimage.rotate(face, 45))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/07.png" alt="pic"></p>
+<h2 id="卷积操作"><a href="#卷积操作" class="headerlink" title="卷积操作"></a>卷积操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">face = misc.face()</span><br><span class="line">k = np.random.randn(2, 2, 3)  # 卷积核</span><br><span class="line">plt.imshow(ndimage.convolve(face, k))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/08.png" alt="pic"></p>
+<h1 id="0x04-线性回归"><a href="#0x04-线性回归" class="headerlink" title="0x04 线性回归"></a>0x04 线性回归</h1><p>给定x和y值。然后假设其符合<code>y = ax^2 + by</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x = np.array([1, 2.5, 3.5, 4, 5, 7, 8.5])</span><br><span class="line">y = np.array([0.3, 1.1, 1.5, 2.0, 3.2, 6.6, 8.6])</span><br><span class="line">M = x[:, np.newaxis]**[0,2] # 我们完成 x^2计算，并添加截距项系数 1</span><br><span class="line">print(M)</span><br><span class="line">p = linalg.lstsq(M, y)[0] #最小二乘法计算，返回的第一组参数即为拟合系数</span><br><span class="line">print(p)</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">xx = np.linspace(0, 10, 100)</span><br><span class="line">yy = p[0] + p[1]*xx**2</span><br><span class="line">plt.plot(xx, yy)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/09.png" alt="pic"><img src="/images/SciPy-basic/10.png" alt="pic"></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.shiyanlou.com/courses/1347/learning/?id=11330" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/1347/learning/?id=11330</a><br>[2] <a href="https://docs.scipy.org/doc/scipy/reference/" target="_blank" rel="noopener">https://docs.scipy.org/doc/scipy/reference/</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Numpy/" rel="tag"># Numpy</a>
+            
+              <a href="/tags/SciPy/" rel="tag"># SciPy</a>
+            
+              <a href="/tags/Python/" rel="tag"># Python</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/02/seaborn-basic/" rel="next" title="seaborn-basic">
+                  <i class="fa fa-chevron-left"></i> seaborn-basic
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-常量模块"><span class="nav-number">1.</span> <span class="nav-text">0x00 常量模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pi"><span class="nav-number">1.1.</span> <span class="nav-text">pi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光速"><span class="nav-number">1.2.</span> <span class="nav-text">光速</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-线性代数模块"><span class="nav-number">2.</span> <span class="nav-text">0x01 线性代数模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#求矩阵的逆"><span class="nav-number">2.1.</span> <span class="nav-text">求矩阵的逆</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-差值模块"><span class="nav-number">3.</span> <span class="nav-text">0x02 差值模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-图像处理模块"><span class="nav-number">4.</span> <span class="nav-text">0x03 图像处理模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯模糊处理"><span class="nav-number">4.1.</span> <span class="nav-text">高斯模糊处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#旋转变换"><span class="nav-number">4.2.</span> <span class="nav-text">旋转变换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积操作"><span class="nav-number">4.3.</span> <span class="nav-text">卷积操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-线性回归"><span class="nav-number">5.</span> <span class="nav-text">0x04 线性回归</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,6 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>SciPy-basic</title>
+    <url>/2019/11/03/SciPy-basic/</url>
+    <content><![CDATA[<p>SciPy科学计算基础<br>用于数学、科学和工程的开源库，其集成了统计、优化、线性代数、傅立叶变换、信号和图像处理，ODE 求解器等模块<br><a href="https://www.scipy.org/docs.html" target="_blank" rel="noopener">官网</a></p>
+<a id="more"></a>
+
+<h1 id="0x00-常量模块"><a href="#0x00-常量模块" class="headerlink" title="0x00 常量模块"></a>0x00 常量模块</h1><p>需要导入包<code>from scipy import constants</code><br><a href="https://docs.scipy.org/doc/scipy/reference/constants.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="pi"><a href="#pi" class="headerlink" title="pi"></a>pi</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">p=constants.pi</span><br><span class="line">print(p)</span><br><span class="line"># 结果：3.141592653589793</span><br></pre></td></tr></table></figure>
+
+<h2 id="光速"><a href="#光速" class="headerlink" title="光速"></a>光速</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">constants.c, constants.speed_of_light  # 两种写法</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-线性代数模块"><a href="#0x01-线性代数模块" class="headerlink" title="0x01 线性代数模块"></a>0x01 线性代数模块</h1><p>需要导入包<code>from scipy import linalg</code><br><a href="https://docs.scipy.org/doc/scipy/reference/linalg.html" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="求矩阵的逆"><a href="#求矩阵的逆" class="headerlink" title="求矩阵的逆"></a>求矩阵的逆</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">m=np.matrix([[1, 2], [3, 4]])</span><br><span class="line">print(m)</span><br><span class="line">rev=linalg.inv(m)</span><br><span class="line">print(rev)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/01.png" alt="pic"></p>
+<h1 id="0x02-差值模块"><a href="#0x02-差值模块" class="headerlink" title="0x02 差值模块"></a>0x02 差值模块</h1><p><a href="https://docs.scipy.org/doc/scipy/reference/interpolate.html" target="_blank" rel="noopener">官方文档</a><br>插值，是数值分析领域中通过已知的、离散的数据点，在范围内推求新数据点的过程或方法。<br>需要导入的模块<code>from scipy import interpolate</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span><br><span class="line">y = np.array([0, 1, 4, 9, 16, 25, 36, 49, 64, 81])</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/02.png" alt="pic"></p>
+<p>进行插值如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span><br><span class="line">y = np.array([0, 1, 4, 9, 16, 25, 36, 49, 64, 81])</span><br><span class="line"></span><br><span class="line">xx = np.array([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5])  # 两点之间的点的 x 坐标</span><br><span class="line">f = interpolate.interp1d(x, y)  # 使用原样本点建立插值函数</span><br><span class="line">yy = f(xx)  # 映射到新样本点</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.scatter(xx, yy, marker=&apos;*&apos;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/03.png" alt="pic"></p>
+<h1 id="0x03-图像处理模块"><a href="#0x03-图像处理模块" class="headerlink" title="0x03 图像处理模块"></a>0x03 图像处理模块</h1><p>SciPy 集成了大量针对图像处理的函数和方法，即对多维数组的处理过程，可以完成卷积、滤波，转换等一系列操作。<br><a href="https://docs.scipy.org/doc/scipy/reference/ndimage.html" target="_blank" rel="noopener">官方文档</a><br>需要导入的包<code>from scipy import ndimage</code></p>
+<p>先导入一张浣熊图片</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from scipy import misc</span><br><span class="line">face = misc.face()</span><br><span class="line">print(type(face))</span><br><span class="line">print(face.shape)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到是一个RGB三维数组<br><img src="/images/SciPy-basic/04.png" alt="pic"><br>可以使用如下命令进行可视化还原</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">face = misc.face()</span><br><span class="line">plt.imshow(face)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/05.png" alt="pic"></p>
+<h2 id="高斯模糊处理"><a href="#高斯模糊处理" class="headerlink" title="高斯模糊处理"></a>高斯模糊处理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from scipy import misc</span><br><span class="line">from scipy import ndimage</span><br><span class="line">face = misc.face()</span><br><span class="line">plt.imshow(ndimage.gaussian_filter(face, sigma=5))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/06.png" alt="pic"></p>
+<h2 id="旋转变换"><a href="#旋转变换" class="headerlink" title="旋转变换"></a>旋转变换</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">face = misc.face()</span><br><span class="line">plt.imshow(ndimage.rotate(face, 45))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/07.png" alt="pic"></p>
+<h2 id="卷积操作"><a href="#卷积操作" class="headerlink" title="卷积操作"></a>卷积操作</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">face = misc.face()</span><br><span class="line">k = np.random.randn(2, 2, 3)  # 卷积核</span><br><span class="line">plt.imshow(ndimage.convolve(face, k))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/08.png" alt="pic"></p>
+<h1 id="0x04-线性回归"><a href="#0x04-线性回归" class="headerlink" title="0x04 线性回归"></a>0x04 线性回归</h1><p>给定x和y值。然后假设其符合<code>y = ax^2 + by</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">x = np.array([1, 2.5, 3.5, 4, 5, 7, 8.5])</span><br><span class="line">y = np.array([0.3, 1.1, 1.5, 2.0, 3.2, 6.6, 8.6])</span><br><span class="line">M = x[:, np.newaxis]**[0,2] # 我们完成 x^2计算，并添加截距项系数 1</span><br><span class="line">print(M)</span><br><span class="line">p = linalg.lstsq(M, y)[0] #最小二乘法计算，返回的第一组参数即为拟合系数</span><br><span class="line">print(p)</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">xx = np.linspace(0, 10, 100)</span><br><span class="line">yy = p[0] + p[1]*xx**2</span><br><span class="line">plt.plot(xx, yy)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/SciPy-basic/09.png" alt="pic"><img src="/images/SciPy-basic/10.png" alt="pic"></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.shiyanlou.com/courses/1347/learning/?id=11330" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/1347/learning/?id=11330</a><br>[2] <a href="https://docs.scipy.org/doc/scipy/reference/" target="_blank" rel="noopener">https://docs.scipy.org/doc/scipy/reference/</a></p>
+]]></content>
+      <categories>
+        <category>Numpy</category>
+      </categories>
+      <tags>
+        <tag>Numpy</tag>
+        <tag>SciPy</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>seaborn-basic</title>
     <url>/2019/11/02/seaborn-basic/</url>
     <content><![CDATA[<p>Seaborn基本知识<br>Seaborn 对Matplotlib核心库封装，可以轻松地画出更美的图形，非常适合数据分析的可视化。<a href="https://seaborn.pydata.org/api.html" target="_blank" rel="noopener">官方文档</a></p>
@@ -603,14 +658,11 @@
 <li>启动你的程序，可以按照你的自定义的要求随心所欲的运行程序。</li>
 <li>可让被调试的程序在你所指定的调置的断点处停住。</li>
 <li>当程序被停住时，可以检查此时你的程序中所发生的事。</li>
-<li>你可以改变你的程序，将一个BUG产生的影响修正从而测试其他BUG。<h3 id="3-1-gbd调试程序的简易入门操作"><a href="#3-1-gbd调试程序的简易入门操作" class="headerlink" title="3.1 gbd调试程序的简易入门操作"></a>3.1 gbd调试程序的简易入门操作</h3></li>
+<li>你可以改变你的程序，将一个BUG产生的影响修正从而测试其他BUG。<h3 id="3-1-gbd调试程序的简易入门操作"><a href="#3-1-gbd调试程序的简易入门操作" class="headerlink" title="3.1 gbd调试程序的简易入门操作"></a>3.1 gbd调试程序的简易入门操作</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt install gdb</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 <ul>
-<li><p>安装</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt install gdb</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启动调试</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#编译文件，加上调试信息。不加参数-g可能无法调试</span><br><span class="line">gcc -g test.c -o test</span><br><span class="line">#开始启动调试</span><br><span class="line">gdb test</span><br></pre></td></tr></table></figure>
+<li>启动调试<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#编译文件，加上调试信息。不加参数-g可能无法调试</span><br><span class="line">gcc -g test.c -o test</span><br><span class="line">#开始启动调试</span><br><span class="line">gdb test</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
@@ -621,50 +673,34 @@
 <li>调试的操作</li>
 <li><em>注意*</em>  :括号内的东西不用输入</li>
 </ul>
-<ol>
-<li><p>显示当前的代码，一次10行，继续输入<code>l</code>继续显示。</p>
+<h4 id="显示当前的代码"><a href="#显示当前的代码" class="headerlink" title="显示当前的代码"></a>显示当前的代码</h4><p>一次10行，继续输入<code>l</code>继续显示。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) l</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>单步</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
+<h4 id="单步"><a href="#单步" class="headerlink" title="单步"></a>单步</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
+
 <p>这个时候会进入程序运行状态，单步运行需要输入<code>n</code>，输入一次执行一条语句。<code>s</code>单步会进入子程序中去。</p>
-<ol start="3">
-<li>断点+单步<br>启动的时候<code>start</code>程序会在第一行停止。<br>这个时候可以设置断点，如下所示：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) b 5</span><br><span class="line">(gdb) c #运行程序到断点处，一般在设置完断点后使用</span><br><span class="line">(gdb) r #重新运行程序 run</span><br></pre></td></tr></table></figure>
+<h4 id="断点-单步"><a href="#断点-单步" class="headerlink" title="断点+单步"></a>断点+单步</h4><p>启动的时候<code>start</code>程序会在第一行停止。<br>这个时候可以设置断点，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) b 5</span><br><span class="line">(gdb) c #运行程序到断点处，一般在设置完断点后使用</span><br><span class="line">(gdb) r #重新运行程序 run</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
 <blockquote>
 <p>表示在第5行设置断点，输入命令<code>c</code>会直接运行到第5行；其中b后面的参数也可以是一个函数名。可以按照单步的方法继续运行。<br>可以同时设置多个断点</p>
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) display b</span><br></pre></td></tr></table></figure>
 
 <p>这个display 可以查看变量的值</p>
-<ol start="4">
-<li>查看所有断点和删除<br>查看已经设置的断点<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) info breakpoints</span><br><span class="line">#可以简写成</span><br><span class="line">(gdb) i b</span><br></pre></td></tr></table></figure>
+<h4 id="查看所有断点和删除"><a href="#查看所有断点和删除" class="headerlink" title="查看所有断点和删除"></a>查看所有断点和删除</h4><p>查看已经设置的断点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) info breakpoints</span><br><span class="line">#可以简写成</span><br><span class="line">(gdb) i b</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
 <p><img src="/images/gccAndgdb/gdbInfo.png" alt="gdbInfo"><br>注意到每一个断点有编号，使用编号可删除断点</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) delete 2</span><br></pre></td></tr></table></figure>
 
-<ol start="5">
-<li><p>设置条件断点</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) b 5 if a == 2</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>观察变量改变的地方</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) watch b</span><br><span class="line">(gdb) c</span><br></pre></td></tr></table></figure>
+<h4 id="设置条件断点"><a href="#设置条件断点" class="headerlink" title="设置条件断点"></a>设置条件断点</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) b 5 if a == 2</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
+<h4 id="观察变量改变的地方"><a href="#观察变量改变的地方" class="headerlink" title="观察变量改变的地方"></a>观察变量改变的地方</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) watch b</span><br><span class="line">(gdb) c</span><br></pre></td></tr></table></figure>
+
 <p>变量内存值被修改的时候会展示出来</p>
-<ol start="7">
-<li>反汇编命令<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) disassemble main</span><br><span class="line">#可简写成</span><br><span class="line">(gdb) disas main</span><br></pre></td></tr></table></figure>
+<h4 id="反汇编命令"><a href="#反汇编命令" class="headerlink" title="反汇编命令"></a>反汇编命令</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) disassemble main</span><br><span class="line">#可简写成</span><br><span class="line">(gdb) disas main</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
 <p>其中的main是一个函数名称。</p>
 <h3 id="3-2-gdb插件—gdb-peda"><a href="#3-2-gdb插件—gdb-peda" class="headerlink" title="3.2 gdb插件—gdb-peda"></a>3.2 gdb插件—gdb-peda</h3><p>PEDA(<strong>Python Exploit Development Assistance for GDB</strong>)是一个强大的 gdb 插件。它提供了高亮显示反汇编代码、寄存器、内存信息等人性化的功能。同时，PEDA 还有一些实用的新命令，比如checksec 可以查看程序开启了哪些安全机制等等。</p>
 <ul>
