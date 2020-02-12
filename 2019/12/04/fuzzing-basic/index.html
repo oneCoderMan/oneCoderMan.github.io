@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="fuzzing介绍与afl安装">
+<meta name="keywords" content="fuzzing,AFL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fuzzing-basic">
+<meta property="og:url" content="http://yoursite.com/2019/12/04/fuzzing-basic/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="fuzzing介绍与afl安装">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/fuzzing-basic/01.jpg">
+<meta property="og:image" content="http://yoursite.com/images/fuzzing-basic/02.png">
+<meta property="og:image" content="http://yoursite.com/images/fuzzing-basic/03.png">
+<meta property="og:image" content="http://yoursite.com/images/fuzzing-basic/04.png">
+<meta property="og:updated_time" content="2019-12-09T23:08:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fuzzing-basic">
+<meta name="twitter:description" content="fuzzing介绍与afl安装">
+<meta name="twitter:image" content="http://yoursite.com/images/fuzzing-basic/01.jpg">
+  <link rel="canonical" href="http://yoursite.com/2019/12/04/fuzzing-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>fuzzing-basic | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/fuzzing-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">fuzzing-basic
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-12-04 14:55:00" itemprop="dateCreated datePublished" datetime="2019-12-04T14:55:00+08:00">2019-12-04</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-10 07:08:14" itemprop="dateModified" datetime="2019-12-10T07:08:14+08:00">2019-12-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Security/" itemprop="url" rel="index"><span itemprop="name">Security</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>fuzzing介绍与afl安装</p>
+<a id="more"></a>
+
+<h1 id="0x00-fuzzing简单介绍"><a href="#0x00-fuzzing简单介绍" class="headerlink" title="0x00 fuzzing简单介绍"></a>0x00 fuzzing简单介绍</h1><p>fuzzing：一种通过向程序提供<strong>非预期的输入</strong>并监控输出中的<strong>异常</strong>来发现软件中的<strong>故障</strong>的方法。<br>一般代指模糊测试，一种基于黑盒的测试技术。所谓模糊，是指测试用例是模糊的，不确定的，随机性的。Fuzzing技术本质是依靠随机函数生成<strong>随机测试用例</strong>来进行测试验证，所以是不确定的。</p>
+<h2 id="测试用例的产生方式"><a href="#测试用例的产生方式" class="headerlink" title="测试用例的产生方式"></a>测试用例的产生方式</h2><ul>
+<li>基于变异：根据已知数据样本通过变异的方法生成新的测试用例。</li>
+<li>基于生成：根据已知的协议或接口规范进行建模，生成测试用例。</li>
+</ul>
+<h1 id="0x01-AFL"><a href="#0x01-AFL" class="headerlink" title="0x01 AFL"></a>0x01 AFL</h1><p>一个基于变异的fuzzer。American Fuzzy Lop简称AFL。</p>
+<h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>一个强大的Fuzzing测试工具，在源码编译时进行插桩(简称编译时插桩)，可以自动产生测试用例来探索二进制程序内部新的执行路径。</p>
+<blockquote>
+<p>插桩技术是将额外的代码注入程序中以收集运行时的信息；可以分为两类，</p>
+<ul>
+<li>源代码插桩(Source Code Instrumentation(SCI))：额外代码注入到程序源代码中。</li>
+<li>二进制插桩(Binary Instrumentation(BI))：额外代码注入到二进制可执行文件中。</li>
+</ul>
+</blockquote>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>1) 从源码编译程序时进行插桩，以记录代码覆盖率（Code Coverage）；<br>2) 选择一些输入文件，作为初始测试集加入输入队列（queue）；<br>3) 将队列中的文件按一定的策略进行“突变”；<br>4) 如果经过变异文件更新了覆盖范围，则将其保留添加到队列中;<br>5) 上述过程会一直循环进行，期间触发了crash的文件会被记录下来。<br><img src="/images/fuzzing-basic/01.jpg" alt="pic01"><br>图片来源与文献[5]</p>
+<h2 id="AFL组成"><a href="#AFL组成" class="headerlink" title="AFL组成"></a>AFL组成</h2><p>总共三个部分组成[6]。</p>
+<ul>
+<li>编译器wrapper<blockquote>
+<p>对开源软件编译，编译过程中插入一些AFL识别的函数用以识别探索路径，AFL的编译工具为afl-gcc/afl-g++,afl-clang等。</p>
+</blockquote>
+</li>
+<li>测试器fuzzer<blockquote>
+<p>afl-fuzz是AFL重要的主体，用以对软件进行fuzzing。</p>
+</blockquote>
+</li>
+<li>辅助工具<blockquote>
+<p>afl-cmin，afl-tmin等，为提升测试的效率和成功率而服务。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a href="http://lcamtuf.coredump.cx/afl/" target="_blank" rel="noopener">afl-fuzz官网</a></p>
+<blockquote>
+<p>环境：ubuntu16.04， afl-2.52b</p>
+</blockquote>
+<ul>
+<li><p>step1: 下载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://lcamtuf.coredump.cx/afl/releases/afl-2.52b.tgz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: make</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd afl-2.52b</span><br><span class="line">make</span><br><span class="line">sudo  make install</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>在命令行中输入<code>afl-</code>，然后使用tab建，可以看到命令提示，表示安装成功。或者<code>afl-fuzz</code>可以看到提示信息。</p>
+<h2 id="AFL基本使用"><a href="#AFL基本使用" class="headerlink" title="AFL基本使用"></a>AFL基本使用</h2><h3 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h3><p>见参考文献[4]</p>
+<h3 id="插桩编译"><a href="#插桩编译" class="headerlink" title="插桩编译"></a>插桩编译</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-gcc -g -o test test.c</span><br></pre></td></tr></table></figure>
+
+<p>对于其它的编译选项，如make，makefile等编译过程详见参考文献[4]。</p>
+<h3 id="开始fuzzing"><a href="#开始fuzzing" class="headerlink" title="开始fuzzing"></a>开始fuzzing</h3><p>建立一个文件夹<code>fuzz_in</code>，里面放入一些文本文件<br>fuzzing命令的格式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -i testcase_dir -o findings_dir /path/to/program […params…]</span><br><span class="line">afl-fuzz -i testcase_dir -o findings_dir /path/to/program @@</span><br></pre></td></tr></table></figure>
+
+<p>常见参数的含义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-f: 参数表示：testcase的内容会作为afl_test的stdin</span><br><span class="line">-m: 参数表示分配的内存空间</span><br><span class="line">-i: 指定测试样本的路径</span><br><span class="line">-o: 指定输出结果的路径</span><br><span class="line">/dev/null: 使错误信息不输出到屏幕</span><br><span class="line">-t：设置程序运行超时值，单位为 ms</span><br><span class="line">-M：运行主(Master) Fuzzer</span><br><span class="line">-S：运行从属(Slave) Fuzzer</span><br></pre></td></tr></table></figure>
+
+<p>一个示例：<code>afl-fuzz -m 300 -i fuzz_in -o  fuzz_out ./test -f</code></p>
+<blockquote>
+<p>注意，要在目标程序前加上./，否则会报错误。</p>
+</blockquote>
+<p>成功之后的界面如下：<br><img src="/images/fuzzing-basic/02.png" alt="pic01"></p>
+<p>界面分析信息的<a href="http://lcamtuf.coredump.cx/afl/status_screen.txt" target="_blank" rel="noopener">官方参考文档</a>，或者文献[7]<br>一些主要的信息需要注意：</p>
+<blockquote>
+<ul>
+<li>last new path 目标二进制文件或者命令行参数出错，那么其执行路径应该是一直不变的。</li>
+<li>cycles done 如果变绿就说明后面即使继续fuzz，出现crash的几率也很低，可以选择在这个时候停止</li>
+<li>uniq crashes 代表的是crash的数量</li>
+<li>stage progress 正在测试的fuzzing策略、进度、目标的执行总次数、目标的执行速度，如低于500次每秒，那么测试时间就会变得非常漫长。如果发生了这种情况，那么我们需要进一步调整优化我们的fuzzing。</li>
+</ul>
+</blockquote>
+<h3 id="查看crash"><a href="#查看crash" class="headerlink" title="查看crash"></a>查看crash</h3><p>进入设定的输出文件夹，如fuzz_out/crashes。<br>然后复制crash信息，使用命令<code>xxd id:000000,sig:11,src:000001,op:havoc,rep:4</code></p>
+<h1 id="0x02-AFLGo"><a href="#0x02-AFLGo" class="headerlink" title="0x02 AFLGo"></a>0x02 AFLGo</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><a href="https://github.com/aflgo/aflgo" target="_blank" rel="noopener">官网安装教程</a><br>几点说明：<br>1) 对于官网步骤1：安装<code>llvm</code>环境请看该<a href="https://www.jianshu.com/p/49261b1a50c4" target="_blank" rel="noopener">llvm安装教程</a>，选择<code>llvm6.0.0</code>源码下载（这里有6个软件包需要下载安装）。</p>
+<h3 id="报错处理"><a href="#报错处理" class="headerlink" title="报错处理"></a>报错处理</h3><p>我安装make的时候出现如下错误<br><img src="/images/fuzzing-basic/03.png" alt="pic01"><br>此时执行下面的命令就可以可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/</span><br><span class="line">$ sudo mkdir /var/lib/dpkg/info/</span><br><span class="line">$ sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<p>下面这个链接展示了如下在一个<strong>真实开源软件</strong>上进行AFL fuzzing<br><a href="https://github.com/lcatro/Fuzzing-ImageMagick/blob/master/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Fuzzing%E6%8C%96%E6%8E%98ImageMagick%E7%9A%84%E6%BC%8F%E6%B4%9E.md" target="_blank" rel="noopener">AFL挖掘ImageMagick漏洞</a></p>
+<h1 id="0x03-qysm"><a href="#0x03-qysm" class="headerlink" title="0x03 qysm"></a>0x03 qysm</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><a href="https://www.usenix.org/node/217566" target="_blank" rel="noopener">参考论文</a><br>论文摘要</p>
+<blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近，有人提出混合模糊方法来解决模糊和协同执行的局限性。这种混合方法已经在各种综合基准测试中显示出了它的有效性，例如DARPA的网络大挑战(CGC)二进制文件，但是它仍然需要在复杂的、真实世界的软件中寻找缺陷。我们观察到，现有共扼执行器的性能瓶颈是其在小规模研究之外被采用的主要限制因素。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为了克服这一问题，我们设计了一个快速的协同执行引擎，称为QSYM，以支持混合模糊。关键思想是使用动态二进制转换将符号模拟与本机执行紧密集成，从而实现更细粒度、更快的指令级符号模拟。此外，QSYM放宽了传统concolic执行者对更好性能的严格可靠性要求，同时利用了一个更快的fuzzer进行验证，为性能优化提供了前所未有的机会，例如，优化地解决约束和修剪无兴趣的基本块。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的评估表明，QSYM不仅优于最先进的fuzzers(即bug,发现14×超过VUzzer LAVA-M数据集,钻地,比126年104的二进制文件),但也发现了13个未知安全漏洞在Dropbox轻子等八个实际项目,ffmpeg, OpenJPEG,那些已经被集中测试的最先进的fuzz, AFL OSS-Fuzz。</p>
+</blockquote>
+<h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><p>有一个github开源库<a href="https://github.com/sslab-gatech/qsym" target="_blank" rel="noopener">地址</a><br>该开源库中提供了安装方法</p>
+<p>遇到了一个错误，再使用<code>virtualenv venv</code>命令地时候<br><img src="/images/fuzzing-basic/04.png" alt="pic01"></p>
+<blockquote>
+<p>错误原因，系统地python环境是2.7，需要使用python3.5+版本python。</p>
+</blockquote>
+<p>解决方法：指定python3，使用命令<code>virtualenv -p  /usr/bin/python venv</code>。这个python指向的是python3。更多virtulenv的用法见参考文献[8]</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://github.com/secfigo/Awesome-Fuzzing" target="_blank" rel="noopener">https://github.com/secfigo/Awesome-Fuzzing</a><br>[2] <a href="https://github.com/firmianay/CTF-All-In-One/blob/master/doc/5.1_fuzzing.md" target="_blank" rel="noopener">https://github.com/firmianay/CTF-All-In-One/blob/master/doc/5.1_fuzzing.md</a><br>[3] <a href="https://zhuanlan.zhihu.com/p/43432370" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/43432370</a> fuzzing技术总结<br>[4] <a href="http://zeroyu.xyz/2019/05/15/how-to-use-afl-fuzz/" target="_blank" rel="noopener">http://zeroyu.xyz/2019/05/15/how-to-use-afl-fuzz/</a> afl使用指南<br>[5] <a href="https://www.freebuf.com/articles/system/191536.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/191536.html</a> AFL漏洞挖掘技术漫谈<br>[6] <a href="https://fly8wo.github.io/2018/09/21/AFL-Fuzz%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%89%E8%A3%85%E4%B8%8E%E7%BC%96%E8%AF%91/" target="_blank" rel="noopener">https://fly8wo.github.io/2018/09/21/AFL-Fuzz%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%89%E8%A3%85%E4%B8%8E%E7%BC%96%E8%AF%91/</a> 简单安装和编译<br>[7] <a href="https://xz.aliyun.com/t/4314" target="_blank" rel="noopener">https://xz.aliyun.com/t/4314</a>  fuzzing简单测试<br>[8] <a href="https://blog.csdn.net/weixin_37773766/article/details/80773590" target="_blank" rel="noopener">https://blog.csdn.net/weixin_37773766/article/details/80773590</a> virtualenv简单介绍</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/fuzzing/" rel="tag"># fuzzing</a>
+            
+              <a href="/tags/AFL/" rel="tag"># AFL</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/29/latex-basic/" rel="next" title="latex-basic">
+                  <i class="fa fa-chevron-left"></i> latex-basic
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/12/04/software-intro/" rel="prev" title="software-intro">
+                  software-intro <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-fuzzing简单介绍"><span class="nav-number">1.</span> <span class="nav-text">0x00 fuzzing简单介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#测试用例的产生方式"><span class="nav-number">1.1.</span> <span class="nav-text">测试用例的产生方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-AFL"><span class="nav-number">2.</span> <span class="nav-text">0x01 AFL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单介绍"><span class="nav-number">2.1.</span> <span class="nav-text">简单介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作流程"><span class="nav-number">2.2.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AFL组成"><span class="nav-number">2.3.</span> <span class="nav-text">AFL组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.4.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AFL基本使用"><span class="nav-number">2.5.</span> <span class="nav-text">AFL基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#测试程序"><span class="nav-number">2.5.1.</span> <span class="nav-text">测试程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插桩编译"><span class="nav-number">2.5.2.</span> <span class="nav-text">插桩编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始fuzzing"><span class="nav-number">2.5.3.</span> <span class="nav-text">开始fuzzing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看crash"><span class="nav-number">2.5.4.</span> <span class="nav-text">查看crash</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-AFLGo"><span class="nav-number">3.</span> <span class="nav-text">0x02 AFLGo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-1"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">3.1.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#报错处理"><span class="nav-number">3.1.2.</span> <span class="nav-text">报错处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-qysm"><span class="nav-number">4.</span> <span class="nav-text">0x03 qysm</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">4.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-2"><span class="nav-number">4.2.</span> <span class="nav-text">安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

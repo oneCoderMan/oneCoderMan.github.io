@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="hadoop的一个应用实例：词频统计及其理论介绍">
+<meta name="keywords" content="hadoop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hadoop02-wordCount">
+<meta property="og:url" content="http://yoursite.com/2020/01/07/hadoop02-wordCount/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="hadoop的一个应用实例：词频统计及其理论介绍">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-01-09T02:04:59.213Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hadoop02-wordCount">
+<meta name="twitter:description" content="hadoop的一个应用实例：词频统计及其理论介绍">
+  <link rel="canonical" href="http://yoursite.com/2020/01/07/hadoop02-wordCount/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>hadoop02-wordCount | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/07/hadoop02-wordCount/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">hadoop02-wordCount
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-01-07 10:05:01" itemprop="dateCreated datePublished" datetime="2020-01-07T10:05:01+08:00">2020-01-07</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-09 10:04:59" itemprop="dateModified" datetime="2020-01-09T10:04:59+08:00">2020-01-09</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>hadoop的一个应用实例：词频统计及其理论介绍</p>
+<a id="more"></a>
+<h1 id="0x00-实例代码"><a href="#0x00-实例代码" class="headerlink" title="0x00 实例代码"></a>0x00 实例代码</h1><p>一个简单介绍MapReduce技术的<a href="https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.824e244b8wdsOb#_15663" target="_blank" rel="noopener">文档</a><br>见官网提供的词频统计示例：<a href="https://hadoop.apache.org/docs/r2.7.2/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html" target="_blank" rel="noopener">官网词频统计</a></p>
+<h2 id="一个测试用例"><a href="#一个测试用例" class="headerlink" title="一个测试用例"></a>一个测试用例</h2><p>test.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Bye GoogBye Hadoop Hello Word Hadoop Word</span><br></pre></td></tr></table></figure>
+
+<h2 id="首先实现一个Mapper类"><a href="#首先实现一个Mapper类" class="headerlink" title="首先实现一个Mapper类"></a>首先实现一个Mapper类</h2><p>具体需要导入的包见官方示例。这里用到的都是hadoop中重新定义的类型，保证能序列化和反序列化。<br>对应如下：</p>
+<blockquote>
+<p>Long === LongWritable<br>String === Text<br>Integer === IntWritable</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static class TokenizerMapper</span><br><span class="line">       extends Mapper&lt;Object, Text, Text, IntWritable&gt;&#123;</span><br><span class="line"></span><br><span class="line">    private final static IntWritable one = new IntWritable(1);</span><br><span class="line">    private Text word = new Text();</span><br><span class="line"></span><br><span class="line">    public void map(Object key, Text value, Context context</span><br><span class="line">                    ) throws IOException, InterruptedException &#123;</span><br><span class="line">      StringTokenizer itr = new StringTokenizer(value.toString());</span><br><span class="line">      while (itr.hasMoreTokens()) &#123;</span><br><span class="line">        word.set(itr.nextToken());</span><br><span class="line">        context.write(word, one);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法定义的输入是<code>&lt;Object, Text&gt;</code>，输出是<code>&lt;Text, IntWritable&gt;</code>。StringTokenizer是<code>java.util</code>包下分割字符串工具。通过write方法将结果输出到文件中去。<br>该map输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt; Bye, 1&gt;</span><br><span class="line">&lt; GoodBye, 1&gt;</span><br><span class="line">&lt;Hadoop, (1,1)&gt;</span><br><span class="line">&lt; Hello, 1&gt;</span><br><span class="line">&lt; World, (1,1)&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果设置了combiner操作<code>job.setCombinerClass(IntSumReducer.class)</code>，则会进行合并操作。<strong>每次运行完map，会对输出按照key进行排序，把输出传递给本地combiner，进行本地聚合。</strong><br>可以见到，词频统计的combiner和reduce操作是一样的流程。combiner（按照配置可以知道和reduce一样），<br>经过combiner后，map输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt; Bye, 1&gt;</span><br><span class="line">&lt; GoodBye, 1&gt;</span><br><span class="line">&lt;Hadoop, 2&gt;</span><br><span class="line">&lt; Hello, 1&gt;</span><br><span class="line">&lt; World, 2&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现一个Reduce类"><a href="#实现一个Reduce类" class="headerlink" title="实现一个Reduce类"></a>实现一个Reduce类</h2><p>经过map和combiner后，reduce收到的数据是这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;Bye, [1]&gt;</span><br><span class="line">&lt;GoodBye, [1]&gt;</span><br><span class="line">&lt;Hadoop, [1,1]&gt;</span><br><span class="line">&lt;hello, [1]&gt;</span><br><span class="line">&lt;World, [1]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>之后进行reduce操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static class IntSumReducer</span><br><span class="line">      extends Reducer&lt;Text,IntWritable,Text,IntWritable&gt; &#123;</span><br><span class="line">   private IntWritable result = new IntWritable();</span><br><span class="line"></span><br><span class="line">   public void reduce(Text key, Iterable&lt;IntWritable&gt; values,</span><br><span class="line">                      Context context</span><br><span class="line">                      ) throws IOException, InterruptedException &#123;</span><br><span class="line">     int sum = 0;</span><br><span class="line">     for (IntWritable val : values) &#123;</span><br><span class="line">       sum += val.get();</span><br><span class="line">     &#125;</span><br><span class="line">     result.set(sum);</span><br><span class="line">     context.write(key, result);</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>将相同key的值进行操作，对不同map的输出进行汇总。</p>
+<h2 id="编写main方法"><a href="#编写main方法" class="headerlink" title="编写main方法"></a>编写main方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws Exception &#123;</span><br><span class="line">   Configuration conf = new Configuration();</span><br><span class="line">   Job job = Job.getInstance(conf, &quot;word count&quot;);</span><br><span class="line">   job.setJarByClass(WordCount.class);</span><br><span class="line">   job.setMapperClass(TokenizerMapper.class);</span><br><span class="line">   job.setCombinerClass(IntSumReducer.class);</span><br><span class="line">   job.setReducerClass(IntSumReducer.class);</span><br><span class="line">   job.setOutputKeyClass(Text.class);</span><br><span class="line">   job.setOutputValueClass(IntWritable.class);</span><br><span class="line">   FileInputFormat.addInputPath(job, new Path(args[0]));</span><br><span class="line">   FileOutputFormat.setOutputPath(job, new Path(args[1]));</span><br><span class="line">   System.exit(job.waitForCompletion(true) ? 0 : 1);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法使设置job的一些配置，主要涉及map类，reduce类。输出的key, value类型。设置作业的输入，输出路径。<br>要想程序能跟运行，还需要连接hdfs系统。有两种方法，把core.xml放到资源文件下，或加入如下的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conf.set(&quot;fs.defaultFS&quot;, &quot;hdfs://localhost:9000&quot;);</span><br><span class="line">conf.set(&quot;fs.hdfs.impl&quot;, &quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-一些问题"><a href="#0x01-一些问题" class="headerlink" title="0x01 一些问题"></a>0x01 一些问题</h1><p>Q1:为什么不用JAVA的序列化？<br>A1：java序列化是一个重量级框架(Serializable)，一个对象序列化后有许多额外的信息如校验信息，Header，继承体系)。不便在网络中高效传输，所以Hadoop开发了自己的序列化机制(Writable)。</p>
+<p>Q2: mapreduce有哪些进程<br>A2: 有三类实例进程：</p>
+<blockquote>
+<ul>
+<li>MrAppMaster: 负责过程调度及状态协调</li>
+<li>MapTask: 负责Map阶段的数据处理流程</li>
+<li>ReduceTask: 负责Reduce阶段的整个数据处理流程，对每一组相同的&lt;k,v&gt;调用一次reduce方法。</li>
+</ul>
+</blockquote>
+<h1 id="0x02-mapReduce框架原理"><a href="#0x02-mapReduce框架原理" class="headerlink" title="0x02 mapReduce框架原理"></a>0x02 mapReduce框架原理</h1><h2 id="InputFormat数据输入"><a href="#InputFormat数据输入" class="headerlink" title="InputFormat数据输入"></a>InputFormat数据输入</h2><p>数据块：Block是HDFS在物理上把数据分成一块一块。<br>数据切片：在逻辑上对输入进行分片。<br>一个Job的map阶段并行度由客户端在提交Job时的切片数决定，每一个Split切片分配一个MapTask实例。切片是针对每一个文件单独切片。</p>
+<h1 id="0x03-mapReduce开发过程"><a href="#0x03-mapReduce开发过程" class="headerlink" title="0x03 mapReduce开发过程"></a>0x03 mapReduce开发过程</h1><h2 id="1-输入数据接口：InputFormat"><a href="#1-输入数据接口：InputFormat" class="headerlink" title="1. 输入数据接口：InputFormat"></a>1. 输入数据接口：InputFormat</h2><ul>
+<li>默认使用实现类是<code>TextInputFormat</code>：一次读一行文本，然后将该行的起始字节偏移量作为key，行内容(不包括换行和回车)作为value值返回。</li>
+<li><code>KeyValueTextInputFormat</code>每一行均为一条记录，被分割符分割为key，value。默认分隔符是tab(‘\t’)。</li>
+<li><code>NlineInputFormat</code>按照指定的行数N来划分切片，每一个切片对应一个MapTask。</li>
+<li><code>CombineTextInputFormat</code>把多个小文件合并成一个切片处理，提高处理效率。</li>
+<li>用户可以自定义<code>InputFormat</code>。</li>
+</ul>
+<h2 id="2-逻辑处理接口-Mapper"><a href="#2-逻辑处理接口-Mapper" class="headerlink" title="2. 逻辑处理接口:Mapper"></a>2. 逻辑处理接口:Mapper</h2><p>用户根据业务需求有选择的实现三个方法：<code>map()</code>，<code>setup()</code>，<code>cleanup()</code></p>
+<h2 id="3-Partitioner分区"><a href="#3-Partitioner分区" class="headerlink" title="3. Partitioner分区"></a>3. Partitioner分区</h2><ul>
+<li>有默认实现<code>HashPartitioner</code>，根据key的哈希值和numReduces返回一个分区号。用户无法控制哪个key存储到那个分区。</li>
+<li>也可以自定义分区。</li>
+</ul>
+<h2 id="4-Comparable排序"><a href="#4-Comparable排序" class="headerlink" title="4. Comparable排序"></a>4. Comparable排序</h2><p>用自定义对象作为key来输出是，就必须实现WritableComparable接口，重写其中的compareTo()方法。<br>部分排序：对最终输出的每一个文件进行内部排序。<br>全排序：对所有数据进行排序，通常只有一个Reduce。<br>二次排序：排序条件有两个。</p>
+<h2 id="5-Combiner合并"><a href="#5-Combiner合并" class="headerlink" title="5. Combiner合并"></a>5. Combiner合并</h2><p>提高执行效率，减少IO开销</p>
+<h2 id="6-Reduce端分组：GroupingComparator"><a href="#6-Reduce端分组：GroupingComparator" class="headerlink" title="6.Reduce端分组：GroupingComparator"></a>6.Reduce端分组：GroupingComparator</h2><p>在Reduce端进行key分组。应用于接受key为对象时，想让一个或几个字段相同的key进入同一个reduce方法。</p>
+<h2 id="7-逻辑处理接口"><a href="#7-逻辑处理接口" class="headerlink" title="7.逻辑处理接口"></a>7.逻辑处理接口</h2><p>根据业务需求实现三个方法：<code>reduce()</code>, <code>setup()</code>, <code>cleanup()</code>。</p>
+<h2 id="8-数据输出接口"><a href="#8-数据输出接口" class="headerlink" title="8.数据输出接口"></a>8.数据输出接口</h2><ul>
+<li>默认实现是<code>TextOutputFormat</code>，将每一个kv对，向目标文件中输出一行。</li>
+<li><code>SequenceFileOutputFormat</code>输出作为后续MapReduce任务的输入。</li>
+<li>可以自定义<code>OutputFormat</code></li>
+</ul>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.824e244b8wdsOb#_15663" target="_blank" rel="noopener">https://edu.aliyun.com/lesson_1802_15663?spm=5176.10731542.0.0.824e244b8wdsOb#_15663</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/hadoop/" rel="tag"># hadoop</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/12/07/linux-basic/" rel="next" title="linux-basic">
+                  <i class="fa fa-chevron-left"></i> linux-basic
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/01/07/hadoop03-InvertIndex/" rel="prev" title="hadoop03-InvertIndex">
+                  hadoop03-InvertIndex <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-实例代码"><span class="nav-number">1.</span> <span class="nav-text">0x00 实例代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个测试用例"><span class="nav-number">1.1.</span> <span class="nav-text">一个测试用例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#首先实现一个Mapper类"><span class="nav-number">1.2.</span> <span class="nav-text">首先实现一个Mapper类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现一个Reduce类"><span class="nav-number">1.3.</span> <span class="nav-text">实现一个Reduce类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写main方法"><span class="nav-number">1.4.</span> <span class="nav-text">编写main方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-一些问题"><span class="nav-number">2.</span> <span class="nav-text">0x01 一些问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-mapReduce框架原理"><span class="nav-number">3.</span> <span class="nav-text">0x02 mapReduce框架原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#InputFormat数据输入"><span class="nav-number">3.1.</span> <span class="nav-text">InputFormat数据输入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-mapReduce开发过程"><span class="nav-number">4.</span> <span class="nav-text">0x03 mapReduce开发过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-输入数据接口：InputFormat"><span class="nav-number">4.1.</span> <span class="nav-text">1. 输入数据接口：InputFormat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-逻辑处理接口-Mapper"><span class="nav-number">4.2.</span> <span class="nav-text">2. 逻辑处理接口:Mapper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Partitioner分区"><span class="nav-number">4.3.</span> <span class="nav-text">3. Partitioner分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Comparable排序"><span class="nav-number">4.4.</span> <span class="nav-text">4. Comparable排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Combiner合并"><span class="nav-number">4.5.</span> <span class="nav-text">5. Combiner合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Reduce端分组：GroupingComparator"><span class="nav-number">4.6.</span> <span class="nav-text">6.Reduce端分组：GroupingComparator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-逻辑处理接口"><span class="nav-number">4.7.</span> <span class="nav-text">7.逻辑处理接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-数据输出接口"><span class="nav-number">4.8.</span> <span class="nav-text">8.数据输出接口</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

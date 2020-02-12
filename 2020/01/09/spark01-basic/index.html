@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="spark基础部分安装和介绍版本：spark-2.4.4-bin-hadoop2.7.tgzscala 2.11.8可以从清华大学镜像网站下载">
+<meta name="keywords" content="spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spark01-basic">
+<meta property="og:url" content="http://yoursite.com/2020/01/09/spark01-basic/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="spark基础部分安装和介绍版本：spark-2.4.4-bin-hadoop2.7.tgzscala 2.11.8可以从清华大学镜像网站下载">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-01-09T12:40:39.835Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spark01-basic">
+<meta name="twitter:description" content="spark基础部分安装和介绍版本：spark-2.4.4-bin-hadoop2.7.tgzscala 2.11.8可以从清华大学镜像网站下载">
+  <link rel="canonical" href="http://yoursite.com/2020/01/09/spark01-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>spark01-basic | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/09/spark01-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">spark01-basic
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-01-09 10:28:40 / Modified: 20:40:39" itemprop="dateCreated datePublished" datetime="2020-01-09T10:28:40+08:00">2020-01-09</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bigdata/" itemprop="url" rel="index"><span itemprop="name">bigdata</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>spark基础部分<br>安装和介绍<br>版本：spark-2.4.4-bin-hadoop2.7.tgz<br>scala 2.11.8<br>可以从清华大学镜像网站下载</p>
+<a id="more"></a>
+<h1 id="0x00-安装"><a href="#0x00-安装" class="headerlink" title="0x00 安装"></a>0x00 安装</h1><p><a href="http://spark.apache.org/docs/2.1.0/" target="_blank" rel="noopener">官网</a><br>部署模式有四种：</p>
+<ul>
+<li>Local模式(单机)</li>
+<li>Standalone模式，用spark自带的简单集群管理器</li>
+<li>YARN模式，使用YARN作为集群管理器</li>
+<li>Mesos模式，使用Mesos作为集群管理器。</li>
+</ul>
+<h2 id="安装Scala环境"><a href="#安装Scala环境" class="headerlink" title="安装Scala环境"></a>安装Scala环境</h2><blockquote>
+<p>Scala是一门现代的多范式编程语言，旨在以简练、优雅及类型安全的方式来表达常用编程模式，平滑地集成了面向对象和函数语言的特性，运行在JVM上，兼容java程序[1]</p>
+<ul>
+<li>下载Scala2.11.8和安装</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget https://downloads.lightbend.com/scala/2.11.8/scala-2.11.8.tgz</span><br><span class="line">tar -zxvf scala-2.11.8.tgz</span><br><span class="line">sudo mv scala-2.11.8 /opt/scala-2.11.8       </span><br><span class="line">sudo chown -R hadoop:hadoop /opt/scala-2.11.8</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>配置环境变量<br><code>vim /etc/profile</code></p>
+</li>
+<li><p>写入如下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export SCALA_HOME=/opt/scala-2.11.8</span><br><span class="line">export PATH=$PATH:$SCALA_HOME/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用source命令使之生效</p>
+</li>
+<li><p>验证<br><code>scala -version</code></p>
+</li>
+</ul>
+<h2 id="安装spark"><a href="#安装spark" class="headerlink" title="安装spark"></a>安装spark</h2><ul>
+<li><p>下载spark2.4.4和安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz</span><br><span class="line">tar -zxvf spark-2.4.4-bin-hadoop2.7.tgz</span><br><span class="line">sudo mv spark-2.4.4-bin-hadoop2.7 /opt/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">sudo chown -R hadoop:hadoop /opt/spark-2.4.4-bin-hadoop2.7</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置日志级别<br>进入conf目录进行配置<br><code>cd /opt/spark-2.4.4-bin-hadoop2.7/conf/</code><br>使用模板创建日志配置<br><code>cp log4j.properties.template log4j.properties</code><br>修改其中的一行为如下，可以避免测试中输出太多不必要的信息<br><code>log4j.rootCategory=WARN,console</code></p>
+</li>
+<li><p>配置Spark环境路径<br>进入conf目录<br><code>cp ./conf/spark-env.sh.template ./conf/spark.env.sh</code><br>编辑该文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line">export SPARK_HOME=/opt/spark-2.4.4-bin-hadoop2.7</span><br><span class="line">export SCALA_HOME=/opt/scala-2.11.8</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置连接HDFS文件系统的信息<br>编辑<code>./conf/spark.env.sh</code>文件<br>加入如下信息，就会使用HDFS文件系统</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>一个实例：验证配置是否成功，计算Pi的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd spark/bin</span><br><span class="line">./run-example SparkPi</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-Spark-shell"><a href="#0x01-Spark-shell" class="headerlink" title="0x01 Spark-shell"></a>0x01 Spark-shell</h1><h2 id="打开交互式Shell"><a href="#打开交互式Shell" class="headerlink" title="打开交互式Shell"></a>打开交互式Shell</h2><p>进入spark目录下的bin文件，可以运行一个自带的交互Shell。<br>执行命令<code>./spark-shell</code><br>退出：<code>ctrl+D</code>，或者命令<code>:quit</code><br>简单测试：<br>输入一个表达式<code>8*2+5</code>会得到一个结果<code>res0: Int=21</code></p>
+<h2 id="读取linux系统本地文件"><a href="#读取linux系统本地文件" class="headerlink" title="读取linux系统本地文件"></a>读取linux系统本地文件</h2><p>可以在spark-shell窗口中读取文件，并显示第一行的内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var file = sc.textFile(&quot;/etc/protocols&quot;)</span><br><span class="line">file.count()</span><br><span class="line">file.first()</span><br></pre></td></tr></table></figure>
+
+<h2 id="读取HDFS文件"><a href="#读取HDFS文件" class="headerlink" title="读取HDFS文件"></a>读取HDFS文件</h2><p>Spark可以不用启动Hadoop就可以运行，需要使用HDFS文件系统的话就必须先启动Hadoop。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val textFile=sc.textFile(&quot;hdfs://localhost:9000/input/file1.txt&quot;)</span><br><span class="line">textFile.first()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x02-Scala编写Spark应用程序"><a href="#0x02-Scala编写Spark应用程序" class="headerlink" title="0x02 Scala编写Spark应用程序"></a>0x02 Scala编写Spark应用程序</h1><p>一般都是使用IDEA进行开发，一些配置见参考文献[3]，是一个词频统计程序。<br>以下介绍的手动编写配置过程，没有使用ida。<br>使用Scala语言编写的程序需要使用<strong>sbt</strong>进行编译打包</p>
+<h2 id="安装sbt"><a href="#安装sbt" class="headerlink" title="安装sbt"></a>安装sbt</h2><ul>
+<li><p>下载sbt-launch</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.11/sbt-launch.jar</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建目录<code>/opt/sbt</code><br>改变所属组<code>chown -R yijun:yijun /opt/sbt</code><br>将下载的<code>sbt-launch.jar</code>移动到该目录下</p>
+<br></li>
+<li><p>在<code>/opt/sbt</code>目录下创建脚本<br><code>vim ./sbt</code><br>内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">SBT_OPTS=&quot;-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M&quot;</span><br><span class="line">java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar &quot;$@&quot;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>脚本增加可执行权限<code>chmod 755 ./sbt</code><br><br></p>
+<ul>
+<li>检验sbt是否可用<br><code>./sbt sbt-version</code><br>这个步骤很漫长。<br>安装成功后会显示<code>[info] 0.13.11</code>信息。</li>
+</ul>
+<p>之后的步骤见参考文献[1]</p>
+<h2 id="编写程序"><a href="#编写程序" class="headerlink" title="编写程序"></a>编写程序</h2><ul>
+<li><p>新建一个目录作为应用程序根目录，必须使用特定的文件结构(sbt要求的)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~   </span><br><span class="line">mkdir ./sparkapp   </span><br><span class="line">mkdir -p ./sparkapp/src/main/scala</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建一个示例程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ./sparkapp/src/main/scala/SimpleApp.scala</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>写入如下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/* SimpleApp.scala */</span><br><span class="line">import org.apache.spark.SparkContext</span><br><span class="line">import org.apache.spark.SparkContext._</span><br><span class="line">import org.apache.spark.SparkConf</span><br><span class="line"> </span><br><span class="line">object SimpleApp &#123;</span><br><span class="line">  def main(args: Array[String]) &#123;</span><br><span class="line">    #注意修改该文件的路径</span><br><span class="line">    val logFile = &quot;file:///usr/local/spark/README.md&quot; // Should be some file on your system</span><br><span class="line">    val conf = new SparkConf().setAppName(&quot;Simple Application&quot;)</span><br><span class="line">    val sc = new SparkContext(conf)</span><br><span class="line">    val logData = sc.textFile(logFile, 2).cache()</span><br><span class="line">    val numAs = logData.filter(line =&gt; line.contains(&quot;a&quot;)).count()</span><br><span class="line">    val numBs = logData.filter(line =&gt; line.contains(&quot;b&quot;)).count()</span><br><span class="line">    println(&quot;Lines with a: %s, Lines with b: %s&quot;.format(numAs, numBs))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编写编译配置文件<br>在主目录下<code>./sparkapp</code>中新建文件<code>simple.sbt</code><br>添加如下内容，指定Spark和scala版本<br>其中的参数版本根据<a href="http://spark.apache.org/downloads.html" target="_blank" rel="noopener">官网设置</a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">name := &quot;simple Project&quot;</span><br><span class="line">version := &quot;0.1&quot;</span><br><span class="line">scalaVersion := &quot;2.11.8&quot;</span><br><span class="line">libraryDependencies += &quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;2.4.4&quot;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>可以使用<code>find</code>命令查看文件结构</p>
+<ul>
+<li>sbt打包<br>首先一定要进入工程目录下，<code>cd ~/sparkapp</code><br>然后使用sbt命令进行打包<br>我们已经在安装sbt的步骤中写好了启动脚本<br><code>/opt/sbt/sbt package</code><br>会在<code>target</code>目录下生成jar包<br></li>
+<li>运行程序<br>上一步骤生成的jar包可以通过如下命令提交到spark中去运行。<br>如果配置环境变量，使用命令(在spark的bin目录下)<code>spark-submit</code>。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spark-submit --class &quot;SimpleApp&quot; simple-project_2.10-1.0.jar</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="0x03-java编写spark应用程序"><a href="#0x03-java编写spark应用程序" class="headerlink" title="0x03 java编写spark应用程序"></a>0x03 java编写spark应用程序</h1><p>来源于参考文献[4]<br>使用java语言编写sprak需使用maven工具<br><code>src/main/</code>下新建<code>SimpleApp.java</code><br>编写程序<br>pom文件中内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;project&gt;</span><br><span class="line">    &lt;groupId&gt;edu.berkeley&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;simple-project&lt;/artifactId&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</span><br><span class="line">    &lt;name&gt;Simple Project&lt;/name&gt;</span><br><span class="line">    &lt;packaging&gt;jar&lt;/packaging&gt;</span><br><span class="line">    &lt;version&gt;1.0&lt;/version&gt;</span><br><span class="line">    &lt;repositories&gt;</span><br><span class="line">        &lt;repository&gt;</span><br><span class="line">            &lt;id&gt;Akka repository&lt;/id&gt;</span><br><span class="line">            &lt;url&gt;http://repo.akka.io/releases&lt;/url&gt;</span><br><span class="line">        &lt;/repository&gt;</span><br><span class="line">    &lt;/repositories&gt;</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt; &lt;!-- Spark dependency --&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.spark&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spark-core_2.11&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.4.4&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br><span class="line">&lt;/project&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以<a href="https://search.maven.org/" target="_blank" rel="noopener">查阅</a>， 搜索<code>spark-core</code><br>同样可以生成jar包，用<code>spark-submit</code>命令提交</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="http://dblab.xmu.edu.cn/blog/spark-quick-start-guide/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/spark-quick-start-guide/</a><br>[2] <a href="https://www.shiyanlou.com/courses/456/learning/?id=1433" target="_blank" rel="noopener">https://www.shiyanlou.com/courses/456/learning/?id=1433</a><br>[3] <a href="http://dblab.xmu.edu.cn/blog/1492-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/1492-2/</a><br>[4] <a href="http://dblab.xmu.edu.cn/blog/931-2/" target="_blank" rel="noopener">http://dblab.xmu.edu.cn/blog/931-2/</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/spark/" rel="tag"># spark</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/01/08/interviewMaterial/" rel="next" title="interviewMaterial">
+                  <i class="fa fa-chevron-left"></i> interviewMaterial
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/01/14/hive01-base/" rel="prev" title="hive01-base">
+                  hive01-base <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-安装"><span class="nav-number">1.</span> <span class="nav-text">0x00 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Scala环境"><span class="nav-number">1.1.</span> <span class="nav-text">安装Scala环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装spark"><span class="nav-number">1.2.</span> <span class="nav-text">安装spark</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-Spark-shell"><span class="nav-number">2.</span> <span class="nav-text">0x01 Spark-shell</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#打开交互式Shell"><span class="nav-number">2.1.</span> <span class="nav-text">打开交互式Shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取linux系统本地文件"><span class="nav-number">2.2.</span> <span class="nav-text">读取linux系统本地文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取HDFS文件"><span class="nav-number">2.3.</span> <span class="nav-text">读取HDFS文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-Scala编写Spark应用程序"><span class="nav-number">3.</span> <span class="nav-text">0x02 Scala编写Spark应用程序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装sbt"><span class="nav-number">3.1.</span> <span class="nav-text">安装sbt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写程序"><span class="nav-number">3.2.</span> <span class="nav-text">编写程序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-java编写spark应用程序"><span class="nav-number">4.</span> <span class="nav-text">0x03 java编写spark应用程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

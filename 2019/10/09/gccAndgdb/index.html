@@ -74,7 +74,7 @@
 <meta property="og:image" content="http://yoursite.com/images/gccAndgdb/callMsg.png">
 <meta property="og:image" content="http://yoursite.com/images/gccAndgdb/xsStr.png">
 <meta property="og:image" content="http://yoursite.com/images/gccAndgdb/findError.png">
-<meta property="og:updated_time" content="2019-11-04T06:52:49.410Z">
+<meta property="og:updated_time" content="2019-11-27T00:03:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="gccAndgdb">
 <meta name="twitter:description" content="linux下的c编程工具的使用">
@@ -309,7 +309,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-04 14:52:49" itemprop="dateModified" datetime="2019-11-04T14:52:49+08:00">2019-11-04</time>
+                <time title="Modified: 2019-11-27 08:03:34" itemprop="dateModified" datetime="2019-11-27T08:03:34+08:00">2019-11-27</time>
               </span>
             
           
@@ -364,8 +364,21 @@
 <li><p>gcc生成调试信息</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -g test.c -o test</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>gcc编译生成32bit代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 hello.c -o hello</span><br></pre></td></tr></table></figure>
+<li><p>关闭一些安全手段<br>关闭栈保护和pie，可以加上<code>-g</code>生成一些调试信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ehcho 0 &gt; /proc/sys/kernel/randomize_va_space</span><br><span class="line">gcc -m32 -fno-stack-protector  -no-pie fmt.c</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>关闭NX</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wall -g -Wl,-zexecstack</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>wall：生成所有的警告信息<br>合成一下，关闭一些安全选项</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -Wall -g -m32 -fno-stack-protector  -no-pie -o fmtc fmt.c -Wl,-zexecstack</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>gcc编译生成32bit代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -m32 hello.c -o hello</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
@@ -424,6 +437,8 @@
 <h4 id="单步"><a href="#单步" class="headerlink" title="单步"></a>单步</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) start</span><br></pre></td></tr></table></figure>
 
 <p>这个时候会进入程序运行状态，单步运行需要输入<code>n</code>，输入一次执行一条语句。<code>s</code>单步会进入子程序中去。</p>
+<h4 id="跳出函数fin"><a href="#跳出函数fin" class="headerlink" title="跳出函数fin"></a>跳出函数fin</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) finish</span><br><span class="line">#或者</span><br><span class="line">(gdb) fin</span><br></pre></td></tr></table></figure>
+
 <h4 id="断点-单步"><a href="#断点-单步" class="headerlink" title="断点+单步"></a>断点+单步</h4><p>启动的时候<code>start</code>程序会在第一行停止。<br>这个时候可以设置断点，如下所示：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) b 5</span><br><span class="line">(gdb) c #运行程序到断点处，一般在设置完断点后使用</span><br><span class="line">(gdb) r #重新运行程序 run</span><br></pre></td></tr></table></figure>
 
@@ -447,6 +462,16 @@
 <h4 id="反汇编命令"><a href="#反汇编命令" class="headerlink" title="反汇编命令"></a>反汇编命令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disassemble main</span><br><span class="line">#可简写成</span><br><span class="line">(gdb) disas main</span><br></pre></td></tr></table></figure>
 
 <p>其中的main是一个函数名称。</p>
+<h4 id="查看内存"><a href="#查看内存" class="headerlink" title="查看内存"></a>查看内存</h4><p>格式<code>x/nfu &lt;addr&gt;</code>或者<code>x &lt;addr&gt;</code></p>
+<blockquote>
+<p>n—-指定显示多少单位的内存值，这个单位由<code>u</code>指定<br>f—–显示的格式，与<code>printf</code>格式相同，默认是<code>x</code>表示十六进制，可选的有<code>d</code>,<code>u</code>,<code>s</code>,<code>i</code>….<br>u——单位大小，b(字节)，h(双字节)，w(四字节)，g(八字节)<br>eg</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x/10x $esp</span><br><span class="line">(gdb) x/100i $0xdddddd  以指令的形式查看内存区域</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改寄存器的值"><a href="#修改寄存器的值" class="headerlink" title="修改寄存器的值"></a>修改寄存器的值</h4><p>使用<code>set</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(gdb) set $eax=0</span><br></pre></td></tr></table></figure>
+
+<p>可以使用<code>i r</code>查看你所有寄存器的值</p>
 <h3 id="3-2-gdb插件—gdb-peda"><a href="#3-2-gdb插件—gdb-peda" class="headerlink" title="3.2 gdb插件—gdb-peda"></a>3.2 gdb插件—gdb-peda</h3><p>PEDA(<strong>Python Exploit Development Assistance for GDB</strong>)是一个强大的 gdb 插件。它提供了高亮显示反汇编代码、寄存器、内存信息等人性化的功能。同时，PEDA 还有一些实用的新命令，比如checksec 可以查看程序开启了哪些安全机制等等。</p>
 <ul>
 <li>安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/longld/peda.git ~/peda</span><br><span class="line">$ echo &quot;source ~/peda/peda.py&quot; &gt;&gt; ~/.gdbinit</span><br></pre></td></tr></table></figure>
@@ -552,8 +577,8 @@
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2019/10/24/IISFTP/" rel="prev" title="IISFTP">
-                  IISFTP <i class="fa fa-chevron-right"></i>
+                <a href="/2019/10/22/printFormat/" rel="prev" title="printFormat">
+                  printFormat <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
@@ -603,7 +628,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux下的c编程工具的使用"><span class="nav-number">1.</span> <span class="nav-text">linux下的c编程工具的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-gcc工具的使用"><span class="nav-number">1.1.</span> <span class="nav-text">1.gcc工具的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-gcc的各个阶段分析"><span class="nav-number">1.2.</span> <span class="nav-text">2.gcc的各个阶段分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-预处理"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-编译"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-汇编"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-链接"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-gdb的使用"><span class="nav-number">1.3.</span> <span class="nav-text">3.gdb的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-gbd调试程序的简易入门操作"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 gbd调试程序的简易入门操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显示当前的代码"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">显示当前的代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单步"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">单步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#断点-单步"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">断点+单步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看所有断点和删除"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">查看所有断点和删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置条件断点"><span class="nav-number">1.3.1.6.</span> <span class="nav-text">设置条件断点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察变量改变的地方"><span class="nav-number">1.3.1.7.</span> <span class="nav-text">观察变量改变的地方</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反汇编命令"><span class="nav-number">1.3.1.8.</span> <span class="nav-text">反汇编命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-gdb插件—gdb-peda"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 gdb插件—gdb-peda</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Linux代码执行漏洞分析实战"><span class="nav-number">1.4.</span> <span class="nav-text">4. Linux代码执行漏洞分析实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-准备"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2实验过程"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2实验过程</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux下的c编程工具的使用"><span class="nav-number">1.</span> <span class="nav-text">linux下的c编程工具的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-gcc工具的使用"><span class="nav-number">1.1.</span> <span class="nav-text">1.gcc工具的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-gcc的各个阶段分析"><span class="nav-number">1.2.</span> <span class="nav-text">2.gcc的各个阶段分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-预处理"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-编译"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-汇编"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 汇编</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-链接"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-gdb的使用"><span class="nav-number">1.3.</span> <span class="nav-text">3.gdb的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-gbd调试程序的简易入门操作"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 gbd调试程序的简易入门操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显示当前的代码"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">显示当前的代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单步"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">单步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#跳出函数fin"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">跳出函数fin</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#断点-单步"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">断点+单步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看所有断点和删除"><span class="nav-number">1.3.1.6.</span> <span class="nav-text">查看所有断点和删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置条件断点"><span class="nav-number">1.3.1.7.</span> <span class="nav-text">设置条件断点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察变量改变的地方"><span class="nav-number">1.3.1.8.</span> <span class="nav-text">观察变量改变的地方</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反汇编命令"><span class="nav-number">1.3.1.9.</span> <span class="nav-text">反汇编命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看内存"><span class="nav-number">1.3.1.10.</span> <span class="nav-text">查看内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改寄存器的值"><span class="nav-number">1.3.1.11.</span> <span class="nav-text">修改寄存器的值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-gdb插件—gdb-peda"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 gdb插件—gdb-peda</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Linux代码执行漏洞分析实战"><span class="nav-number">1.4.</span> <span class="nav-text">4. Linux代码执行漏洞分析实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-准备"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2实验过程"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2实验过程</span></a></li></ol></li></ol></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -621,7 +646,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -634,7 +659,7 @@
             <a href="/categories/">
           
         
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -647,7 +672,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -668,7 +693,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
