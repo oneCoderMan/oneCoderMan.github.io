@@ -1,6 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>mysql-basic</title>
+    <url>/2020/02/13/mysql-basic/</url>
+    <content><![CDATA[<p>mysql安装和使用<br>版本：ubuntu16.04与mysql-server-5.7</p>
+<a id="more"></a>
+<p><a href="http://dblab.xmu.edu.cn/blog/install-mysql/" target="_blank" rel="noopener">安装教程</a><br>root账户密码（Qwertyuiop123）</p>
+<h1 id="0x00-字符集配置"><a href="#0x00-字符集配置" class="headerlink" title="0x00 字符集配置"></a>0x00 字符集配置</h1><p>编辑<code>sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</code><br>在[mysqlId]节点下添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">default-character-set=utf-8</span><br><span class="line">character-set-server=utf-8</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x01-自启动配置"><a href="#0x01-自启动配置" class="headerlink" title="0x01 自启动配置"></a>0x01 自启动配置</h1><ol>
+<li>执行<code>chkconfig mysqld on</code></li>
+<li>执行<code>chkconfig --list mysqld</code>（查看2-5位启用on状态即可）</li>
+</ol>
+<h1 id="0x02-一些配置"><a href="#0x02-一些配置" class="headerlink" title="0x02 一些配置"></a>0x02 一些配置</h1><ul>
+<li><p>服务启动：<code>service mysqld start</code></p>
+</li>
+<li><p>root用户登陆：<code>mysql -u root -p</code><br>登陆之后可以进行的操作。</p>
+</li>
+<li><p>查看mysql的用户：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select user,host,password from mysql.user</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改root密码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set password for root@localhost=password(&apos;yourPassword&apos;)</span><br><span class="line">#或者</span><br><span class="line">set password for root@127.0.0.1=password(&apos;yourPassword&apos;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除匿名用户</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#查看是否有匿名用户</span><br><span class="line">select user,host from mysql.user;</span><br><span class="line">#删除匿名用户</span><br><span class="line">delete from mysql.user where user=&apos;&apos;;</span><br><span class="line">#刷新，生效</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>插入新用户</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;YouName&quot;,password(&quot;youPassword&quot;));</span><br><span class="line">#使操作生效</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新的数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE mall DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给某一个用户赋予某数据库的所有权限</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grant all privileges on mall.* to youUsername@localhost identified by &apos;yourPassword&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给某一个账户开通外网所有权限</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grant all privileges on mall.* to youUsername@&apos;%&apos; identified by &apos;yourPassword&apos;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>注意%号代表所有的IP地址，可以指定IP地址</p>
+</blockquote>
+<p>使操作生效<code>flush privileges;</code></p>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>dpkg: error processing package *** (–configure)解决办法<br><a href="https://blog.csdn.net/qq_36561697/article/details/82224279" target="_blank" rel="noopener">https://blog.csdn.net/qq_36561697/article/details/82224279</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ngnix</title>
+    <url>/2020/02/13/ngnix/</url>
+    <content><![CDATA[<p>ngnix安装和使用<br>版本：ubuntu16.04与nginx-1.11.3</p>
+<a id="more"></a>
+
+<h1 id="0x00-简介"><a href="#0x00-简介" class="headerlink" title="0x00 简介"></a>0x00 简介</h1><ul>
+<li>Ngnix是一款轻量级web服务器，也是一款反向代理服务器</li>
+<li>可作为HTTP反向代理服务器，负载均衡服务器，邮件代理服务器，帮助实现前端动静分离。</li>
+<li>特点：高稳定，高性能，资源占用少，功能丰富，模块化结构，支持热部署。<br><a href="http://nginx.org/" target="_blank" rel="noopener">官网</a></li>
+</ul>
+<h1 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h1><ul>
+<li><p>下载软件：<br><a href="http://nginx.org/download/" target="_blank" rel="noopener">http://nginx.org/download/</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx-1.11.3.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装依赖<br>centOS下的安装依赖</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum -y install gcc zlib zlib-devel pcre-devel openssl openssl-devel</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>ubuntu16.04 下安装依赖</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#gcc g++的依赖库</span><br><span class="line">apt-get install build-essential</span><br><span class="line">apt-get install libtool</span><br><span class="line"># 安装pcre依赖库</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install libpcre3 libpcre3-dev</span><br><span class="line"># 安装zlib依赖库</span><br><span class="line">apt-get install zlib1g-dev</span><br><span class="line"># 安装ssl依赖库</span><br><span class="line">apt-get install openssl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译安装<br>进入解压目录<br>执行<code>./configure</code>（安装后可以通过<code>whereis ngnix</code>查询安装位置）<br>或者指定安装目录<code>./configure --prefix=/usr/local/nginx</code><br>然后执行<code>make</code>命令<br>最后执行<code>make install</code>完成安装<blockquote>
+<p>通过上面可以知道ngnix安装后的位置在<code>/usr/local/nginx</code></p>
+</blockquote>
+</li>
+</ul>
+<h1 id="0x02-ngnix常用命令"><a href="#0x02-ngnix常用命令" class="headerlink" title="0x02 ngnix常用命令"></a>0x02 ngnix常用命令</h1><h2 id="测试配置文件"><a href="#测试配置文件" class="headerlink" title="测试配置文件"></a>测试配置文件</h2><p>安装路径下（eg:<code>/usr/local/nginx</code>）的<code>sbin</code>文件下的命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动命令"><a href="#启动命令" class="headerlink" title="启动命令"></a>启动命令</h2><p><code>sudo /usr/local/nginx/sbin/nginx</code><br>启动的时候80端口被占用的解决方案: <a href="https://jingyan.baidu.com/article/20b68a8880c84d796dec6256.html" target="_blank" rel="noopener">https://jingyan.baidu.com/article/20b68a8880c84d796dec6256.html</a><br>或者<a href="https://blog.csdn.net/qq_27252133/article/details/53646986" target="_blank" rel="noopener">98: Address already in use</a></p>
+<h2 id="停止命令"><a href="#停止命令" class="headerlink" title="停止命令"></a>停止命令</h2><p><code>/usr/local/nginx/sbin/nginx -s stop</code><br>或者<br><code>/usr/local/nginx/sbin/nginx -s quit</code></p>
+<h2 id="重启命令"><a href="#重启命令" class="headerlink" title="重启命令"></a>重启命令</h2><p><code>/usr/local/nginx/sbin/nginx -s reload</code></p>
+<h1 id="0x03-设置虚拟域名-反向代理"><a href="#0x03-设置虚拟域名-反向代理" class="headerlink" title="0x03 设置虚拟域名(反向代理)"></a>0x03 设置虚拟域名(反向代理)</h1><ul>
+<li>在ngnix的配置文件<code>./conf/nginx.conf</code>如下地方中加入如下内容<br><code>include vhost/*.conf</code><br><img src="/images/nginx/pic01.png" alt="pic"><br></li>
+<li>创建vhost<br>在ngnix的conf目录下创建一个文件夹<code>vhost</code><br></li>
+<li>修改host（需要访问的客户端上面的）<br>这个文件是设置域名的<br><code>vim /etc/hosts</code>，加入如下内容(win:<code>C:\Windows\System32\Drivers\etc</code>)<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">106.14.124.205 www.yijun.com</span><br><span class="line">106.14.124.205 image.yijun.com</span><br><span class="line">106.14.124.205 s.yijun.com</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>重启网络服务<code>/etc/init.d/nscd restart</code><br><br></p>
+<ul>
+<li>编辑节点（在目录conf/vhost下面）<br><code>cd conf/vhost</code><br>节点1： 新建<code>vim www.yijun.com.conf</code>，输入如下内容<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server &#123; </span><br><span class="line">      listen 80; </span><br><span class="line">      autoindex on; </span><br><span class="line">      server_name www.yijun.com; </span><br><span class="line">      access_log /usr/local/nginx/logs/access.log combined; </span><br><span class="line">      index index.html index.htm index.jsp index.php; </span><br><span class="line">      #error_page 404 /404.html; </span><br><span class="line">      if ( $query_string ~* &quot;.*[\;&apos;\&lt;\&gt;].*&quot; )&#123; </span><br><span class="line">           return 404; </span><br><span class="line">      &#125; </span><br><span class="line">      location / &#123;  </span><br><span class="line">            proxy_pass http://127.0.0.1:8080;</span><br><span class="line">            add_header Access-Control-Allow-Origin *;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>解析：上述是把<code>www.yijun.com:80</code>的请求转发到<code>http://127.0.0.1:8080</code></p>
+<blockquote>
+<p>注意：<code>autoindex off</code>的时候不会暴露索引。</p>
+</blockquote>
+<p>重启ngnix即可<br><br>节点2：新建<code>vim image.yijun.com.conf</code>，输入如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server &#123; </span><br><span class="line">      listen 80; </span><br><span class="line">      autoindex off; </span><br><span class="line">      server_name image.yijun.com; </span><br><span class="line">      access_log /usr/local/nginx/logs/access.log combined; </span><br><span class="line">      index index.html index.htm index.jsp index.php; </span><br><span class="line">      #error_page 404 /404.html; </span><br><span class="line">      if ( $query_string ~* &quot;.*[\;&apos;\&lt;\&gt;].*&quot; )&#123;</span><br><span class="line">            return 404; </span><br><span class="line">      &#125; </span><br><span class="line">      location ~ /(mmall_fe|mmall_admin_fe)/dist/view/* &#123; </span><br><span class="line">            deny all;</span><br><span class="line">      &#125; </span><br><span class="line">      location /  &#123; </span><br><span class="line">            root /myFiles;</span><br><span class="line">            add_header Access-Control-Allow-Origin *;</span><br><span class="line">      &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解析：上述是把<code>image.yijun.com:80</code>的请求转发到<code>/myFiles</code>文件夹下面。</p>
+<p>重启ngnix</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.cnblogs.com/tinya/p/11849173.html" target="_blank" rel="noopener">https://www.cnblogs.com/tinya/p/11849173.html</a> ngnix安装</p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>ngnix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vsftpd</title>
+    <url>/2020/02/12/vsftpd/</url>
+    <content><![CDATA[<p>vsftpd安装和使用<br>版本：ubuntu16.04与vsftp-2.2.2</p>
+<a id="more"></a>
+<h1 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h1><p>vsftp(very secure FTP daemon)，一个免费的，开源的ftp服务器软件。<br>小巧轻快，安全易用，支持虚拟用户，宽带限制。</p>
+<h1 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h1><p><code>apt-get install vsftpd</code><br>默认的配置文件在<code>/etc/vsftpd.conf</code><br>启动服务<code>service vsftpd start</code></p>
+<h1 id="0x02-用户配置"><a href="#0x02-用户配置" class="headerlink" title="0x02 用户配置"></a>0x02 用户配置</h1><ol>
+<li><p>选定一个目录作为ftp文件夹<br>如：<code>/home/uftp</code></p>
+</li>
+<li><p>ubuntu系统添加一个用户<br>倒数第三个是指ftp使用的文件目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">useradd ftpuser -d /home/ftpuser  -s /bin/bash</span><br><span class="line">或者</span><br><span class="line">useradd -d /home/uftp -m uftp -s /usr/sbin/nologin</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>修改文件目录权限</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chown -R ftpuser.ftpuser /home/ftpuser</span><br></pre></td></tr></table></figure>
+
+<p>重设ftpuser用户的密码(123456)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd ftpuser</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置</li>
+</ol>
+<ul>
+<li><p>新建文件<code>vim /etc/vsftpd.user_list</code><br>用来存放允许访问ftp的用户<br>在其中加入用户名<code>ftpuser</code></p>
+</li>
+<li><p>配置VSFTPD文件<br><code>vim /etc/vsftpd.conf</code><br>做如下修改（后三行要放到最后）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">write_enable=YES</span><br><span class="line">userlist_file=/etc/vsftpd.user_list</span><br><span class="line">userlist_enable=YES</span><br><span class="line">userlist_deny=NO</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="4">
+<li><p>重启</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service vsftpd restart</span><br><span class="line">或者</span><br><span class="line">sudo vsftpd restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证</p>
+</li>
+</ol>
+<p><strong>安照如上创建的用户是需要在cmd环境下进行操作</strong>，在浏览器中登陆不上。<br><code>ps aux | grep vsftpd</code>查看是否有对应进程。<br>win下的cmd中输入<code>ftp IP</code><br>下载：<code>get filename</code><br>上传：<code>put filename</code></p>
+<h1 id="0x03-配置浏览器登陆"><a href="#0x03-配置浏览器登陆" class="headerlink" title="0x03 配置浏览器登陆"></a>0x03 配置浏览器登陆</h1><p>浏览器不能访问，是因为VSFTPD不支持被动模式造成的。</p>
+<ol>
+<li><p>编辑配置文件<code>vi /etc/vsftpd.conf</code><br>加入如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pasv_enable=YES</span><br><span class="line">pasv_max_port=30100</span><br><span class="line">pasv_min_port=30000</span><br><span class="line"># 这儿填服务器的ip(选填)</span><br><span class="line">pasv_address=47.99.*.*    </span><br><span class="line">pasv_addr_resolve=yes</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>防火墙配置开放<br>编辑（centOS）<code>vi /etc/iptables.rules</code></p>
+</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.linuxidc.com/Linux/2017-06/144807.htm" target="_blank" rel="noopener">https://www.linuxidc.com/Linux/2017-06/144807.htm</a> Ubuntu 16.04下vsftpd 安装配置实例<br>[2] <a href="https://blog.csdn.net/sinat_41898105/article/details/90341812" target="_blank" rel="noopener">https://blog.csdn.net/sinat_41898105/article/details/90341812</a> 阿里云连接不上问题</p>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="centOS要用到的一个项目配置"><a href="#centOS要用到的一个项目配置" class="headerlink" title="centOS要用到的一个项目配置"></a>centOS要用到的一个项目配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">本项目要用到的配置项：</span><br><span class="line">1）local_root=/ftpfile(当本地用户登入时，将被更换到定义的目录下，默认值为各用户的家目录)</span><br><span class="line">2）anon_root=/ftpfile(使用匿名登入时，所登入的目录)</span><br><span class="line">3）use_localtime=YES(默认是GMT时间，改成使用本机系统时间)</span><br><span class="line">4）anonymous_enable=NO(不允许匿名用户登录)</span><br><span class="line">5）local_enable=YES(允许本地用户登录)</span><br><span class="line">6）write_enable=YES(本地用户可以在自己家目录中进行读写操作)</span><br><span class="line">7）local_umask=022(本地用户新增档案时的umask值)</span><br><span class="line">8）dirmessage_enable=YES(如果启动这个选项，那么使用者第一次进入一个目录时，会检查该目录下是否有.message这个档案，如果有，则会出现此档案的内容，通常这个档案会放置欢迎话语，或是对该目录的说明。默认值为开启)</span><br><span class="line">9）xferlog_enable=YES(是否启用上传/下载日志记录。如果启用，则上传与下载的信息将被完整纪录在xferlog_file 所定义的档案中。预设为开启。)</span><br><span class="line">10）connect_from_port_20=YES(指定FTP使用20端口进行数据传输，默认值为YES)</span><br><span class="line">11）xferlog_std_format=YES(如果启用，则日志文件将会写成xferlog的标准格式)</span><br><span class="line">12）ftpd_banner=Welcome to mmall FTP Server(这里用来定义欢迎话语的字符串)</span><br><span class="line">13）chroot_local_user=NO(用于指定用户列表文件中的用户是否允许切换到上级目录)</span><br><span class="line">14）chroot_list_enable=YES(设置是否启用chroot_list_file配置项指定的用户列表文件)</span><br><span class="line">15）chroot_list_file=/etc/vsftpd/chroot_list(用于指定用户列表文件)</span><br><span class="line">16）listen=YES(设置vsftpd服务器是否以standalone模式运行，以standalone模式运行是一种较好的方式，此时listen必须设置为YES，此为默认值。建议不要更改，有很多与服务器运行相关的配置命令，需要在此模式下才有效，若设置为NO，则vsftpd不是以独立的服务运行，要受到xinetd服务的管控，功能上会受到限制)</span><br><span class="line">17）pam_service_name=vsftpd(虚拟用户使用PAM认证方式，这里是设置PAM使用的名称，默认即可，与/etc/pam.d/vsftpd对应) userlist_enable=YES(是否启用vsftpd.user_list文件，黑名单,白名单都可以</span><br><span class="line">18)pasv_min_port=61001(被动模式使用端口范围最小值)</span><br><span class="line">19)pasv_max_port=62000(被动模式使用端口范围最大值)</span><br><span class="line">20)pasv_enable=YES(pasv_enable=YES/NO（YES）</span><br><span class="line">若设置为YES，则使用PASV工作模式；若设置为NO，则使用PORT模式。默认值为YES，即使用PASV工作模式。</span><br><span class="line">   FTP协议有两种工作方式：PORT方式和PASV方式，中文意思为主动式和被动式。</span><br><span class="line">   一、PORT（主动）方式的连接过程是：客户端向服务器的FTP端口（默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">  当需要传送数据时，客户端在命令链路上用 PORT命令告诉服务器：“我打开了****端口，你过来连接我”。于是服务器从20端口向客户端的****端口发送连接请求，建立一条数据链路来传送数据。</span><br><span class="line">   二、PASV（被动）方式的连接过程是：客户端向服务器的FTP端口（默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">  当需要传送数据时，服务器在命令链路上用 PASV命令告诉客户端：“我打开了****端口，你过来连接我”。于是客户端向服务器的****端口发送连接请求，建立一条数据链路来传送数据。</span><br><span class="line">  从上面可以看出，两种方式的命令链路连接方法是一样的，而数据链路的建立方法就完全不同。而FTP的复杂性就在于此。</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Ununtu16-04的一个配置"><a href="#Ununtu16-04的一个配置" class="headerlink" title="Ununtu16.04的一个配置"></a>Ununtu16.04的一个配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#这些设置系统默认是开启的，可以不管</span><br><span class="line">listen=NO</span><br><span class="line">listen_ipv6=YES</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">use_localtime=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line"></span><br><span class="line">#下面的就要自定义设置了，建议系统默认的不管，然后复制下面的</span><br><span class="line"></span><br><span class="line">#是否允许匿名访问，NO为不允许</span><br><span class="line">anonymous_enable=NO</span><br><span class="line">#是否允许本地用户访问,就是linux本机中存在的用户，YES允许</span><br><span class="line">local_enable=YES</span><br><span class="line">#是否开启写模式，YES为开启</span><br><span class="line">write_enable=YES</span><br><span class="line">#新建文件权限，一般设置为022，那么新建后的文件的权限就是777-022=755</span><br><span class="line">local_umask=022</span><br><span class="line"></span><br><span class="line">#是否启动userlist为通过模式，YES的话只有存在于userlist文件中的用户才能登录ftp（可以理解为userlist是一个白名单），NO的话，白名单失效，和下面一个参数配合使用</span><br><span class="line">userlist_enable=YES</span><br><span class="line">#是否启动userlist为禁止模式，YES表示在userlist中的用户禁止登录ftp（黑名单），NO表示黑名单失效，我们已经让userlist作为一个白名单，所以无需使用黑名单功能</span><br><span class="line">userlist_deny=NO</span><br><span class="line">#指定哪个文件作为userlist文件，我们稍后编辑这个文件</span><br><span class="line">userlist_file=/etc/vsftpd.user_list</span><br><span class="line"></span><br><span class="line">#是否限制本地所有用户切换根目录的权限，YES为开启限制，即登录后的用户不能访问ftp根目录以外的目录，当然要限制啦</span><br><span class="line">chroot_local_user=YES</span><br><span class="line">#是否启动限制用户的名单list为允许模式，上面的YES限制了所有用户，可以用这个名单作为白名单，作为例外允许访问ftp根目录以外</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">#设置哪个文件是list文件，里面的用户将不受限制的去访问ftp根目录以外的目录</span><br><span class="line">chroot_list_file=/etc/vsftpd.chroot_list</span><br><span class="line">#是否开启写模式，开启后可以进行创建文件夹等写入操作</span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line"></span><br><span class="line">#设置ftp根目录的位置,这个文件我们稍后自己创建</span><br><span class="line">local_root=/var/myftp</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>vsftpd</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hive01-base</title>
     <url>/2020/01/14/hive01-base/</url>
     <content><![CDATA[<p>hive的安装和介绍<br>版本：2.3.6<br>hadoop: 2.7.1</p>
@@ -211,8 +391,8 @@
         <category>tool</category>
       </categories>
       <tags>
-        <tag>beautifulSoup</tag>
         <tag>Python</tag>
+        <tag>beautifulSoup</tag>
       </tags>
   </entry>
   <entry>
@@ -329,7 +509,7 @@
     <url>/2019/12/07/linux-basic/</url>
     <content><![CDATA[<p>Linux入门<br>学习linux的一些基本操作</p>
 <a id="more"></a>
-<p>更改主机名<br><code>hostname</code>查看主机名<br><code>hostname Name</code>临时更改<br><code>vim /etc/hostname</code>永久修改</p>
+<p>更改主机名<br><code>hostname</code>查看主机名<br><code>hostname Name</code>临时更改<br><code>vim /etc/hostname</code>永久修改<br>查看系统版本<code>cat /etc/issue</code></p>
 <h1 id="0x00-文件操作"><a href="#0x00-文件操作" class="headerlink" title="0x00 文件操作"></a>0x00 文件操作</h1><h2 id="cp命令"><a href="#cp命令" class="headerlink" title="cp命令"></a>cp命令</h2><p>功能：用于目录或者文件的复制<br>格式：<code>cp [options] file destination</code><br>举例：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp a.txt b.txt    重新创建新的时间戳</span><br><span class="line">cp -p a.txt b.txt 不改变时间戳，所属用户</span><br><span class="line">cp -r a b         递归复制，用于文件夹</span><br></pre></td></tr></table></figure>
 
@@ -973,9 +1153,9 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Numpy</tag>
         <tag>SciPy</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1102,8 +1282,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Numpy</tag>
+        <tag>Python</tag>
         <tag>seaborn</tag>
       </tags>
   </entry>
@@ -1525,6 +1705,8 @@
 </li>
 </ol>
 <h1 id="0x04-ubuntu16-04下的vsftpd安装"><a href="#0x04-ubuntu16-04下的vsftpd安装" class="headerlink" title="0x04 ubuntu16.04下的vsftpd安装"></a>0x04 ubuntu16.04下的vsftpd安装</h1><p>见单独的页面</p>
+<h1 id="0x05-ubuntu16-04下的Ngnix安装"><a href="#0x05-ubuntu16-04下的Ngnix安装" class="headerlink" title="0x05 ubuntu16.04下的Ngnix安装"></a>0x05 ubuntu16.04下的Ngnix安装</h1><p>见单独的页面</p>
+<h1 id="0x06-mysql-安装"><a href="#0x06-mysql-安装" class="headerlink" title="0x06 mysql 安装"></a>0x06 mysql 安装</h1><p>见<a href="http://dblab.xmu.edu.cn/blog/install-mysql/" target="_blank" rel="noopener">连接</a>或者本站搜索<br>或者见单独页面</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/u014775723/article/details/85213793" target="_blank" rel="noopener">https://blog.csdn.net/u014775723/article/details/85213793</a></p>
 ]]></content>
       <categories>
@@ -2209,8 +2391,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Numpy</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="ngnix安装和使用版本：ubuntu16.04与nginx-1.11.3">
+<meta name="keywords" content="ngnix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ngnix">
+<meta property="og:url" content="http://yoursite.com/2020/02/13/ngnix/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="ngnix安装和使用版本：ubuntu16.04与nginx-1.11.3">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/nginx/pic01.png">
+<meta property="og:updated_time" content="2020-02-13T07:42:05.942Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ngnix">
+<meta name="twitter:description" content="ngnix安装和使用版本：ubuntu16.04与nginx-1.11.3">
+<meta name="twitter:image" content="http://yoursite.com/images/nginx/pic01.png">
+  <link rel="canonical" href="http://yoursite.com/2020/02/13/ngnix/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>ngnix | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/13/ngnix/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">ngnix
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-02-13 11:26:58 / Modified: 15:42:05" itemprop="dateCreated datePublished" datetime="2020-02-13T11:26:58+08:00">2020-02-13</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ngnix安装和使用<br>版本：ubuntu16.04与nginx-1.11.3</p>
+<a id="more"></a>
+
+<h1 id="0x00-简介"><a href="#0x00-简介" class="headerlink" title="0x00 简介"></a>0x00 简介</h1><ul>
+<li>Ngnix是一款轻量级web服务器，也是一款反向代理服务器</li>
+<li>可作为HTTP反向代理服务器，负载均衡服务器，邮件代理服务器，帮助实现前端动静分离。</li>
+<li>特点：高稳定，高性能，资源占用少，功能丰富，模块化结构，支持热部署。<br><a href="http://nginx.org/" target="_blank" rel="noopener">官网</a></li>
+</ul>
+<h1 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h1><ul>
+<li><p>下载软件：<br><a href="http://nginx.org/download/" target="_blank" rel="noopener">http://nginx.org/download/</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://nginx.org/download/nginx-1.11.3.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装依赖<br>centOS下的安装依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install gcc zlib zlib-devel pcre-devel openssl openssl-devel</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>ubuntu16.04 下安装依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#gcc g++的依赖库</span><br><span class="line">apt-get install build-essential</span><br><span class="line">apt-get install libtool</span><br><span class="line"># 安装pcre依赖库</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install libpcre3 libpcre3-dev</span><br><span class="line"># 安装zlib依赖库</span><br><span class="line">apt-get install zlib1g-dev</span><br><span class="line"># 安装ssl依赖库</span><br><span class="line">apt-get install openssl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译安装<br>进入解压目录<br>执行<code>./configure</code>（安装后可以通过<code>whereis ngnix</code>查询安装位置）<br>或者指定安装目录<code>./configure --prefix=/usr/local/nginx</code><br>然后执行<code>make</code>命令<br>最后执行<code>make install</code>完成安装<blockquote>
+<p>通过上面可以知道ngnix安装后的位置在<code>/usr/local/nginx</code></p>
+</blockquote>
+</li>
+</ul>
+<h1 id="0x02-ngnix常用命令"><a href="#0x02-ngnix常用命令" class="headerlink" title="0x02 ngnix常用命令"></a>0x02 ngnix常用命令</h1><h2 id="测试配置文件"><a href="#测试配置文件" class="headerlink" title="测试配置文件"></a>测试配置文件</h2><p>安装路径下（eg:<code>/usr/local/nginx</code>）的<code>sbin</code>文件下的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动命令"><a href="#启动命令" class="headerlink" title="启动命令"></a>启动命令</h2><p><code>sudo /usr/local/nginx/sbin/nginx</code><br>启动的时候80端口被占用的解决方案: <a href="https://jingyan.baidu.com/article/20b68a8880c84d796dec6256.html" target="_blank" rel="noopener">https://jingyan.baidu.com/article/20b68a8880c84d796dec6256.html</a><br>或者<a href="https://blog.csdn.net/qq_27252133/article/details/53646986" target="_blank" rel="noopener">98: Address already in use</a></p>
+<h2 id="停止命令"><a href="#停止命令" class="headerlink" title="停止命令"></a>停止命令</h2><p><code>/usr/local/nginx/sbin/nginx -s stop</code><br>或者<br><code>/usr/local/nginx/sbin/nginx -s quit</code></p>
+<h2 id="重启命令"><a href="#重启命令" class="headerlink" title="重启命令"></a>重启命令</h2><p><code>/usr/local/nginx/sbin/nginx -s reload</code></p>
+<h1 id="0x03-设置虚拟域名-反向代理"><a href="#0x03-设置虚拟域名-反向代理" class="headerlink" title="0x03 设置虚拟域名(反向代理)"></a>0x03 设置虚拟域名(反向代理)</h1><ul>
+<li>在ngnix的配置文件<code>./conf/nginx.conf</code>如下地方中加入如下内容<br><code>include vhost/*.conf</code><br><img src="/images/nginx/pic01.png" alt="pic"><br></li>
+<li>创建vhost<br>在ngnix的conf目录下创建一个文件夹<code>vhost</code><br></li>
+<li>修改host（需要访问的客户端上面的）<br>这个文件是设置域名的<br><code>vim /etc/hosts</code>，加入如下内容(win:<code>C:\Windows\System32\Drivers\etc</code>)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">106.14.124.205 www.yijun.com</span><br><span class="line">106.14.124.205 image.yijun.com</span><br><span class="line">106.14.124.205 s.yijun.com</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>重启网络服务<code>/etc/init.d/nscd restart</code><br><br></p>
+<ul>
+<li>编辑节点（在目录conf/vhost下面）<br><code>cd conf/vhost</code><br>节点1： 新建<code>vim www.yijun.com.conf</code>，输入如下内容<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123; </span><br><span class="line">      listen 80; </span><br><span class="line">      autoindex on; </span><br><span class="line">      server_name www.yijun.com; </span><br><span class="line">      access_log /usr/local/nginx/logs/access.log combined; </span><br><span class="line">      index index.html index.htm index.jsp index.php; </span><br><span class="line">      #error_page 404 /404.html; </span><br><span class="line">      if ( $query_string ~* &quot;.*[\;&apos;\&lt;\&gt;].*&quot; )&#123; </span><br><span class="line">           return 404; </span><br><span class="line">      &#125; </span><br><span class="line">      location / &#123;  </span><br><span class="line">            proxy_pass http://127.0.0.1:8080;</span><br><span class="line">            add_header Access-Control-Allow-Origin *;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>解析：上述是把<code>www.yijun.com:80</code>的请求转发到<code>http://127.0.0.1:8080</code></p>
+<blockquote>
+<p>注意：<code>autoindex off</code>的时候不会暴露索引。</p>
+</blockquote>
+<p>重启ngnix即可<br><br>节点2：新建<code>vim image.yijun.com.conf</code>，输入如下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">server &#123; </span><br><span class="line">      listen 80; </span><br><span class="line">      autoindex off; </span><br><span class="line">      server_name image.yijun.com; </span><br><span class="line">      access_log /usr/local/nginx/logs/access.log combined; </span><br><span class="line">      index index.html index.htm index.jsp index.php; </span><br><span class="line">      #error_page 404 /404.html; </span><br><span class="line">      if ( $query_string ~* &quot;.*[\;&apos;\&lt;\&gt;].*&quot; )&#123;</span><br><span class="line">            return 404; </span><br><span class="line">      &#125; </span><br><span class="line">      location ~ /(mmall_fe|mmall_admin_fe)/dist/view/* &#123; </span><br><span class="line">            deny all;</span><br><span class="line">      &#125; </span><br><span class="line">      location /  &#123; </span><br><span class="line">            root /myFiles;</span><br><span class="line">            add_header Access-Control-Allow-Origin *;</span><br><span class="line">      &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解析：上述是把<code>image.yijun.com:80</code>的请求转发到<code>/myFiles</code>文件夹下面。</p>
+<p>重启ngnix</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.cnblogs.com/tinya/p/11849173.html" target="_blank" rel="noopener">https://www.cnblogs.com/tinya/p/11849173.html</a> ngnix安装</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/ngnix/" rel="tag"># ngnix</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/02/12/vsftpd/" rel="next" title="vsftpd">
+                  <i class="fa fa-chevron-left"></i> vsftpd
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/02/13/mysql-basic/" rel="prev" title="mysql-basic">
+                  mysql-basic <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-简介"><span class="nav-number">1.</span> <span class="nav-text">0x00 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-安装"><span class="nav-number">2.</span> <span class="nav-text">0x01 安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-ngnix常用命令"><span class="nav-number">3.</span> <span class="nav-text">0x02 ngnix常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#测试配置文件"><span class="nav-number">3.1.</span> <span class="nav-text">测试配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动命令"><span class="nav-number">3.2.</span> <span class="nav-text">启动命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停止命令"><span class="nav-number">3.3.</span> <span class="nav-text">停止命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启命令"><span class="nav-number">3.4.</span> <span class="nav-text">重启命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-设置虚拟域名-反向代理"><span class="nav-number">4.</span> <span class="nav-text">0x03 设置虚拟域名(反向代理)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

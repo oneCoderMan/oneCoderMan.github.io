@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="vsftpd安装和使用版本：ubuntu16.04与vsftp-2.2.2">
+<meta name="keywords" content="vsftpd">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vsftpd">
+<meta property="og:url" content="http://yoursite.com/2020/02/12/vsftpd/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="vsftpd安装和使用版本：ubuntu16.04与vsftp-2.2.2">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-02-13T10:03:22.689Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vsftpd">
+<meta name="twitter:description" content="vsftpd安装和使用版本：ubuntu16.04与vsftp-2.2.2">
+  <link rel="canonical" href="http://yoursite.com/2020/02/12/vsftpd/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>vsftpd | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/12/vsftpd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">vsftpd
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-02-12 15:52:35" itemprop="dateCreated datePublished" datetime="2020-02-12T15:52:35+08:00">2020-02-12</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-13 18:03:22" itemprop="dateModified" datetime="2020-02-13T18:03:22+08:00">2020-02-13</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>vsftpd安装和使用<br>版本：ubuntu16.04与vsftp-2.2.2</p>
+<a id="more"></a>
+<h1 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h1><p>vsftp(very secure FTP daemon)，一个免费的，开源的ftp服务器软件。<br>小巧轻快，安全易用，支持虚拟用户，宽带限制。</p>
+<h1 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h1><p><code>apt-get install vsftpd</code><br>默认的配置文件在<code>/etc/vsftpd.conf</code><br>启动服务<code>service vsftpd start</code></p>
+<h1 id="0x02-用户配置"><a href="#0x02-用户配置" class="headerlink" title="0x02 用户配置"></a>0x02 用户配置</h1><ol>
+<li><p>选定一个目录作为ftp文件夹<br>如：<code>/home/uftp</code></p>
+</li>
+<li><p>ubuntu系统添加一个用户<br>倒数第三个是指ftp使用的文件目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">useradd ftpuser -d /home/ftpuser  -s /bin/bash</span><br><span class="line">或者</span><br><span class="line">useradd -d /home/uftp -m uftp -s /usr/sbin/nologin</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>修改文件目录权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R ftpuser.ftpuser /home/ftpuser</span><br></pre></td></tr></table></figure>
+
+<p>重设ftpuser用户的密码(123456)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd ftpuser</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置</li>
+</ol>
+<ul>
+<li><p>新建文件<code>vim /etc/vsftpd.user_list</code><br>用来存放允许访问ftp的用户<br>在其中加入用户名<code>ftpuser</code></p>
+</li>
+<li><p>配置VSFTPD文件<br><code>vim /etc/vsftpd.conf</code><br>做如下修改（后三行要放到最后）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">write_enable=YES</span><br><span class="line">userlist_file=/etc/vsftpd.user_list</span><br><span class="line">userlist_enable=YES</span><br><span class="line">userlist_deny=NO</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="4">
+<li><p>重启</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service vsftpd restart</span><br><span class="line">或者</span><br><span class="line">sudo vsftpd restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证</p>
+</li>
+</ol>
+<p><strong>安照如上创建的用户是需要在cmd环境下进行操作</strong>，在浏览器中登陆不上。<br><code>ps aux | grep vsftpd</code>查看是否有对应进程。<br>win下的cmd中输入<code>ftp IP</code><br>下载：<code>get filename</code><br>上传：<code>put filename</code></p>
+<h1 id="0x03-配置浏览器登陆"><a href="#0x03-配置浏览器登陆" class="headerlink" title="0x03 配置浏览器登陆"></a>0x03 配置浏览器登陆</h1><p>浏览器不能访问，是因为VSFTPD不支持被动模式造成的。</p>
+<ol>
+<li><p>编辑配置文件<code>vi /etc/vsftpd.conf</code><br>加入如下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pasv_enable=YES</span><br><span class="line">pasv_max_port=30100</span><br><span class="line">pasv_min_port=30000</span><br><span class="line"># 这儿填服务器的ip(选填)</span><br><span class="line">pasv_address=47.99.*.*    </span><br><span class="line">pasv_addr_resolve=yes</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>防火墙配置开放<br>编辑（centOS）<code>vi /etc/iptables.rules</code></p>
+</li>
+</ol>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.linuxidc.com/Linux/2017-06/144807.htm" target="_blank" rel="noopener">https://www.linuxidc.com/Linux/2017-06/144807.htm</a> Ubuntu 16.04下vsftpd 安装配置实例<br>[2] <a href="https://blog.csdn.net/sinat_41898105/article/details/90341812" target="_blank" rel="noopener">https://blog.csdn.net/sinat_41898105/article/details/90341812</a> 阿里云连接不上问题</p>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="centOS要用到的一个项目配置"><a href="#centOS要用到的一个项目配置" class="headerlink" title="centOS要用到的一个项目配置"></a>centOS要用到的一个项目配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">本项目要用到的配置项：</span><br><span class="line">1）local_root=/ftpfile(当本地用户登入时，将被更换到定义的目录下，默认值为各用户的家目录)</span><br><span class="line">2）anon_root=/ftpfile(使用匿名登入时，所登入的目录)</span><br><span class="line">3）use_localtime=YES(默认是GMT时间，改成使用本机系统时间)</span><br><span class="line">4）anonymous_enable=NO(不允许匿名用户登录)</span><br><span class="line">5）local_enable=YES(允许本地用户登录)</span><br><span class="line">6）write_enable=YES(本地用户可以在自己家目录中进行读写操作)</span><br><span class="line">7）local_umask=022(本地用户新增档案时的umask值)</span><br><span class="line">8）dirmessage_enable=YES(如果启动这个选项，那么使用者第一次进入一个目录时，会检查该目录下是否有.message这个档案，如果有，则会出现此档案的内容，通常这个档案会放置欢迎话语，或是对该目录的说明。默认值为开启)</span><br><span class="line">9）xferlog_enable=YES(是否启用上传/下载日志记录。如果启用，则上传与下载的信息将被完整纪录在xferlog_file 所定义的档案中。预设为开启。)</span><br><span class="line">10）connect_from_port_20=YES(指定FTP使用20端口进行数据传输，默认值为YES)</span><br><span class="line">11）xferlog_std_format=YES(如果启用，则日志文件将会写成xferlog的标准格式)</span><br><span class="line">12）ftpd_banner=Welcome to mmall FTP Server(这里用来定义欢迎话语的字符串)</span><br><span class="line">13）chroot_local_user=NO(用于指定用户列表文件中的用户是否允许切换到上级目录)</span><br><span class="line">14）chroot_list_enable=YES(设置是否启用chroot_list_file配置项指定的用户列表文件)</span><br><span class="line">15）chroot_list_file=/etc/vsftpd/chroot_list(用于指定用户列表文件)</span><br><span class="line">16）listen=YES(设置vsftpd服务器是否以standalone模式运行，以standalone模式运行是一种较好的方式，此时listen必须设置为YES，此为默认值。建议不要更改，有很多与服务器运行相关的配置命令，需要在此模式下才有效，若设置为NO，则vsftpd不是以独立的服务运行，要受到xinetd服务的管控，功能上会受到限制)</span><br><span class="line">17）pam_service_name=vsftpd(虚拟用户使用PAM认证方式，这里是设置PAM使用的名称，默认即可，与/etc/pam.d/vsftpd对应) userlist_enable=YES(是否启用vsftpd.user_list文件，黑名单,白名单都可以</span><br><span class="line">18)pasv_min_port=61001(被动模式使用端口范围最小值)</span><br><span class="line">19)pasv_max_port=62000(被动模式使用端口范围最大值)</span><br><span class="line">20)pasv_enable=YES(pasv_enable=YES/NO（YES）</span><br><span class="line">若设置为YES，则使用PASV工作模式；若设置为NO，则使用PORT模式。默认值为YES，即使用PASV工作模式。</span><br><span class="line">   FTP协议有两种工作方式：PORT方式和PASV方式，中文意思为主动式和被动式。</span><br><span class="line">   一、PORT（主动）方式的连接过程是：客户端向服务器的FTP端口（默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">  当需要传送数据时，客户端在命令链路上用 PORT命令告诉服务器：“我打开了****端口，你过来连接我”。于是服务器从20端口向客户端的****端口发送连接请求，建立一条数据链路来传送数据。</span><br><span class="line">   二、PASV（被动）方式的连接过程是：客户端向服务器的FTP端口（默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">  当需要传送数据时，服务器在命令链路上用 PASV命令告诉客户端：“我打开了****端口，你过来连接我”。于是客户端向服务器的****端口发送连接请求，建立一条数据链路来传送数据。</span><br><span class="line">  从上面可以看出，两种方式的命令链路连接方法是一样的，而数据链路的建立方法就完全不同。而FTP的复杂性就在于此。</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Ununtu16-04的一个配置"><a href="#Ununtu16-04的一个配置" class="headerlink" title="Ununtu16.04的一个配置"></a>Ununtu16.04的一个配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">#这些设置系统默认是开启的，可以不管</span><br><span class="line">listen=NO</span><br><span class="line">listen_ipv6=YES</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">use_localtime=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line"></span><br><span class="line">#下面的就要自定义设置了，建议系统默认的不管，然后复制下面的</span><br><span class="line"></span><br><span class="line">#是否允许匿名访问，NO为不允许</span><br><span class="line">anonymous_enable=NO</span><br><span class="line">#是否允许本地用户访问,就是linux本机中存在的用户，YES允许</span><br><span class="line">local_enable=YES</span><br><span class="line">#是否开启写模式，YES为开启</span><br><span class="line">write_enable=YES</span><br><span class="line">#新建文件权限，一般设置为022，那么新建后的文件的权限就是777-022=755</span><br><span class="line">local_umask=022</span><br><span class="line"></span><br><span class="line">#是否启动userlist为通过模式，YES的话只有存在于userlist文件中的用户才能登录ftp（可以理解为userlist是一个白名单），NO的话，白名单失效，和下面一个参数配合使用</span><br><span class="line">userlist_enable=YES</span><br><span class="line">#是否启动userlist为禁止模式，YES表示在userlist中的用户禁止登录ftp（黑名单），NO表示黑名单失效，我们已经让userlist作为一个白名单，所以无需使用黑名单功能</span><br><span class="line">userlist_deny=NO</span><br><span class="line">#指定哪个文件作为userlist文件，我们稍后编辑这个文件</span><br><span class="line">userlist_file=/etc/vsftpd.user_list</span><br><span class="line"></span><br><span class="line">#是否限制本地所有用户切换根目录的权限，YES为开启限制，即登录后的用户不能访问ftp根目录以外的目录，当然要限制啦</span><br><span class="line">chroot_local_user=YES</span><br><span class="line">#是否启动限制用户的名单list为允许模式，上面的YES限制了所有用户，可以用这个名单作为白名单，作为例外允许访问ftp根目录以外</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">#设置哪个文件是list文件，里面的用户将不受限制的去访问ftp根目录以外的目录</span><br><span class="line">chroot_list_file=/etc/vsftpd.chroot_list</span><br><span class="line">#是否开启写模式，开启后可以进行创建文件夹等写入操作</span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line"></span><br><span class="line">#设置ftp根目录的位置,这个文件我们稍后自己创建</span><br><span class="line">local_root=/var/myftp</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/vsftpd/" rel="tag"># vsftpd</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/01/14/hive01-base/" rel="next" title="hive01-base">
+                  <i class="fa fa-chevron-left"></i> hive01-base
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/02/13/ngnix/" rel="prev" title="ngnix">
+                  ngnix <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-介绍"><span class="nav-number">1.</span> <span class="nav-text">0x00 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-安装"><span class="nav-number">2.</span> <span class="nav-text">0x01 安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-用户配置"><span class="nav-number">3.</span> <span class="nav-text">0x02 用户配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-配置浏览器登陆"><span class="nav-number">4.</span> <span class="nav-text">0x03 配置浏览器登陆</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附录"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#centOS要用到的一个项目配置"><span class="nav-number">6.1.</span> <span class="nav-text">centOS要用到的一个项目配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ununtu16-04的一个配置"><span class="nav-number">6.2.</span> <span class="nav-text">Ununtu16.04的一个配置</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
