@@ -65,7 +65,7 @@
 <meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
 <meta property="og:description" content="Linux入门学习linux的一些基本操作">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-02-13T09:55:31.029Z">
+<meta property="og:updated_time" content="2020-02-15T14:17:23.512Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux-basic">
 <meta name="twitter:description" content="Linux入门学习linux的一些基本操作">
@@ -299,7 +299,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-13 17:55:31" itemprop="dateModified" datetime="2020-02-13T17:55:31+08:00">2020-02-13</time>
+                <time title="Modified: 2020-02-15 22:17:23" itemprop="dateModified" datetime="2020-02-15T22:17:23+08:00">2020-02-15</time>
               </span>
             
           
@@ -355,7 +355,10 @@
 <h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><p>功能：查看内存使用情况<br><code>free -h</code></p>
 <h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><p>查看系统所有进程<br><code>ps aux</code>和<code>ps au</code><br>暴力删掉进程：<code>kill -9 PID</code><br>进程状态：D:不能中断的进程，R:正在运行的进程，S：已经中断的进程，s:主进程，T:已经停止暂停的进程，z:僵尸进程，&lt;：高优先级进程，l:多线程进程，+：前台运行的进程</p>
 <h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><p>功能：查看网络连接状况，系统开发端口，路由表等信息</p>
-<p><code>netstat -lnp</code>该命令表示系统系统启用的端口<br><code>netstat -lnp | head -n30</code><br>上面一部分监听TCP/IP，下面监听Socket(unix开头)<br><code>netstat -an</code> 查看网络连接状况<br>如<code>netstat -an | grep 80</code>可以查看web服务器连接的IP</p>
+<blockquote>
+<p><code>-r</code>查看路由表(netstat -r)</p>
+</blockquote>
+<p><code>netstat -lnp</code>该命令表示系统启用的端口<br><code>netstat -lnp | head -n30</code><br>上面一部分监听TCP/IP，下面监听Socket(unix开头)<br><code>netstat -an</code> 查看网络连接状况<br>如<code>netstat -an | grep 80</code>可以查看web服务器连接的IP</p>
 <h2 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h2><h3 id="查看磁盘"><a href="#查看磁盘" class="headerlink" title="查看磁盘"></a>查看磁盘</h3><p><code>df -h</code>或者<code>df -h | grep -v tmpfs</code></p>
 <h3 id="查看文件或者目录"><a href="#查看文件或者目录" class="headerlink" title="查看文件或者目录"></a>查看文件或者目录</h3><p><code>du -sh filename</code></p>
 <h1 id="0x02文本编辑"><a href="#0x02文本编辑" class="headerlink" title="0x02文本编辑"></a>0x02文本编辑</h1><p>这里介绍的是vi或则vim编辑器，涉及到命令模式，编辑模式</p>

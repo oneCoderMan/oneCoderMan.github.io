@@ -7,7 +7,7 @@
 <a id="more"></a>
 <p><a href="http://dblab.xmu.edu.cn/blog/install-mysql/" target="_blank" rel="noopener">安装教程</a><br>root账户密码（Qwertyuiop123）</p>
 <h1 id="0x00-字符集配置"><a href="#0x00-字符集配置" class="headerlink" title="0x00 字符集配置"></a>0x00 字符集配置</h1><p>编辑<code>sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</code><br>在[mysqlId]节点下添加如下内容</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">default-character-set=utf-8</span><br><span class="line">character-set-server=utf-8</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">character_set_server=utf8</span><br></pre></td></tr></table></figure>
 
 <h1 id="0x01-自启动配置"><a href="#0x01-自启动配置" class="headerlink" title="0x01 自启动配置"></a>0x01 自启动配置</h1><ol>
 <li>执行<code>chkconfig mysqld on</code></li>
@@ -19,16 +19,16 @@
 <li><p>root用户登陆：<code>mysql -u root -p</code><br>登陆之后可以进行的操作。</p>
 </li>
 <li><p>查看mysql的用户：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select user,host,password from mysql.user</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select user,host,authentication_string from mysql.user</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改root密码</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set password for root@localhost=password(&apos;yourPassword&apos;)</span><br><span class="line">#或者</span><br><span class="line">set password for root@127.0.0.1=password(&apos;yourPassword&apos;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set authentication_string for root@localhost=password(&apos;yourPassword&apos;)</span><br><span class="line">#或者</span><br><span class="line">set authentication_string for root@127.0.0.1=password(&apos;yourPassword&apos;)</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>删除匿名用户</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#查看是否有匿名用户</span><br><span class="line">select user,host from mysql.user;</span><br><span class="line">#删除匿名用户</span><br><span class="line">delete from mysql.user where user=&apos;&apos;;</span><br><span class="line">#刷新，生效</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>插入新用户</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into mysql.user(Host,User,Password) values(&quot;localhost&quot;,&quot;YouName&quot;,password(&quot;youPassword&quot;));</span><br><span class="line">#使操作生效</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE USER &apos;test&apos;@&apos;localhost&apos;  IDENTIFIED BY &apos;1234&apos;; #本地登录 </span><br><span class="line">CREATE USER &apos;test&apos;@&apos;%&apos;  IDENTIFIED BY &apos;1234&apos;; #远程登录</span><br><span class="line">#使操作生效</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>创建新的数据库</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE mall DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;</span><br></pre></td></tr></table></figure>
@@ -45,7 +45,30 @@
 <p>注意%号代表所有的IP地址，可以指定IP地址</p>
 </blockquote>
 <p>使操作生效<code>flush privileges;</code></p>
+<blockquote>
+<p>注意，如果启动失败，注意查看日志文件<code>/var/log/syslog</code>，这里可以找到错误原因</p>
+</blockquote>
+<h1 id="0x03-导入数据库"><a href="#0x03-导入数据库" class="headerlink" title="0x03 导入数据库"></a>0x03 导入数据库</h1><p>sql文件的导入</p>
+<ul>
+<li>进入mysql的终端：<code>mysql -u root -p</code></li>
+<li>创建数据库：<code>create database databaseName;</code></li>
+<li>切换数据库：<code>use databaseName;</code></li>
+<li>导入文件：<code>source /root/abc.sql;</code></li>
+</ul>
+<h1 id="mysql连接的一个错误"><a href="#mysql连接的一个错误" class="headerlink" title="mysql连接的一个错误"></a>mysql连接的一个错误</h1><ul>
+<li>错误现象：ECS中安装有mysql，也已经有mysqld服务，也开放了3306端口，但就是在本地win10用navicat连接不上（can’t connect to mysql server on ‘localhost’ (10061)）</li>
+<li>排查过程：检测linux上3306的监听状况。<br>使用如下命令：<code>netstat -ntpl |grep 3306</code>可以查看3306的监听状态。<br><img src="/images/mysql-basic/pic01.png" alt="pic01"></li>
+<li>原因：因为3306端口的监听只与127.0.0.1绑定[1]。端口只允许本机访问，有两个地方启用，一个是防火墙启用3306，一个就是mysql配置绑定本机地址</li>
+<li>修改：<br>具体参考文献[1]</li>
+</ul>
+<ol>
+<li>编辑配置文件<code>vim /etc/mysql/mysql.conf.d/mysqld.cnf</code><br>修改一个值为：<code>bind-address = 0.0.0.0</code><br>重启服务：<code>service mysql restart</code> <br></li>
+<li>另外还需要创建一个用户使外网能跟访问。<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE USER &apos;test&apos;@&apos;%&apos;  IDENTIFIED BY &apos;1234&apos;;</span><br><span class="line">grant all privileges on mmall.* to test@&apos;%&apos; identified by &apos;1234&apos;;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
 <h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>dpkg: error processing package *** (–configure)解决办法<br><a href="https://blog.csdn.net/qq_36561697/article/details/82224279" target="_blank" rel="noopener">https://blog.csdn.net/qq_36561697/article/details/82224279</a></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/qq_36820328/article/details/79654278" target="_blank" rel="noopener">https://blog.csdn.net/qq_36820328/article/details/79654278</a></p>
 ]]></content>
       <categories>
         <category>linux</category>
@@ -534,7 +557,10 @@
 <h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><p>功能：查看内存使用情况<br><code>free -h</code></p>
 <h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><p>查看系统所有进程<br><code>ps aux</code>和<code>ps au</code><br>暴力删掉进程：<code>kill -9 PID</code><br>进程状态：D:不能中断的进程，R:正在运行的进程，S：已经中断的进程，s:主进程，T:已经停止暂停的进程，z:僵尸进程，&lt;：高优先级进程，l:多线程进程，+：前台运行的进程</p>
 <h3 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h3><p>功能：查看网络连接状况，系统开发端口，路由表等信息</p>
-<p><code>netstat -lnp</code>该命令表示系统系统启用的端口<br><code>netstat -lnp | head -n30</code><br>上面一部分监听TCP/IP，下面监听Socket(unix开头)<br><code>netstat -an</code> 查看网络连接状况<br>如<code>netstat -an | grep 80</code>可以查看web服务器连接的IP</p>
+<blockquote>
+<p><code>-r</code>查看路由表(netstat -r)</p>
+</blockquote>
+<p><code>netstat -lnp</code>该命令表示系统启用的端口<br><code>netstat -lnp | head -n30</code><br>上面一部分监听TCP/IP，下面监听Socket(unix开头)<br><code>netstat -an</code> 查看网络连接状况<br>如<code>netstat -an | grep 80</code>可以查看web服务器连接的IP</p>
 <h2 id="磁盘管理"><a href="#磁盘管理" class="headerlink" title="磁盘管理"></a>磁盘管理</h2><h3 id="查看磁盘"><a href="#查看磁盘" class="headerlink" title="查看磁盘"></a>查看磁盘</h3><p><code>df -h</code>或者<code>df -h | grep -v tmpfs</code></p>
 <h3 id="查看文件或者目录"><a href="#查看文件或者目录" class="headerlink" title="查看文件或者目录"></a>查看文件或者目录</h3><p><code>du -sh filename</code></p>
 <h1 id="0x02文本编辑"><a href="#0x02文本编辑" class="headerlink" title="0x02文本编辑"></a>0x02文本编辑</h1><p>这里介绍的是vi或则vim编辑器，涉及到命令模式，编辑模式</p>
