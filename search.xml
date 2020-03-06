@@ -149,7 +149,7 @@
     <content><![CDATA[<p>vsftpd安装和使用<br>版本：ubuntu16.04与vsftp-2.2.2</p>
 <a id="more"></a>
 <h1 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h1><p>vsftp(very secure FTP daemon)，一个免费的，开源的ftp服务器软件。<br>小巧轻快，安全易用，支持虚拟用户，宽带限制。</p>
-<h1 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h1><p><code>apt-get install vsftpd</code><br>默认的配置文件在<code>/etc/vsftpd.conf</code><br>启动服务<code>service vsftpd start</code></p>
+<h1 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h1><p><code>apt-get install vsftpd</code><br>默认的配置文件在<code>/etc/vsftpd.conf</code><br>启动服务<code>service vsftpd start</code><br>查看启动日志<code>service vsftpd status</code></p>
 <h1 id="0x02-用户配置"><a href="#0x02-用户配置" class="headerlink" title="0x02 用户配置"></a>0x02 用户配置</h1><ol>
 <li><p>选定一个目录作为ftp文件夹<br>如：<code>/home/uftp</code></p>
 </li>
@@ -191,10 +191,11 @@
 </li>
 </ol>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.linuxidc.com/Linux/2017-06/144807.htm" target="_blank" rel="noopener">https://www.linuxidc.com/Linux/2017-06/144807.htm</a> Ubuntu 16.04下vsftpd 安装配置实例<br>[2] <a href="https://blog.csdn.net/sinat_41898105/article/details/90341812" target="_blank" rel="noopener">https://blog.csdn.net/sinat_41898105/article/details/90341812</a> 阿里云连接不上问题</p>
-<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="centOS要用到的一个项目配置"><a href="#centOS要用到的一个项目配置" class="headerlink" title="centOS要用到的一个项目配置"></a>centOS要用到的一个项目配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">本项目要用到的配置项：</span><br><span class="line">1）local_root=/ftpfile(当本地用户登入时，将被更换到定义的目录下，默认值为各用户的家目录)</span><br><span class="line">2）anon_root=/ftpfile(使用匿名登入时，所登入的目录)</span><br><span class="line">3）use_localtime=YES(默认是GMT时间，改成使用本机系统时间)</span><br><span class="line">4）anonymous_enable=NO(不允许匿名用户登录)</span><br><span class="line">5）local_enable=YES(允许本地用户登录)</span><br><span class="line">6）write_enable=YES(本地用户可以在自己家目录中进行读写操作)</span><br><span class="line">7）local_umask=022(本地用户新增档案时的umask值)</span><br><span class="line">8）dirmessage_enable=YES(如果启动这个选项，那么使用者第一次进入一个目录时，会检查该目录下是否有.message这个档案，如果有，则会出现此档案的内容，通常这个档案会放置欢迎话语，或是对该目录的说明。默认值为开启)</span><br><span class="line">9）xferlog_enable=YES(是否启用上传/下载日志记录。如果启用，则上传与下载的信息将被完整纪录在xferlog_file 所定义的档案中。预设为开启。)</span><br><span class="line">10）connect_from_port_20=YES(指定FTP使用20端口进行数据传输，默认值为YES)</span><br><span class="line">11）xferlog_std_format=YES(如果启用，则日志文件将会写成xferlog的标准格式)</span><br><span class="line">12）ftpd_banner=Welcome to mmall FTP Server(这里用来定义欢迎话语的字符串)</span><br><span class="line">13）chroot_local_user=NO(用于指定用户列表文件中的用户是否允许切换到上级目录)</span><br><span class="line">14）chroot_list_enable=YES(设置是否启用chroot_list_file配置项指定的用户列表文件)</span><br><span class="line">15）chroot_list_file=/etc/vsftpd/chroot_list(用于指定用户列表文件)</span><br><span class="line">16）listen=YES(设置vsftpd服务器是否以standalone模式运行，以standalone模式运行是一种较好的方式，此时listen必须设置为YES，此为默认值。建议不要更改，有很多与服务器运行相关的配置命令，需要在此模式下才有效，若设置为NO，则vsftpd不是以独立的服务运行，要受到xinetd服务的管控，功能上会受到限制)</span><br><span class="line">17）pam_service_name=vsftpd(虚拟用户使用PAM认证方式，这里是设置PAM使用的名称，默认即可，与/etc/pam.d/vsftpd对应) userlist_enable=YES(是否启用vsftpd.user_list文件，黑名单,白名单都可以</span><br><span class="line">18)pasv_min_port=61001(被动模式使用端口范围最小值)</span><br><span class="line">19)pasv_max_port=62000(被动模式使用端口范围最大值)</span><br><span class="line">20)pasv_enable=YES(pasv_enable=YES/NO（YES）</span><br><span class="line">若设置为YES，则使用PASV工作模式；若设置为NO，则使用PORT模式。默认值为YES，即使用PASV工作模式。</span><br><span class="line">   FTP协议有两种工作方式：PORT方式和PASV方式，中文意思为主动式和被动式。</span><br><span class="line">   一、PORT（主动）方式的连接过程是：客户端向服务器的FTP端口（默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">  当需要传送数据时，客户端在命令链路上用 PORT命令告诉服务器：“我打开了****端口，你过来连接我”。于是服务器从20端口向客户端的****端口发送连接请求，建立一条数据链路来传送数据。</span><br><span class="line">   二、PASV（被动）方式的连接过程是：客户端向服务器的FTP端口（默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">  当需要传送数据时，服务器在命令链路上用 PASV命令告诉客户端：“我打开了****端口，你过来连接我”。于是客户端向服务器的****端口发送连接请求，建立一条数据链路来传送数据。</span><br><span class="line">  从上面可以看出，两种方式的命令链路连接方法是一样的，而数据链路的建立方法就完全不同。而FTP的复杂性就在于此。</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="centOS要用到的一个项目配置"><a href="#centOS要用到的一个项目配置" class="headerlink" title="centOS要用到的一个项目配置"></a>centOS要用到的一个项目配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">本项目要用到的配置项：</span><br><span class="line">#当本地用户登入时，将被更换到定义的目录下，默认值为各用户的家目录</span><br><span class="line">local_root=/ftpfile</span><br><span class="line">#使用匿名登入时，所登入的目录</span><br><span class="line">anon_root=/ftpfile</span><br><span class="line">#默认是GMT时间，改成使用本机系统时间</span><br><span class="line">use_localtime=YES</span><br><span class="line">#不允许匿名用户登录</span><br><span class="line">anonymous_enable=NO</span><br><span class="line">#允许本地用户登录</span><br><span class="line">local_enable=YES</span><br><span class="line">#本地用户可以在自己家目录中进行读写操作)</span><br><span class="line">write_enable=YES</span><br><span class="line">#本地用户新增档案时的umask值)</span><br><span class="line">local_umask=022</span><br><span class="line">#如果启动这个选项，那么使用者第一次进入一个目录时，会检查该目录下是否有.message这个档案，如果有，则会出现此档案的内容，</span><br><span class="line">#通常这个档案会放置欢迎话语，或是对该目录的说明。默认值为开启</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">#是否启用上传/下载日志记录。如果启用，则上传与下载的信息将被完整纪录在xferlog_file 所定义的档案中。预设为开启。</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">#指定FTP使用20端口进行数据传输，默认值为YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">#如果启用，则日志文件将会写成xferlog的标准格式)</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">#这里用来定义欢迎话语的字符串)</span><br><span class="line">ftpd_banner=Welcome to mmall FTP Server</span><br><span class="line">#用于指定用户列表文件中的用户是否允许切换到上级目录)</span><br><span class="line">chroot_local_user=NO</span><br><span class="line">#设置是否启用chroot_list_file配置项指定的用户列表文件)</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">#用于指定用户列表文件)</span><br><span class="line">chroot_list_file=/etc/vsftpd/chroot_list</span><br><span class="line">#设置vsftpd服务器是否以standalone模式运行，以standalone模式运行是一种较好的方式，此时listen必须设置为YES，此为默认值。</span><br><span class="line">#建议不要更改，有很多与服务器运行相关的配置命令，需要在此模式下才有效，</span><br><span class="line">#若设置为NO，则vsftpd不是以独立的服务运行，要受到xinetd服务的管控，功能上会受到限制)</span><br><span class="line">listen=YES</span><br><span class="line">#虚拟用户使用PAM认证方式，这里是设置PAM使用的名称，默认即可，</span><br><span class="line">#与/etc/pam.d/vsftpd对应) userlist_enable=YES(是否启用vsftpd.user_list文件，黑名单,白名单都可以</span><br><span class="line">pam_service_name=vsftpd</span><br><span class="line">#被动模式使用端口范围最小值)</span><br><span class="line">pasv_min_port=61001</span><br><span class="line">#被动模式使用端口范围最大值)</span><br><span class="line">pasv_max_port=62000</span><br><span class="line">#若设置为YES，则使用PASV工作模式；若设置为NO，则使用PORT模式。默认值为YES，即使用PASV工作模式。</span><br><span class="line">#  FTP协议有两种工作方式：PORT方式和PASV方式，中文意思为主动式和被动式。</span><br><span class="line">#  一、PORT#主动）方式的连接过程是：客户端向服务器的FTP端口#默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line"># 当需要传送数据时，客户端在命令链路上用 PORT命令告诉服务器：“我打开了****端口，你过来连接我”。于是服务器从20端口向客户端的****端口发送连接请求，</span><br><span class="line">#  建立一条数据链路来传送数据。</span><br><span class="line">#   二、PASV#被动）方式的连接过程是：客户端向服务器的FTP端口#默认是21）发送连接请求，服务器接受连接，建立一条命令链路。</span><br><span class="line">#  当需要传送数据时，服务器在命令链路上用 PASV命令告诉客户端：“我打开了****端口，你过来连接我”。于是客户端向服务器的****端口发送连接请求，</span><br><span class="line">#建立一条数据链路来传送数据。</span><br><span class="line">#从上面可以看出，两种方式的命令链路连接方法是一样的，而数据链路的建立方法就完全不同。而FTP的复杂性就在于此。</span><br><span class="line">pasv_enable=YES(pasv_enable=YES/NO#YES）</span><br></pre></td></tr></table></figure>
 
 <h2 id="Ununtu16-04的一个配置"><a href="#Ununtu16-04的一个配置" class="headerlink" title="Ununtu16.04的一个配置"></a>Ununtu16.04的一个配置</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#这些设置系统默认是开启的，可以不管</span><br><span class="line">listen=NO</span><br><span class="line">listen_ipv6=YES</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">use_localtime=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line"></span><br><span class="line">#下面的就要自定义设置了，建议系统默认的不管，然后复制下面的</span><br><span class="line"></span><br><span class="line">#是否允许匿名访问，NO为不允许</span><br><span class="line">anonymous_enable=NO</span><br><span class="line">#是否允许本地用户访问,就是linux本机中存在的用户，YES允许</span><br><span class="line">local_enable=YES</span><br><span class="line">#是否开启写模式，YES为开启</span><br><span class="line">write_enable=YES</span><br><span class="line">#新建文件权限，一般设置为022，那么新建后的文件的权限就是777-022=755</span><br><span class="line">local_umask=022</span><br><span class="line"></span><br><span class="line">#是否启动userlist为通过模式，YES的话只有存在于userlist文件中的用户才能登录ftp（可以理解为userlist是一个白名单），NO的话，白名单失效，和下面一个参数配合使用</span><br><span class="line">userlist_enable=YES</span><br><span class="line">#是否启动userlist为禁止模式，YES表示在userlist中的用户禁止登录ftp（黑名单），NO表示黑名单失效，我们已经让userlist作为一个白名单，所以无需使用黑名单功能</span><br><span class="line">userlist_deny=NO</span><br><span class="line">#指定哪个文件作为userlist文件，我们稍后编辑这个文件</span><br><span class="line">userlist_file=/etc/vsftpd.user_list</span><br><span class="line"></span><br><span class="line">#是否限制本地所有用户切换根目录的权限，YES为开启限制，即登录后的用户不能访问ftp根目录以外的目录，当然要限制啦</span><br><span class="line">chroot_local_user=YES</span><br><span class="line">#是否启动限制用户的名单list为允许模式，上面的YES限制了所有用户，可以用这个名单作为白名单，作为例外允许访问ftp根目录以外</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">#设置哪个文件是list文件，里面的用户将不受限制的去访问ftp根目录以外的目录</span><br><span class="line">chroot_list_file=/etc/vsftpd.chroot_list</span><br><span class="line">#是否开启写模式，开启后可以进行创建文件夹等写入操作</span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line"></span><br><span class="line">#设置ftp根目录的位置,这个文件我们稍后自己创建</span><br><span class="line">local_root=/var/myftp</span><br></pre></td></tr></table></figure>
 
+<h1 id="参考文献-1"><a href="#参考文献-1" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://www.mobibrw.com/2018/15389" target="_blank" rel="noopener">https://www.mobibrw.com/2018/15389</a> 错误启动解决办法</p>
 ]]></content>
       <categories>
         <category>linux</category>
@@ -414,8 +415,8 @@
         <category>tool</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>beautifulSoup</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1179,9 +1180,9 @@
         <category>Numpy</category>
       </categories>
       <tags>
+        <tag>Python</tag>
         <tag>Numpy</tag>
         <tag>SciPy</tag>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1308,8 +1309,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Numpy</tag>
         <tag>Python</tag>
+        <tag>Numpy</tag>
         <tag>seaborn</tag>
       </tags>
   </entry>
@@ -2417,8 +2418,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Numpy</tag>
         <tag>Python</tag>
+        <tag>Numpy</tag>
       </tags>
   </entry>
   <entry>
