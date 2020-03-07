@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Redis学习记录版本：Redis-2.8.0.tar.gz下载链接：http://download.redis.io/releases/">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis-basic">
+<meta property="og:url" content="http://yoursite.com/2020/03/07/redis-basic/index.html">
+<meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
+<meta property="og:description" content="Redis学习记录版本：Redis-2.8.0.tar.gz下载链接：http://download.redis.io/releases/">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/redis/p1.png">
+<meta property="og:image" content="http://yoursite.com/images/redis/p2.png">
+<meta property="og:updated_time" content="2020-03-07T10:14:37.113Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis-basic">
+<meta name="twitter:description" content="Redis学习记录版本：Redis-2.8.0.tar.gz下载链接：http://download.redis.io/releases/">
+<meta name="twitter:image" content="http://yoursite.com/images/redis/p1.png">
+  <link rel="canonical" href="http://yoursite.com/2020/03/07/redis-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>redis-basic | CoderSim's Growth Diary</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderSim's Growth Diary</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">extoll the world's best C and Java</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/07/redis-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="CoderSim">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/assets/blogImages/headImag.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderSim's Growth Diary">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">redis-basic
+
+          
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-03-07 18:10:37 / Modified: 18:14:37" itemprop="dateCreated datePublished" datetime="2020-03-07T18:10:37+08:00">2020-03-07</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis学习记录<br>版本：Redis-2.8.0.tar.gz<br>下载链接：<a href="http://download.redis.io/releases/" target="_blank" rel="noopener">http://download.redis.io/releases/</a></p>
+<a id="more"></a>
+<h1 id="0x00-Redis导论"><a href="#0x00-Redis导论" class="headerlink" title="0x00 Redis导论"></a>0x00 Redis导论</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis：REmote DIctionary Server<br>字面意思：远程字典服务</p>
+<ul>
+<li>Redis是一个使用<code>ANSI C</code>语言编写的开源数据库</li>
+<li>高性能的<code>key-value</code>数据库</li>
+<li>内存数据库，支持数据持久化</li>
+</ul>
+<p>官网：<a href="https://redis.io/" target="_blank" rel="noopener">https://redis.io/</a><br>国内官网：<a href="http://redis.cn/" target="_blank" rel="noopener">http://redis.cn/</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>直接下载解压即<br>然后在解压后的目录输入<code>make</code><br>之后进入<code>src</code>目录下<br>启动redis：<code>./redis-server</code><br><code>./redis-server &amp;</code>后台启动。<br>关闭redis:<code>./redis-cli shutdown</code></p>
+<h2 id="使用自带客户端"><a href="#使用自带客户端" class="headerlink" title="使用自带客户端"></a>使用自带客户端</h2><p>src目录下运行<code>./redis-cli</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set a b</span><br><span class="line">set b c</span><br><span class="line">key *</span><br><span class="line">get a</span><br><span class="line">get b</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
+<li>string</li>
+<li>list</li>
+<li>set</li>
+<li>sorted set</li>
+<li>hash</li>
+</ul>
+<h1 id="0x01-redis服务启动的方式"><a href="#0x01-redis服务启动的方式" class="headerlink" title="0x01 redis服务启动的方式"></a>0x01 redis服务启动的方式</h1><h2 id="直接启动"><a href="#直接启动" class="headerlink" title="直接启动"></a>直接启动</h2><p>src目录下运行<code>./redis-server</code><br>新开一个命令窗口运行<code>./redis-cli</code></p>
+<blockquote>
+<p>直接用<code>ctrl+c</code>关闭客户端时不会持久化的，可以运行<code>save</code>命令持久化。一个比较好的命令是<code>./redis-cli shutdown</code></p>
+</blockquote>
+<h2 id="指定端口启动"><a href="#指定端口启动" class="headerlink" title="指定端口启动"></a>指定端口启动</h2><p>默认端口是6379。<br><code>./redis-server --port 6380</code><br>那么运行客户端时的命令：<code>./redis-cli -p 6380</code><br>关闭客户端时命令：<code>./redis-cli -p 6380 shutdown</code></p>
+<h2 id="修改配置文件启动"><a href="#修改配置文件启动" class="headerlink" title="修改配置文件启动"></a>修改配置文件启动</h2><p>修改主目录下的<code>redis.conf</code><br>找到port这个节点，修改它的值<br><img src="/images/redis/p1.png" alt="pic"><br>再次进入src目录下<br>指定配置文件运行<br><code>./redis-server ../redis.conf</code><br>有时候需要指定IP关闭(默认时localhost)：<code>./redis-cli -p 6379 -h 127.0.0.1</code></p>
+<h2 id="配置密码"><a href="#配置密码" class="headerlink" title="配置密码"></a>配置密码</h2><p>修改主目录下的<code>redis.conf</code><br>搜索<code>\requirepass</code>，定位到这一行， 将注释去掉，添加密码值<br>以配置文件启动<br><code>./redis-server ../redis.conf</code><br>这个时候需要用密码启动客户端<br><code>./redis-cli -a yijun</code></p>
+<h1 id="0x02-系统级命令"><a href="#0x02-系统级命令" class="headerlink" title="0x02 系统级命令"></a>0x02 系统级命令</h1><h2 id="info"><a href="#info" class="headerlink" title="info"></a>info</h2><p>查看系统信息，如服务进程ID，端口，版本，客户端，内存，状态，主从同步数据，CPU，Keyspace(命名空间)</p>
+<h2 id="Keyspace"><a href="#Keyspace" class="headerlink" title="Keyspace"></a>Keyspace</h2><p><img src="/images/redis/p2.png" alt="pic"><br>可以看到默认的db空间时db0，此时有2个key存储在这个数据库<br>可以通过<code>select &lt;dbid&gt;</code>选择运用的数据库/命名空间，下标从0开始<br>如进入客户端<code>./redis-cli</code><br>运行<code>selcet 1</code>选择db1运行</p>
+<h2 id="flushdb"><a href="#flushdb" class="headerlink" title="flushdb"></a>flushdb</h2><p>清空当前db下的所有key值</p>
+<h2 id="flushall"><a href="#flushall" class="headerlink" title="flushall"></a>flushall</h2><p>清空所有db信息</p>
+<h2 id="dbsize"><a href="#dbsize" class="headerlink" title="dbsize"></a>dbsize</h2><p>当前db下的key-value数量</p>
+<h1 id="0x03-Redis键命令"><a href="#0x03-Redis键命令" class="headerlink" title="0x03 Redis键命令"></a>0x03 Redis键命令</h1><h2 id="新增健"><a href="#新增健" class="headerlink" title="新增健"></a>新增健</h2><p><code>set key value</code>设置一个值<br><code>keys *</code><br><code>mset k1 v1 k2 v2</code>同时设置多个key-value<br><code>setnx key value</code>只有key不存在时才成功</p>
+<h2 id="删除键"><a href="#删除键" class="headerlink" title="删除键"></a>删除键</h2><p><code>del key</code><br>存在就删除返回1，不存在返回0</p>
+<h2 id="取值"><a href="#取值" class="headerlink" title="取值"></a>取值</h2><p><code>get key</code><br><code>getset key newValue</code><br>拿到一个旧值，并且会设置新值<br><code>mget k1 k2 k3</code>批量拿值</p>
+<h2 id="判断是否存在"><a href="#判断是否存在" class="headerlink" title="判断是否存在"></a>判断是否存在</h2><p><code>exists key</code><br>存在返回1，否则返回0</p>
+<h2 id="查看key剩余时间"><a href="#查看key剩余时间" class="headerlink" title="查看key剩余时间"></a>查看key剩余时间</h2><p><code>ttl key</code><br>返回-1表示永久有效<br>不存在的key返回-2</p>
+<h2 id="设置键的有效期"><a href="#设置键的有效期" class="headerlink" title="设置键的有效期"></a>设置键的有效期</h2><p><code>expire key time</code><br>这里的time是一个整数，单位为秒<code>expire key 10</code><br><code>setex key time value</code><br>加入一个键，设置有效期<br><code>psetex key tim value</code><br>时间为毫秒</p>
+<h2 id="查看key对应值的类型"><a href="#查看key对应值的类型" class="headerlink" title="查看key对应值的类型"></a>查看key对应值的类型</h2><p><code>type key</code></p>
+<h2 id="随机key"><a href="#随机key" class="headerlink" title="随机key"></a>随机key</h2><p><code>randomkey</code>从已有的key中随机取出</p>
+<h2 id="key重命名"><a href="#key重命名" class="headerlink" title="key重命名"></a>key重命名</h2><p><code>rename oldKey newKey</code><br>会覆盖已经存在的key<br><code>renamenx oldKey newKey</code><br>会进行判断，已经存在的话就不判断</p>
+<h1 id="0x04-Redis数据结构"><a href="#0x04-Redis数据结构" class="headerlink" title="0x04 Redis数据结构"></a>0x04 Redis数据结构</h1><h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><p><code>strlen key</code> 得到key对应值的字符串长度<br><code>append key value</code> 将key对应的值后面拼接value对应的字符串</p>
+<h2 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h2><ul>
+<li><code>hset key itemKey itemValue</code><br>设置一个key，它的值是一个hash数据结构<br>可以知道类型<code>type key</code></li>
+<li><code>hexists key  itemKey</code><br>键key对应的值是否有itemKey字段</li>
+<li><code>hget key itemKey</code><br>取得key对应的itemkey对应的值</li>
+<li><code>hgetall key</code><br>得到key对应的的value值</li>
+<li><code>hkeys key</code><br>得到key对应值所有key键</li>
+<li><code>hvals key</code><br>得到key对应值的所有value</li>
+<li><code>hlen key</code><br>得到key对应值value大小</li>
+<li><code>hkeys key itemKey1 itemKey2</code><br>删除keyItem</li>
+</ul>
+<h2 id="list"><a href="#list" class="headerlink" title="list"></a>list</h2><ul>
+<li><code>lpush key v1 v2 v3 v4</code><br>将列表值存放到key</li>
+<li><code>llen key</code><br>得到list的长度</li>
+<li><code>lrange key 0 2</code><br>取得list中的[0, 2]下标的值，与push进的值相反</li>
+<li><code>lset key 0 value</code><br>设置list下标为0的值</li>
+<li><code>lindex  key  5</code><br>获取list的第五号元素</li>
+<li><code>lpop key</code><br>移除第一个元素</li>
+<li><code>rpop key</code><br>移除最后一个</li>
+</ul>
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>无序集合，可以排除重复</p>
+<ul>
+<li><code>sadd key v1 v2 v3 v4</code><br>新建一个key，value是set的元素，set集是v1，v2，v3，v4</li>
+<li><code>scard key</code><br>返回集合value的大小</li>
+<li><code>rename oldKey newKey</code><br>改名</li>
+<li><code>smembers key</code><br>查看集合的所有元素成员</li>
+<li><code>sdiff key1 key2</code><br>key1中的元素减去两者共有的元素得到的集合</li>
+<li><code>sinter key1 key2</code><br>两个集合的交集</li>
+<li><code>sunion key1 key2</code><br>两个集合的并集</li>
+<li>返回一个或者集合中的随机数个数<br><code>srandmember key 3</code>,返回key中的3个随机成员</li>
+<li><code>sismember key value</code><br>判断value是不是集合key里面的元素</li>
+<li><code>srem key v1 v2</code><br>移除集合key中的元素v1，v2</li>
+<li><code>spop key</code><br>移除key集合中的一个随机元素，并且返回它的值</li>
+</ul>
+<h2 id="sortedSet"><a href="#sortedSet" class="headerlink" title="sortedSet"></a>sortedSet</h2><p>有序集合，通过分数来进行排序</p>
+<ul>
+<li><code>zadd key 100 a 200 b 300 c</code><br>创建三个值，其分数分别是100，200，300</li>
+<li><code>zcard key</code><br>查看有序集合key的元素个数</li>
+<li><code>zscore key valueItem</code><br>查看集合key中的某一个值的分数</li>
+<li><code>zcount key 0 220</code><br>返回[0, 220]的分数对应的值的个数</li>
+<li><code>zrank key valueitem</code><br>返回指定元素对应的索引</li>
+<li><code>zincrby key 1000 a</code><br>将key集合中对应的元素a的分数加1000分</li>
+<li><code>zrange key 0 100</code><br>查看集合key中分数区间[0,100]中的所有value</li>
+<li><code>zrange key 0 100 withscores</code><br>查看集合key中分数区间[0,100]中的所有value及其分数</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/redis/" rel="tag"># redis</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/02/13/mysql-basic/" rel="next" title="mysql-basic">
+                  <i class="fa fa-chevron-left"></i> mysql-basic
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-Redis导论"><span class="nav-number">1.</span> <span class="nav-text">0x00 Redis导论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用自带客户端"><span class="nav-number">1.3.</span> <span class="nav-text">使用自带客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据类型"><span class="nav-number">1.4.</span> <span class="nav-text">数据类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-redis服务启动的方式"><span class="nav-number">2.</span> <span class="nav-text">0x01 redis服务启动的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#直接启动"><span class="nav-number">2.1.</span> <span class="nav-text">直接启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定端口启动"><span class="nav-number">2.2.</span> <span class="nav-text">指定端口启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改配置文件启动"><span class="nav-number">2.3.</span> <span class="nav-text">修改配置文件启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置密码"><span class="nav-number">2.4.</span> <span class="nav-text">配置密码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-系统级命令"><span class="nav-number">3.</span> <span class="nav-text">0x02 系统级命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#info"><span class="nav-number">3.1.</span> <span class="nav-text">info</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keyspace"><span class="nav-number">3.2.</span> <span class="nav-text">Keyspace</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flushdb"><span class="nav-number">3.3.</span> <span class="nav-text">flushdb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flushall"><span class="nav-number">3.4.</span> <span class="nav-text">flushall</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dbsize"><span class="nav-number">3.5.</span> <span class="nav-text">dbsize</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-Redis键命令"><span class="nav-number">4.</span> <span class="nav-text">0x03 Redis键命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新增健"><span class="nav-number">4.1.</span> <span class="nav-text">新增健</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除键"><span class="nav-number">4.2.</span> <span class="nav-text">删除键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取值"><span class="nav-number">4.3.</span> <span class="nav-text">取值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断是否存在"><span class="nav-number">4.4.</span> <span class="nav-text">判断是否存在</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看key剩余时间"><span class="nav-number">4.5.</span> <span class="nav-text">查看key剩余时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置键的有效期"><span class="nav-number">4.6.</span> <span class="nav-text">设置键的有效期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看key对应值的类型"><span class="nav-number">4.7.</span> <span class="nav-text">查看key对应值的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随机key"><span class="nav-number">4.8.</span> <span class="nav-text">随机key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key重命名"><span class="nav-number">4.9.</span> <span class="nav-text">key重命名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-Redis数据结构"><span class="nav-number">5.</span> <span class="nav-text">0x04 Redis数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#string"><span class="nav-number">5.1.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash"><span class="nav-number">5.2.</span> <span class="nav-text">hash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#list"><span class="nav-number">5.3.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#set"><span class="nav-number">5.4.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sortedSet"><span class="nav-number">5.5.</span> <span class="nav-text">sortedSet</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/assets/blogImages/headImag.jpg"
+      alt="CoderSim">
+  <p class="site-author-name" itemprop="name">CoderSim</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CoderSim</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

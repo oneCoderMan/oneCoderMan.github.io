@@ -1,6 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>redis-basic</title>
+    <url>/2020/03/07/redis-basic/</url>
+    <content><![CDATA[<p>Redis学习记录<br>版本：Redis-2.8.0.tar.gz<br>下载链接：<a href="http://download.redis.io/releases/" target="_blank" rel="noopener">http://download.redis.io/releases/</a></p>
+<a id="more"></a>
+<h1 id="0x00-Redis导论"><a href="#0x00-Redis导论" class="headerlink" title="0x00 Redis导论"></a>0x00 Redis导论</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis：REmote DIctionary Server<br>字面意思：远程字典服务</p>
+<ul>
+<li>Redis是一个使用<code>ANSI C</code>语言编写的开源数据库</li>
+<li>高性能的<code>key-value</code>数据库</li>
+<li>内存数据库，支持数据持久化</li>
+</ul>
+<p>官网：<a href="https://redis.io/" target="_blank" rel="noopener">https://redis.io/</a><br>国内官网：<a href="http://redis.cn/" target="_blank" rel="noopener">http://redis.cn/</a></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>直接下载解压即<br>然后在解压后的目录输入<code>make</code><br>之后进入<code>src</code>目录下<br>启动redis：<code>./redis-server</code><br><code>./redis-server &amp;</code>后台启动。<br>关闭redis:<code>./redis-cli shutdown</code></p>
+<h2 id="使用自带客户端"><a href="#使用自带客户端" class="headerlink" title="使用自带客户端"></a>使用自带客户端</h2><p>src目录下运行<code>./redis-cli</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set a b</span><br><span class="line">set b c</span><br><span class="line">key *</span><br><span class="line">get a</span><br><span class="line">get b</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
+<li>string</li>
+<li>list</li>
+<li>set</li>
+<li>sorted set</li>
+<li>hash</li>
+</ul>
+<h1 id="0x01-redis服务启动的方式"><a href="#0x01-redis服务启动的方式" class="headerlink" title="0x01 redis服务启动的方式"></a>0x01 redis服务启动的方式</h1><h2 id="直接启动"><a href="#直接启动" class="headerlink" title="直接启动"></a>直接启动</h2><p>src目录下运行<code>./redis-server</code><br>新开一个命令窗口运行<code>./redis-cli</code></p>
+<blockquote>
+<p>直接用<code>ctrl+c</code>关闭客户端时不会持久化的，可以运行<code>save</code>命令持久化。一个比较好的命令是<code>./redis-cli shutdown</code></p>
+</blockquote>
+<h2 id="指定端口启动"><a href="#指定端口启动" class="headerlink" title="指定端口启动"></a>指定端口启动</h2><p>默认端口是6379。<br><code>./redis-server --port 6380</code><br>那么运行客户端时的命令：<code>./redis-cli -p 6380</code><br>关闭客户端时命令：<code>./redis-cli -p 6380 shutdown</code></p>
+<h2 id="修改配置文件启动"><a href="#修改配置文件启动" class="headerlink" title="修改配置文件启动"></a>修改配置文件启动</h2><p>修改主目录下的<code>redis.conf</code><br>找到port这个节点，修改它的值<br><img src="/images/redis/p1.png" alt="pic"><br>再次进入src目录下<br>指定配置文件运行<br><code>./redis-server ../redis.conf</code><br>有时候需要指定IP关闭(默认时localhost)：<code>./redis-cli -p 6379 -h 127.0.0.1</code></p>
+<h2 id="配置密码"><a href="#配置密码" class="headerlink" title="配置密码"></a>配置密码</h2><p>修改主目录下的<code>redis.conf</code><br>搜索<code>\requirepass</code>，定位到这一行， 将注释去掉，添加密码值<br>以配置文件启动<br><code>./redis-server ../redis.conf</code><br>这个时候需要用密码启动客户端<br><code>./redis-cli -a yijun</code></p>
+<h1 id="0x02-系统级命令"><a href="#0x02-系统级命令" class="headerlink" title="0x02 系统级命令"></a>0x02 系统级命令</h1><h2 id="info"><a href="#info" class="headerlink" title="info"></a>info</h2><p>查看系统信息，如服务进程ID，端口，版本，客户端，内存，状态，主从同步数据，CPU，Keyspace(命名空间)</p>
+<h2 id="Keyspace"><a href="#Keyspace" class="headerlink" title="Keyspace"></a>Keyspace</h2><p><img src="/images/redis/p2.png" alt="pic"><br>可以看到默认的db空间时db0，此时有2个key存储在这个数据库<br>可以通过<code>select &lt;dbid&gt;</code>选择运用的数据库/命名空间，下标从0开始<br>如进入客户端<code>./redis-cli</code><br>运行<code>selcet 1</code>选择db1运行</p>
+<h2 id="flushdb"><a href="#flushdb" class="headerlink" title="flushdb"></a>flushdb</h2><p>清空当前db下的所有key值</p>
+<h2 id="flushall"><a href="#flushall" class="headerlink" title="flushall"></a>flushall</h2><p>清空所有db信息</p>
+<h2 id="dbsize"><a href="#dbsize" class="headerlink" title="dbsize"></a>dbsize</h2><p>当前db下的key-value数量</p>
+<h1 id="0x03-Redis键命令"><a href="#0x03-Redis键命令" class="headerlink" title="0x03 Redis键命令"></a>0x03 Redis键命令</h1><h2 id="新增健"><a href="#新增健" class="headerlink" title="新增健"></a>新增健</h2><p><code>set key value</code>设置一个值<br><code>keys *</code><br><code>mset k1 v1 k2 v2</code>同时设置多个key-value<br><code>setnx key value</code>只有key不存在时才成功</p>
+<h2 id="删除键"><a href="#删除键" class="headerlink" title="删除键"></a>删除键</h2><p><code>del key</code><br>存在就删除返回1，不存在返回0</p>
+<h2 id="取值"><a href="#取值" class="headerlink" title="取值"></a>取值</h2><p><code>get key</code><br><code>getset key newValue</code><br>拿到一个旧值，并且会设置新值<br><code>mget k1 k2 k3</code>批量拿值</p>
+<h2 id="判断是否存在"><a href="#判断是否存在" class="headerlink" title="判断是否存在"></a>判断是否存在</h2><p><code>exists key</code><br>存在返回1，否则返回0</p>
+<h2 id="查看key剩余时间"><a href="#查看key剩余时间" class="headerlink" title="查看key剩余时间"></a>查看key剩余时间</h2><p><code>ttl key</code><br>返回-1表示永久有效<br>不存在的key返回-2</p>
+<h2 id="设置键的有效期"><a href="#设置键的有效期" class="headerlink" title="设置键的有效期"></a>设置键的有效期</h2><p><code>expire key time</code><br>这里的time是一个整数，单位为秒<code>expire key 10</code><br><code>setex key time value</code><br>加入一个键，设置有效期<br><code>psetex key tim value</code><br>时间为毫秒</p>
+<h2 id="查看key对应值的类型"><a href="#查看key对应值的类型" class="headerlink" title="查看key对应值的类型"></a>查看key对应值的类型</h2><p><code>type key</code></p>
+<h2 id="随机key"><a href="#随机key" class="headerlink" title="随机key"></a>随机key</h2><p><code>randomkey</code>从已有的key中随机取出</p>
+<h2 id="key重命名"><a href="#key重命名" class="headerlink" title="key重命名"></a>key重命名</h2><p><code>rename oldKey newKey</code><br>会覆盖已经存在的key<br><code>renamenx oldKey newKey</code><br>会进行判断，已经存在的话就不判断</p>
+<h1 id="0x04-Redis数据结构"><a href="#0x04-Redis数据结构" class="headerlink" title="0x04 Redis数据结构"></a>0x04 Redis数据结构</h1><h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><p><code>strlen key</code> 得到key对应值的字符串长度<br><code>append key value</code> 将key对应的值后面拼接value对应的字符串</p>
+<h2 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h2><ul>
+<li><code>hset key itemKey itemValue</code><br>设置一个key，它的值是一个hash数据结构<br>可以知道类型<code>type key</code></li>
+<li><code>hexists key  itemKey</code><br>键key对应的值是否有itemKey字段</li>
+<li><code>hget key itemKey</code><br>取得key对应的itemkey对应的值</li>
+<li><code>hgetall key</code><br>得到key对应的的value值</li>
+<li><code>hkeys key</code><br>得到key对应值所有key键</li>
+<li><code>hvals key</code><br>得到key对应值的所有value</li>
+<li><code>hlen key</code><br>得到key对应值value大小</li>
+<li><code>hkeys key itemKey1 itemKey2</code><br>删除keyItem</li>
+</ul>
+<h2 id="list"><a href="#list" class="headerlink" title="list"></a>list</h2><ul>
+<li><code>lpush key v1 v2 v3 v4</code><br>将列表值存放到key</li>
+<li><code>llen key</code><br>得到list的长度</li>
+<li><code>lrange key 0 2</code><br>取得list中的[0, 2]下标的值，与push进的值相反</li>
+<li><code>lset key 0 value</code><br>设置list下标为0的值</li>
+<li><code>lindex  key  5</code><br>获取list的第五号元素</li>
+<li><code>lpop key</code><br>移除第一个元素</li>
+<li><code>rpop key</code><br>移除最后一个</li>
+</ul>
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>无序集合，可以排除重复</p>
+<ul>
+<li><code>sadd key v1 v2 v3 v4</code><br>新建一个key，value是set的元素，set集是v1，v2，v3，v4</li>
+<li><code>scard key</code><br>返回集合value的大小</li>
+<li><code>rename oldKey newKey</code><br>改名</li>
+<li><code>smembers key</code><br>查看集合的所有元素成员</li>
+<li><code>sdiff key1 key2</code><br>key1中的元素减去两者共有的元素得到的集合</li>
+<li><code>sinter key1 key2</code><br>两个集合的交集</li>
+<li><code>sunion key1 key2</code><br>两个集合的并集</li>
+<li>返回一个或者集合中的随机数个数<br><code>srandmember key 3</code>,返回key中的3个随机成员</li>
+<li><code>sismember key value</code><br>判断value是不是集合key里面的元素</li>
+<li><code>srem key v1 v2</code><br>移除集合key中的元素v1，v2</li>
+<li><code>spop key</code><br>移除key集合中的一个随机元素，并且返回它的值</li>
+</ul>
+<h2 id="sortedSet"><a href="#sortedSet" class="headerlink" title="sortedSet"></a>sortedSet</h2><p>有序集合，通过分数来进行排序</p>
+<ul>
+<li><code>zadd key 100 a 200 b 300 c</code><br>创建三个值，其分数分别是100，200，300</li>
+<li><code>zcard key</code><br>查看有序集合key的元素个数</li>
+<li><code>zscore key valueItem</code><br>查看集合key中的某一个值的分数</li>
+<li><code>zcount key 0 220</code><br>返回[0, 220]的分数对应的值的个数</li>
+<li><code>zrank key valueitem</code><br>返回指定元素对应的索引</li>
+<li><code>zincrby key 1000 a</code><br>将key集合中对应的元素a的分数加1000分</li>
+<li><code>zrange key 0 100</code><br>查看集合key中分数区间[0,100]中的所有value</li>
+<li><code>zrange key 0 100 withscores</code><br>查看集合key中分数区间[0,100]中的所有value及其分数</li>
+</ul>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>mysql-basic</title>
     <url>/2020/02/13/mysql-basic/</url>
     <content><![CDATA[<p>mysql安装和使用<br>版本：ubuntu16.04与mysql-server-5.7</p>
@@ -415,8 +512,8 @@
         <category>tool</category>
       </categories>
       <tags>
-        <tag>beautifulSoup</tag>
         <tag>Python</tag>
+        <tag>beautifulSoup</tag>
       </tags>
   </entry>
   <entry>
@@ -1180,9 +1277,9 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Numpy</tag>
         <tag>SciPy</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1309,8 +1406,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Numpy</tag>
+        <tag>Python</tag>
         <tag>seaborn</tag>
       </tags>
   </entry>
@@ -1734,6 +1831,7 @@
 <h1 id="0x04-ubuntu16-04下的vsftpd安装"><a href="#0x04-ubuntu16-04下的vsftpd安装" class="headerlink" title="0x04 ubuntu16.04下的vsftpd安装"></a>0x04 ubuntu16.04下的vsftpd安装</h1><p>见单独的页面</p>
 <h1 id="0x05-ubuntu16-04下的Ngnix安装"><a href="#0x05-ubuntu16-04下的Ngnix安装" class="headerlink" title="0x05 ubuntu16.04下的Ngnix安装"></a>0x05 ubuntu16.04下的Ngnix安装</h1><p>见单独的页面</p>
 <h1 id="0x06-mysql-安装"><a href="#0x06-mysql-安装" class="headerlink" title="0x06 mysql 安装"></a>0x06 mysql 安装</h1><p>见<a href="http://dblab.xmu.edu.cn/blog/install-mysql/" target="_blank" rel="noopener">连接</a>或者本站搜索<br>或者见单独页面</p>
+<h1 id="0x07-ubuntu16-04下的Redis安装"><a href="#0x07-ubuntu16-04下的Redis安装" class="headerlink" title="0x07 ubuntu16.04下的Redis安装"></a>0x07 ubuntu16.04下的Redis安装</h1><p>见单独的页面</p>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://blog.csdn.net/u014775723/article/details/85213793" target="_blank" rel="noopener">https://blog.csdn.net/u014775723/article/details/85213793</a></p>
 ]]></content>
       <categories>
@@ -2418,8 +2516,8 @@
         <category>Numpy</category>
       </categories>
       <tags>
-        <tag>Python</tag>
         <tag>Numpy</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
