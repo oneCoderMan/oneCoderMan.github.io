@@ -747,11 +747,12 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://lcamtuf.coredump.cx/afl/releases/afl-2.52b.tgz</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>step2: make</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd afl-2.52b</span><br><span class="line">make</span><br><span class="line">sudo  make install</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd afl-2.52b</span><br><span class="line"># 安装编译环境</span><br><span class="line"># apt install build-essential</span><br><span class="line">make</span><br><span class="line">sudo  make install</span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
-<p>在命令行中输入<code>afl-</code>，然后使用tab建，可以看到命令提示，表示安装成功。或者<code>afl-fuzz</code>可以看到提示信息。</p>
+<p>在命令行中输入<code>afl-</code>，然后使用tab建，可以看到命令提示，表示安装成功。或者<code>afl-fuzz</code>可以看到提示信息。<br>安装后显示如下信息</p>
+<p><img src="/images/fuzzing-basic/p5.png" alt="pic"></p>
 <h2 id="AFL基本使用"><a href="#AFL基本使用" class="headerlink" title="AFL基本使用"></a>AFL基本使用</h2><h3 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h3><p>见参考文献[4]</p>
 <h3 id="插桩编译"><a href="#插桩编译" class="headerlink" title="插桩编译"></a>插桩编译</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">afl-gcc -g -o test test.c</span><br></pre></td></tr></table></figure>
 
@@ -786,12 +787,33 @@
 <blockquote>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近，有人提出混合模糊方法来解决模糊和协同执行的局限性。这种混合方法已经在各种综合基准测试中显示出了它的有效性，例如DARPA的网络大挑战(CGC)二进制文件，但是它仍然需要在复杂的、真实世界的软件中寻找缺陷。我们观察到，现有共扼执行器的性能瓶颈是其在小规模研究之外被采用的主要限制因素。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为了克服这一问题，我们设计了一个快速的协同执行引擎，称为QSYM，以支持混合模糊。关键思想是使用动态二进制转换将符号模拟与本机执行紧密集成，从而实现更细粒度、更快的指令级符号模拟。此外，QSYM放宽了传统concolic执行者对更好性能的严格可靠性要求，同时利用了一个更快的fuzzer进行验证，为性能优化提供了前所未有的机会，例如，优化地解决约束和修剪无兴趣的基本块。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的评估表明，QSYM不仅优于最先进的fuzzers(即bug,发现14×超过VUzzer LAVA-M数据集,钻地,比126年104的二进制文件),但也发现了13个未知安全漏洞在Dropbox轻子等八个实际项目,ffmpeg, OpenJPEG,那些已经被集中测试的最先进的fuzz, AFL OSS-Fuzz。</p>
 </blockquote>
-<h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><p>有一个github开源库<a href="https://github.com/sslab-gatech/qsym" target="_blank" rel="noopener">地址</a><br>该开源库中提供了安装方法</p>
+<h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><ul>
+<li>有一个github开源库<a href="https://github.com/sslab-gatech/qsym" target="_blank" rel="noopener">地址</a><br>该开源库中提供了安装方法<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/sslab-gatech/qsym.git</span><br><span class="line">cd qsym</span><br><span class="line"># disable ptrace_scope for PIN</span><br><span class="line">$ echo 0|sudo tee /proc/sys/kernel/yama/ptrace_scope</span><br><span class="line"></span><br><span class="line"># install z3 and system deps</span><br><span class="line">$ ./setup.sh</span><br><span class="line"></span><br><span class="line"># install using virtual env</span><br><span class="line">$ virtualenv venv</span><br><span class="line">$ source venv/bin/activate</span><br><span class="line">$ pip install .</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
 <p>遇到了一个错误，再使用<code>virtualenv venv</code>命令地时候<br><img src="/images/fuzzing-basic/04.png" alt="pic01"></p>
 <blockquote>
-<p>错误原因，系统地python环境是2.7，需要使用python3.5+版本python。</p>
+<p>错误原因，系统地python环境是3.5+，需要使用python2.7版本python。</p>
 </blockquote>
-<p>解决方法：指定python3，使用命令<code>virtualenv -p  /usr/bin/python venv</code>。这个python指向的是python3。更多virtulenv的用法见参考文献[8]</p>
+<p>解决方法：指定python，使用命令<code>virtualenv -p  /usr/bin/python venv</code>。这个python指向的是python2.7。更多virtulenv的用法见参考文献[8]</p>
+<hr>
+<ul>
+<li><p>安装成功后会有如下界面<br><img src="/images/fuzzing-basic/p6.png" alt="pic6"></p>
+</li>
+<li><p>测试<br>首先进入python的虚拟环境</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">source venv/bin/activate</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>然后运行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd tests</span><br><span class="line">python build.py</span><br><span class="line">python -m pytest -n $(nproc)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到如下界面，表示可以成功运行<br><img src="/images/fuzzing-basic/p7.png" alt="pic6"></p>
+<blockquote>
+<p>gcc:5.4.0<br>g++:5.4.0</p>
+</blockquote>
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="https://github.com/secfigo/Awesome-Fuzzing" target="_blank" rel="noopener">https://github.com/secfigo/Awesome-Fuzzing</a><br>[2] <a href="https://github.com/firmianay/CTF-All-In-One/blob/master/doc/5.1_fuzzing.md" target="_blank" rel="noopener">https://github.com/firmianay/CTF-All-In-One/blob/master/doc/5.1_fuzzing.md</a><br>[3] <a href="https://zhuanlan.zhihu.com/p/43432370" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/43432370</a> fuzzing技术总结<br>[4] <a href="http://zeroyu.xyz/2019/05/15/how-to-use-afl-fuzz/" target="_blank" rel="noopener">http://zeroyu.xyz/2019/05/15/how-to-use-afl-fuzz/</a> afl使用指南<br>[5] <a href="https://www.freebuf.com/articles/system/191536.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/191536.html</a> AFL漏洞挖掘技术漫谈<br>[6] <a href="https://fly8wo.github.io/2018/09/21/AFL-Fuzz%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%89%E8%A3%85%E4%B8%8E%E7%BC%96%E8%AF%91/" target="_blank" rel="noopener">https://fly8wo.github.io/2018/09/21/AFL-Fuzz%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%89%E8%A3%85%E4%B8%8E%E7%BC%96%E8%AF%91/</a> 简单安装和编译<br>[7] <a href="https://xz.aliyun.com/t/4314" target="_blank" rel="noopener">https://xz.aliyun.com/t/4314</a>  fuzzing简单测试<br>[8] <a href="https://blog.csdn.net/weixin_37773766/article/details/80773590" target="_blank" rel="noopener">https://blog.csdn.net/weixin_37773766/article/details/80773590</a> virtualenv简单介绍</p>
 ]]></content>
       <categories>
