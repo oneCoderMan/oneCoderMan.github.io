@@ -1706,6 +1706,19 @@
 <h4 id="退出容器"><a href="#退出容器" class="headerlink" title="退出容器"></a>退出容器</h4><p>此时拥有shell，使用命令<code>exit</code>或者键盘<code>ctrl+D</code><br>如果没有shell，先<code>docker ps</code>得到容器id或者name，然后使用<code>docker stop id/name</code>结束容器</p>
 <h4 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker rm id/name</span><br></pre></td></tr></table></figure>
 
+<h4 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像"></a>删除镜像</h4><p>注意，需要先删除运行该image实例的containers[5]</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker rmi ImageID</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-Dockefile"><a href="#1-3-Dockefile" class="headerlink" title="1.3 Dockefile"></a>1.3 Dockefile</h3><p>它是Docker镜像的描述文件，主要有四个部分组成</p>
+<h4 id="基础镜像信息"><a href="#基础镜像信息" class="headerlink" title="基础镜像信息"></a>基础镜像信息</h4><p>指明构建时来自哪个基础镜像<br><code>FROM ubuntu:16</code></p>
+<h4 id="维护者信息"><a href="#维护者信息" class="headerlink" title="维护者信息"></a>维护者信息</h4><p>指明维护者信息<br><code>MAINTAINER coder &lt;coder@qq.com&gt;</code></p>
+<h4 id="镜像操作指令"><a href="#镜像操作指令" class="headerlink" title="镜像操作指令"></a>镜像操作指令</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get install -y libgdiplus</span><br></pre></td></tr></table></figure>
+
+<h4 id="容器启动时执行指令"><a href="#容器启动时执行指令" class="headerlink" title="容器启动时执行指令"></a>容器启动时执行指令</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CMD [&quot;-C&quot;, &quot;/start.sh&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>构建镜像<code>docker build -t tomcat:v1 .</code><br><a href="https://www.cnblogs.com/edisonchou/p/dockerfile_inside_introduction.html" target="_blank" rel="noopener">更多操作</a></p>
+<h4 id="1-4通过container构建镜像"><a href="#1-4通过container构建镜像" class="headerlink" title="1.4通过container构建镜像"></a>1.4通过container构建镜像</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker container ls -a  /-a表示所有运行或者运行的container</span><br><span class="line">#复制刚才创建的镜像的名字</span><br><span class="line">docker container commit xenodochial_nightingale soymilk/centos7-vim</span><br><span class="line">#xenodochial_nightingale为原来的container的名字，soymilk/centos7-vim为新创建的image名字</span><br></pre></td></tr></table></figure>
+
 <h2 id="2-IDAPro简单使用"><a href="#2-IDAPro简单使用" class="headerlink" title="2. IDAPro简单使用"></a>2. IDAPro简单使用</h2><p>在远程连接时候，需要<strong>关闭docke远程执行命令保护</strong></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run --security-opt seccomp:unconfined -it -p 23946:23946 ubuntu.17.04.i386 /bin/bash</span><br></pre></td></tr></table></figure>
 
@@ -1749,7 +1762,7 @@
 </ul>
 <h3 id="IDA中的操作"><a href="#IDA中的操作" class="headerlink" title="IDA中的操作"></a>IDA中的操作</h3><p><code>call ___isoc99_scanf</code>处设置断点<br><code>Debugger-&gt;Attach to process...</code>附加到<code>./heapTest_x86</code>的进程上<br>回到python程序<br><code>io.recv( )</code>用于接收显示的数据<br><code>io.send( )</code>发送数据<br><code>io.sendline( )</code>用于回车</p>
 <h3 id="结束调试"><a href="#结束调试" class="headerlink" title="结束调试"></a>结束调试</h3><p>python程序中<code>io.close( )</code><br>ida软件中<code>CTRL+F2</code></p>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/asd413850393/article/details/101349924" target="_blank" rel="noopener">https://blog.csdn.net/asd413850393/article/details/101349924</a><br>[2] <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md" target="_blank" rel="noopener">https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md</a><br>[3] <span id="ref3"><a href="http://brieflyx.me/2015/linux-tools/socat-introduction/" target="_blank" rel="noopener">http://brieflyx.me/2015/linux-tools/socat-introduction/</a></span><br>[4] <a href="https://zhuanlan.zhihu.com/p/71914632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/71914632</a></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/asd413850393/article/details/101349924" target="_blank" rel="noopener">https://blog.csdn.net/asd413850393/article/details/101349924</a><br>[2] <a href="https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md" target="_blank" rel="noopener">https://github.com/Sp4n9x/blog_backup/blob/master/_posts/2018-04-05.Pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E2%80%94Ubuntu16.04.md</a><br>[3] <span id="ref3"><a href="http://brieflyx.me/2015/linux-tools/socat-introduction/" target="_blank" rel="noopener">http://brieflyx.me/2015/linux-tools/socat-introduction/</a></span><br>[4] <a href="https://zhuanlan.zhihu.com/p/71914632" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/71914632</a><br>[5] <a href="https://blog.csdn.net/flydreamzhll/article/details/80900509" target="_blank" rel="noopener">https://blog.csdn.net/flydreamzhll/article/details/80900509</a></p>
 ]]></content>
       <categories>
         <category>pwn</category>
