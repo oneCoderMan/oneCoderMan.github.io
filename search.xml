@@ -694,6 +694,16 @@
 <a id="more"></a>
 <h1 id="代码阅读"><a href="#代码阅读" class="headerlink" title="代码阅读"></a>代码阅读</h1><h2 id="Understand"><a href="#Understand" class="headerlink" title="Understand"></a>Understand</h2><p>以直观地看到项目结构和规模，灰框代表一个文件夹，蓝色方块代表了一个文件，其大小和颜色分别反映了行数和文件复杂度。</p>
 <h1 id="终端神器"><a href="#终端神器" class="headerlink" title="终端神器"></a>终端神器</h1><h2 id="MobaXterm"><a href="#MobaXterm" class="headerlink" title="MobaXterm"></a>MobaXterm</h2><p>一个全能的终端神器，shell, vnc, sftp等功能。</p>
+<h1 id="压缩软件"><a href="#压缩软件" class="headerlink" title="压缩软件"></a>压缩软件</h1><h2 id="7zG"><a href="#7zG" class="headerlink" title="7zG"></a>7zG</h2><p>7-zip 轻量级，支持zip,rar,7z,tar.gz等格式</p>
+<h1 id="垃圾清理软件"><a href="#垃圾清理软件" class="headerlink" title="垃圾清理软件"></a>垃圾清理软件</h1><p>CCleaner</p>
+<h1 id="文献管理"><a href="#文献管理" class="headerlink" title="文献管理"></a>文献管理</h1><p>EndNote</p>
+<h1 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h1><p>印象笔记，WizNote, Notepad++，vscode</p>
+<h1 id="文档搜索"><a href="#文档搜索" class="headerlink" title="文档搜索"></a>文档搜索</h1><p>everything</p>
+<h1 id="数据库管理"><a href="#数据库管理" class="headerlink" title="数据库管理"></a>数据库管理</h1><p>navicat</p>
+<h1 id="http请求"><a href="#http请求" class="headerlink" title="http请求"></a>http请求</h1><p>postman</p>
+<h1 id="视频"><a href="#视频" class="headerlink" title="视频"></a>视频</h1><p>PotPlay64</p>
+<h1 id="任务栏透明"><a href="#任务栏透明" class="headerlink" title="任务栏透明"></a>任务栏透明</h1><p>TranslucentTB</p>
+<h1 id="系统监控"><a href="#系统监控" class="headerlink" title="系统监控"></a>系统监控</h1><p>XMeters</p>
 ]]></content>
       <categories>
         <category>tool</category>
