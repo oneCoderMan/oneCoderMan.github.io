@@ -65,7 +65,7 @@
 <meta property="og:site_name" content="CoderSim&#39;s Growth Diary">
 <meta property="og:description" content="Linux入门学习linux的一些基本操作">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-06-05T13:26:49.381Z">
+<meta property="og:updated_time" content="2020-06-05T14:21:50.566Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux-basic">
 <meta name="twitter:description" content="Linux入门学习linux的一些基本操作">
@@ -299,7 +299,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-05 21:26:49" itemprop="dateModified" datetime="2020-06-05T21:26:49+08:00">2020-06-05</time>
+                <time title="Modified: 2020-06-05 22:21:50" itemprop="dateModified" datetime="2020-06-05T22:21:50+08:00">2020-06-05</time>
               </span>
             
           
@@ -380,11 +380,18 @@
 
 <h1 id="0x06-一些实用技巧"><a href="#0x06-一些实用技巧" class="headerlink" title="0x06 一些实用技巧"></a>0x06 一些实用技巧</h1><h2 id="免密登陆设置"><a href="#免密登陆设置" class="headerlink" title="免密登陆设置"></a>免密登陆设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">touch authorized_keys</span><br><span class="line">cat id_rsa.pub &gt;&gt; authorized_keys</span><br><span class="line">chmod 600 authorized_keys</span><br></pre></td></tr></table></figure>
 
-<h2 id="终端root命令颜色配置"><a href="#终端root命令颜色配置" class="headerlink" title="终端root命令颜色配置"></a>终端root命令颜色配置</h2><p>打开<code>~/.bashrc</code>，在最后一行加入</p>
+<h2 id="终端root命令颜色配置"><a href="#终端root命令颜色配置" class="headerlink" title="终端root命令颜色配置"></a>终端root命令颜色配置</h2><p>具体见参考文献[3]<br>颜色的设置公式<br><code>颜色=\033[代码;前景;背景m</code><br>不加任何颜色：<br><code>PS1=&#39;\u@\h:\w\$&#39;</code><br><br><br>用户名以红色显示的命令应该是：<br><code>PS1=&#39;\[\033[1;31;40m\]\u@\h:\w\$&#39;</code></p>
+<blockquote>
+<p>全部非打印字符用专用的 bash 转义序列 <code>\[</code>和 <code>\]</code>括起来<br><br></p>
+</blockquote>
+<p>以防止整个信息项以红色显示，修改后的PS1变量为：<br><code>PS1=&#39;\[\033[1;31;40m\]\u\[\033[00m\]@\h:\w\$ &#39;</code><br><br><br>加一个命令行绿色的(<strong>推荐这个</strong>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS1=&apos;\[\033[1;31;40m\]\u\[\033[00m\]@\h:\[\033[37;40m\]\w\[\033[32;40m\]\$ \[\033[32;40m\]&apos;</span><br></pre></td></tr></table></figure>
+
+<p>设置示例：<br>打开<code>~/.bashrc</code>，在最后一行加入</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS1=&apos;$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;40m\]\u\[\033[00;00;40m\]@\[\033[01;35;40m\]\h\[\033[00;31;40m\]:\[\033[00;00;40m\]\w \[\033[01;32;40m\]\$ \[\033[01;36;40m\]&apos;</span><br></pre></td></tr></table></figure>
 
-<p>保存退出，source使之生效</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="http://www.apelearn.com/study_v2/" target="_blank" rel="noopener">http://www.apelearn.com/study_v2/</a><br>[2] <a href="https://blog.csdn.net/xietansheng/article/details/80044644" target="_blank" rel="noopener">https://blog.csdn.net/xietansheng/article/details/80044644</a></p>
+<p>保存退出，source使之生效<br>这个颜色</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] <a href="http://www.apelearn.com/study_v2/" target="_blank" rel="noopener">http://www.apelearn.com/study_v2/</a><br>[2] <a href="https://blog.csdn.net/xietansheng/article/details/80044644" target="_blank" rel="noopener">https://blog.csdn.net/xietansheng/article/details/80044644</a><br>[3] <a href="http://blog.chinaunix.net/uid-26021340-id-3481924.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid-26021340-id-3481924.html</a></p>
 
     </div>
 
